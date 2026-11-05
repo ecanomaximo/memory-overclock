@@ -1,51 +1,48 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Marco: Integração de Autenticação Firebase - Google & Apple/iCloud)
+**Status do Projeto:** Concluído (Marco: Correção de Bloqueio de Retry no Stroop & Expansão de Tempo para 60s-90s)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Modelagem Spec-Driven Development (SDD):**
-   - Criada especificação formal em `specs/003-auth-firebase-google-apple/` (`spec.md`, `plan.md`, `tasks.md`).
-2. **Dependências & Setup do Firebase:**
-   - Adicionados `firebase_core: ^5.1.0` e `firebase_auth: ^7.0.1` ao `pubspec.yaml`.
-   - Criado `lib/firebase_options.dart` com mapeamento para Web, Android e iOS com suporte a compilação por `--dart-define` ou `flutterfire configure`.
-3. **Camada de Autenticação Desacoplada (`AuthService`):**
-   - Criado `lib/services/auth_service.dart` com:
-     - `signInWithGoogle()`: `GoogleAuthProvider` oficial com scopes de perfil e e-mail.
-     - `signInWithApple()`: `OAuthProvider('apple.com')` oficial com scopes de nome e e-mail.
-     - `signOut()`: desconexão de credenciais no Firebase.
-     - Fallback resiliente automático: caso o app seja executado sem credenciais reais do Firebase configuradas (como em testes unitários e CI), opera em modo de desenvolvimento seguro sem travar.
-4. **Integração no Estado e Telas:**
-   - `ProgressService` (`lib/services/progress_service.dart`) recebe dados reais da autenticação (`userName`, `userEmail`, `userPhotoUrl`, `authProvider`) e persiste em `SharedPreferences`.
-   - `LoginScreen` (`lib/screens/login_screen.dart`): estado com feedback visual de carregamento ("Conectando Google...", "Conectando Apple..."), desativação de botões durante a requisição e tratamento de erros com SnackBar.
-5. **Qualidade & Testes:**
-   - Criado `test/auth_service_test.dart`.
+1. **Correção do Bloqueio de Retry (Tela Travada ao Perder):**
+   - **Diagnóstico:** O widget `KeyedSubtree` em `WaveActivityScreen` mantinha a mesma chave `ValueKey('g_0_r_1')` quando a rodada falhava ou a bateria reiniciava na rodada 1, fazendo com que o Flutter recicl会上 o estado `_StroopReflexGameState` com `_answered = true` e os timers cancelados, ignorando novos cliques.
+   - **Correção:** Introduzido `_attemptCounter` dinâmico na chave do `KeyedSubtree` (`ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter')`). A cada falha ou reinício de bateria, a chave é invalidada, garantindo a recriação limpa e imediata do widget de desafio, novo estímulo e timers reiniciados.
+   - Adicionada notificação `didUpdateWidget` em `StroopReflexGame` para garantir consistência.
+2. **Aumento Generoso do Tempo de Resolução (60s a 90s):**
+   - **Seleção de Cores (Stroop Reflex - `lib/games/stroop_reflex_game.dart`):**
+     - Rodada 1 (Tutorial): Elevado para **90 segundos (1 minuto e meio)**.
+     - Rodadas 2 a 5: Faixa progressiva relaxada entre **75 segundos e 60 segundos (1 minuto)**.
+     - Adicionado indicador visual textual de contagem regressiva: `XXs restantes`.
+   - **Flash Matrix (`lib/games/flash_matrix_game.dart`):**
+     - Tempo de memorização na Rodada 1 elevado para **6.0 segundos** e rodadas avançadas entre **5.0s e 3.0s**.
+3. **Qualidade & Testes:**
+   - Teste unitário `test/stroop_reflex_test.dart` atualizado e aprovado.
    - `dart analyze lib`: 0 erros, 0 warnings.
    - `flutter test`: 29 testes aprovados (100% de sucesso).
-6. **Deploy & Grafo:**
-   - Compilado `flutter build web --release --base-href "/memory-overclock/"`.
-   - Publicado na branch `gh-pages` do GitHub e disponível em `https://ecanomaximo.github.io/memory-overclock/`.
-   - Grafo Graphify atualizado para 1777 nós e 1988 arestas.
+4. **Deploy & Publicação:**
+   - Recompilado `flutter build web --release --base-href "/memory-overclock/"`.
+   - Publicado na branch `gh-pages` e disponível em tempo real no GitHub Pages (`https://ecanomaximo.github.io/memory-overclock/`).
+   - Grafo Graphify atualizado para 1780 nós e 1991 arestas.
 
 ---
 
 ## 2. Onde Parou
-- A infraestrutura de autenticação com Firebase para Google e Apple/iCloud está 100% integrada, testada e publicada.
-- O app opera com o fluxo de autenticação ativo; para conectar ao seu projeto específico no Firebase Console, basta registrar as chaves em `firebase_options.dart` (ou via `flutterfire configure`).
+- As correções de retry e os tempos ampliados de 60s a 90s estão 100% ativos e funcionais no ar.
+- Servidor web e GitHub Pages atualizados.
 
 ---
 
 ## 3. Contexto Técnico Atual
 - **Branch:** `main` (código-fonte) / `gh-pages` (distribuição pública)
 - **Local Web Server:** `http://localhost:8085/`
-- **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
+- **URL Pública Oficial:** `https://ecanomaximo.github.io/memory-overclock/`
 - **Testes:** 29 testes passando.
-- **Grafo:** `graphify-out/` com 1777 nós.
+- **Grafo:** `graphify-out/` com 1780 nós.
 
 ---
 
 ## 4. Próximos Passos
-1. Conectar as credenciais do seu projeto do Firebase Console (Web API Key e App ID) para habilitar os popups oficiais do Google e Apple no domínio de produção.
-2. Sincronizar o progresso de XP e Ligas em tempo real no Firestore / Cloud Database.
+1. Integração com Firebase Console para credenciais reais de produção caso o usuário decida vincular seu projeto.
+2. Adicionar efeitos sonoros sutis de neurofeedback para acertos e combo streaks.

@@ -467,17 +467,17 @@ class _FlashMatrixWaveChallengeState extends State<FlashMatrixWaveChallenge> {
 
   FlashMatrixConfig _configForWave(int round, int totalRounds) {
     if (round <= 1) {
-      return const FlashMatrixConfig(dimension: 3, targetCount: 3, durationMs: 3500);
+      return const FlashMatrixConfig(dimension: 3, targetCount: 3, durationMs: 6000);
     } else if (round == 2) {
-      return const FlashMatrixConfig(dimension: 3, targetCount: 4, durationMs: 2800);
+      return const FlashMatrixConfig(dimension: 3, targetCount: 4, durationMs: 5000);
     } else if (round == 3) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 2400);
+      return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 4500);
     } else if (round == 4) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 2100);
+      return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 4000);
     } else if (round == 5) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 6, durationMs: 1900);
+      return const FlashMatrixConfig(dimension: 4, targetCount: 6, durationMs: 3500);
     } else {
-      return const FlashMatrixConfig(dimension: 5, targetCount: 7, durationMs: 1700);
+      return const FlashMatrixConfig(dimension: 5, targetCount: 7, durationMs: 3000);
     }
   }
 

@@ -29,6 +29,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
   int _currentChallengeIndex = 0;
   int _currentRound = 1;
   int _challengeLives = 3;
+  int _attemptCounter = 0;
   bool _isPhaseCompleted = false;
 
   // Medição em tempo real de acertos, erros e pontos
@@ -69,6 +70,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
 
     setState(() {
       _challengeLives--;
+      _attemptCounter++;
     });
 
     if (_challengeLives <= 0) {
@@ -77,15 +79,13 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Ops! Tentativa falhou. Você ainda tem $_challengeLives vida(s).',
+            'Ops! Tentativa incorreta. Você ainda tem $_challengeLives vida(s). Rodada reiniciada!',
             style: GoogleFonts.inter(color: Colors.white),
           ),
           backgroundColor: AppTheme.alertPink,
           duration: const Duration(seconds: 2),
         ),
       );
-      // Reinicia a rodada atual
-      setState(() {});
     }
   }
 
@@ -173,6 +173,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
               setState(() {
                 _challengeLives = 3;
                 _currentRound = 1;
+                _attemptCounter++;
               });
             },
             child: const Text('Reiniciar Bateria'),
@@ -234,7 +235,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
               const SizedBox(height: 14),
               Expanded(
                 child: KeyedSubtree(
-                  key: ValueKey('g_${_currentChallengeIndex}_r_$_currentRound'),
+                  key: ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter'),
                   child: _buildCurrentChallengeWidget(),
                 ),
               ),

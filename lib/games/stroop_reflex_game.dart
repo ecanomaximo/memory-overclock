@@ -61,10 +61,10 @@ class StroopEngine {
   }
 
   static int getDurationMsForRound(int round, int totalRounds) {
-    if (round <= 1) return 6000;
+    if (round <= 1) return 90000; // 90 segundos (1m30s) na Rodada 1
     final progress = (round - 1) / (totalRounds - 1);
-    // Varia suavemente de 4500ms até 2500ms
-    return (4500 - (progress * 2000)).round();
+    // Varia suavemente de 75000ms (1m15s) até 60000ms (1 minuto)
+    return (75000 - (progress * 15000)).round();
   }
 }
 
@@ -91,6 +91,7 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
   Timer? _roundTimer;
   Timer? _ticker;
   double _timeRemainingPercent = 1.0;
+  int _remainingSeconds = 90;
   bool _answered = false;
 
   bool get _isTutorial => widget.currentRound == 1;
@@ -101,10 +102,19 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
     _startStimulus();
   }
 
+  @override
+  void didUpdateWidget(covariant StroopReflexGame oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentRound != widget.currentRound) {
+      _startStimulus();
+    }
+  }
+
   void _startStimulus() {
     _answered = false;
     _currentStimulus = StroopEngine.generateStimulus(round: widget.currentRound);
     final durationMs = StroopEngine.getDurationMsForRound(widget.currentRound, widget.totalRounds);
+    _remainingSeconds = (durationMs / 1000).ceil();
 
     const stepMs = 50;
     final totalSteps = durationMs / stepMs;
@@ -116,6 +126,7 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
       if (mounted) {
         setState(() {
           _timeRemainingPercent = max(0.0, 1.0 - (currentStep / totalSteps));
+          _remainingSeconds = max(0, ((durationMs - (currentStep * stepMs)) / 1000).ceil());
         });
       }
     });
@@ -189,6 +200,24 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
             ),
             minHeight: 6,
           ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'TEMPO DE RESOLUÇÃO',
+              style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMutedSlate, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              '${_remainingSeconds}s restantes',
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: _remainingSeconds > 20 ? AppTheme.primaryNeuroCyan : AppTheme.accentSolarAmber,
+              ),
+            ),
+          ],
         ),
         const Spacer(),
         Container(
