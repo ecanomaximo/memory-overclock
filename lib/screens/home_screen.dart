@@ -12,8 +12,13 @@ import 'paywall_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final ProgressService progressService;
+  final VoidCallback? onOpenProfile;
 
-  const HomeScreen({super.key, required this.progressService});
+  const HomeScreen({
+    super.key,
+    required this.progressService,
+    this.onOpenProfile,
+  });
 
   static const int totalLevels = 20;
 
@@ -25,7 +30,7 @@ class HomeScreen extends StatelessWidget {
         if (!progressService.isInitialized) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: AppTheme.neonCyan),
+              child: CircularProgressIndicator(color: AppTheme.focusCyan),
             ),
           );
         }
@@ -36,6 +41,11 @@ class HomeScreen extends StatelessWidget {
               children: [
                 TopBarStats(
                   progressService: progressService,
+                  onOpenProfile: () {
+                    if (onOpenProfile != null) {
+                      onOpenProfile!();
+                    }
+                  },
                   onOpenPaywall: () => _openPaywall(context),
                   onOpenLeague: () => _openLeague(context),
                   onOpenDevSheet: () => _openDevSheet(context),

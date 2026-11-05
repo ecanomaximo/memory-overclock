@@ -108,15 +108,15 @@
     "semantic_hash": ""
   },
   "lib/screens/dashboard_screen.dart": {
-    "mtime": 1793889624.7659702,
-    "seen": 1793889758.9648235,
-    "ast_hash": "92431450f7c4589f88f475ff303639c2",
+    "mtime": 1793891265.345942,
+    "seen": 1793891410.8876112,
+    "ast_hash": "f18e4814e8304f50263195088aae8ca7",
     "semantic_hash": ""
   },
   "lib/screens/home_screen.dart": {
-    "mtime": 1793889395.0808845,
-    "seen": 1793889758.9648235,
-    "ast_hash": "b0c4f9cbdf3a30196609ea44f4860f31",
+    "mtime": 1793891252.2737038,
+    "seen": 1793891410.8876112,
+    "ast_hash": "387a55e21a5d7d146df860a04298b3c9",
     "semantic_hash": ""
   },
   "lib/screens/league_screen.dart": {
@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "lib/theme/app_theme.dart": {
-    "mtime": 1793889130.3289433,
-    "seen": 1793889758.9648235,
-    "ast_hash": "f41ee2cef04f9970bfeb89552bf87c09",
+    "mtime": 1793891180.572296,
+    "seen": 1793891410.8876112,
+    "ast_hash": "b2e97df7f8e06cb5e347d07321a75a7a",
     "semantic_hash": ""
   },
   "pubspec.yaml": {
@@ -618,9 +618,9 @@
     "semantic_hash": ""
   },
   "lib/widgets/top_bar_stats.dart": {
-    "mtime": 1793889352.5106642,
-    "seen": 1793889758.9648235,
-    "ast_hash": "848c2bd3bd8081f3a2b22ababb299635",
+    "mtime": 1793891233.9354496,
+    "seen": 1793891410.8876112,
+    "ast_hash": "223c365a8e4b39048ed7165abc2ff839",
     "semantic_hash": ""
   },
   "test/flash_matrix_test.dart": {
@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1793889113.1648097,
-    "seen": 1793889758.9648235,
-    "ast_hash": "3744c3309c7a85247bbe3d0bf83ca821",
+    "mtime": 1793891164.1897337,
+    "seen": 1793891410.8876112,
+    "ast_hash": "b28eacf108790133dceee15ea818b0c5",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1221,6 +1221,18 @@
     "mtime": 1793889747.0371728,
     "seen": 1793889758.9648235,
     "ast_hash": "955f26bd4d1a74e3da14911f0b1db28f",
+    "semantic_hash": ""
+  },
+  "lib/screens/profile_screen.dart": {
+    "mtime": 1793891208.9517205,
+    "seen": 1793891410.8876112,
+    "ast_hash": "7ae3ac288f32c29c041d45b4a6f32789",
+    "semantic_hash": ""
+  },
+  "test/profile_screen_test.dart": {
+    "mtime": 1793891315.3384602,
+    "seen": 1793891410.8876112,
+    "ast_hash": "531e3157792ce02e4d1ba4b19bb47b58",
     "semantic_hash": ""
   }
 }
