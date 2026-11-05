@@ -29,6 +29,13 @@ class AppTheme {
   static const Color gold = prestigeGold;
   static const Color neonPurple = calmIndigo;
   static const Color neonPink = alertPink;
+  static const Color primaryNeuroCyan = focusCyan;
+  static const Color accentBioGreen = rewardGreen;
+  static const Color accentSolarAmber = habitAmber;
+  static const Color cardDeepSlate = surface;
+  static const Color cardBorderMuted = surfaceBorder;
+  static const Color textMutedSlate = textSecondary;
+  static const Color textPrimaryLight = textPrimary;
 
   // Textos para contraste seguro (WCAG AAA)
   static const Color textPrimary = Color(0xFFF1F5F9);

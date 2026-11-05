@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
@@ -17,6 +18,27 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0; // Inicia na aba de Perfil / Painel Cognitivo
+  late final CadenceService _cadenceService;
+
+  @override
+  void initState() {
+    super.initState();
+    _cadenceService = CadenceService(
+      isVip: widget.progressService.progress.isVip,
+    );
+    widget.progressService.addListener(_onProgressChanged);
+  }
+
+  void _onProgressChanged() {
+    _cadenceService.updateVipStatus(widget.progressService.progress.isVip);
+  }
+
+  @override
+  void dispose() {
+    widget.progressService.removeListener(_onProgressChanged);
+    _cadenceService.dispose();
+    super.dispose();
+  }
 
   void _switchTab(int index) {
     if (mounted) {
@@ -31,10 +53,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final screens = [
       ProfileScreen(
         progressService: widget.progressService,
+        cadenceService: _cadenceService,
         onGoToTrack: () => _switchTab(1),
       ),
       HomeScreen(
         progressService: widget.progressService,
+        cadenceService: _cadenceService,
         onOpenProfile: () => _switchTab(0),
       ),
       LeagueScreen(progressService: widget.progressService),

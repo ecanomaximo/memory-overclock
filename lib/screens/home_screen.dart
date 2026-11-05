@@ -1,22 +1,26 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../games/flash_matrix_game.dart';
 import '../models/phase_node.dart';
+import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/activity_cadence_bar.dart';
 import '../widgets/phase_node_widget.dart';
 import '../widgets/top_bar_stats.dart';
 import 'league_screen.dart';
 import 'paywall_screen.dart';
+import 'wave_activity_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final ProgressService progressService;
+  final CadenceService? cadenceService;
   final VoidCallback? onOpenProfile;
 
   const HomeScreen({
     super.key,
     required this.progressService,
+    this.cadenceService,
     this.onOpenProfile,
   });
 
@@ -35,6 +39,9 @@ class HomeScreen extends StatelessWidget {
           );
         }
 
+        final effectiveCadence = cadenceService ??
+            CadenceService(isVip: progressService.progress.isVip);
+
         return Scaffold(
           body: SafeArea(
             child: Column(
@@ -50,7 +57,10 @@ class HomeScreen extends StatelessWidget {
                   onOpenLeague: () => _openLeague(context),
                   onOpenDevSheet: () => _openDevSheet(context),
                 ),
-                _buildDailyLimitBanner(context),
+                ActivityCadenceBar(
+                  cadenceService: effectiveCadence,
+                  onCadenceExhaustedTap: () => _openPaywall(context),
+                ),
                 Expanded(
                   child: _buildDuolingoTrack(context),
                 ),
@@ -60,51 +70,6 @@ class HomeScreen extends StatelessWidget {
         );
       },
     );
-  }
-
-  Widget _buildDailyLimitBanner(BuildContext context) {
-    final progress = progressService.progress;
-
-    if (!progress.isDevUnlimited && progress.dailyChallengesLeft == 0 && !progress.isVip) {
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: AppTheme.neonPink.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.neonPink.withValues(alpha: 0.5)),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.lock_clock, color: AppTheme.neonPink, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Limite diário gratuito atingido (3/3)!',
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.gold,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              onPressed: () => _openPaywall(context),
-              child: Text(
-                'SER VIP',
-                style: GoogleFonts.orbitron(fontSize: 11, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return const SizedBox.shrink();
   }
 
   Widget _buildDuolingoTrack(BuildContext context) {
@@ -163,21 +128,97 @@ class HomeScreen extends StatelessWidget {
       return;
     }
 
-    if (!progressService.canPlay()) {
-      _openPaywall(context);
+    final effectiveCadence = cadenceService ??
+        CadenceService(isVip: progressService.progress.isVip);
+
+    if (!effectiveCadence.canStartActivity()) {
+      _showCadenceExhaustedDialog(context, effectiveCadence);
       return;
     }
-
-    // Consome uma tentativa diária e entra na fase
-    progressService.consumeChallenge();
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FlashMatrixGame(
-          level: node.id,
+        builder: (context) => WaveActivityScreen(
+          activityNumber: (5 - effectiveCadence.availableActivities) + 1,
           progressService: progressService,
+          cadenceService: effectiveCadence,
+          roundsPerChallenge: 5,
         ),
+      ),
+    );
+  }
+
+  void _showCadenceExhaustedDialog(BuildContext context, CadenceService cadence) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surfaceElevated,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            const Icon(Icons.timer_off_outlined, color: AppTheme.habitAmber),
+            const SizedBox(width: 8),
+            Text(
+              'Ciclo Concluído (5/5)',
+              style: GoogleFonts.orbitron(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Você completou as 5 atividades deste ciclo. Seu cérebro precisa de um intervalo para consolidação de memória.',
+              style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppTheme.surfaceBorder),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.access_time_rounded, size: 16, color: AppTheme.focusCyan),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Próxima recarga em: ${cadence.formatTimeRemaining()}',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.focusCyan,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Entendido'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.prestigeGold,
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _openPaywall(context);
+            },
+            child: const Text('Desbloquear VIP'),
+          ),
+        ],
       ),
     );
   }

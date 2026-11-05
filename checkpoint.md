@@ -1,61 +1,66 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Marco: Repaginação da Aba de Usuário & Ergonomia Neurocognitiva)
+**Status do Projeto:** Concluído (Marco: 5 Atividades em Ondas de 3 Desafios com Progressão 3-7 Rodadas & Ciclo de 5h)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Estudo de Psicologia das Cores & Neuroergonomia Cognitiva:**
-   - Fundo Ardósia Profunda (`#0A0F1D`) que reduz halation e acomodação pupilar excessiva em comparação a pretos puros (`#000000`).
-   - Ciano Neuro-Elétrico (`#00D2FF` ~485 nm) estimulando ipRGCs e vigília do córtex pré-frontal sem pico de cortisol.
-   - Verde Menta / Bio-Restaurador (`#00E599` ~555 nm) no pico da curva fotópica do olho humano, associado a alívio de fadiga visual e reforço positivo dopaminérgico.
-   - Âmbar Solar (`#FFFF9F1C`) para o Streak/Ofensiva, mantendo alto contraste motivacional sem o gatilho de estresse/alarme de vermelhos saturados.
-2. **Criação da Aba de Usuário / Perfil (`ProfileScreen`):**
-   - Design ultra-clean, minimalista e moderno em `lib/screens/profile_screen.dart`.
-   - Bateria de Foco Diário (indicador de desafios restantes/3 com barra de energia).
-   - Estatísticas de desempenho: Ofensiva diária, XP Total, Divisão de Liga e Meta Diária.
-   - Botão direto "CONTINUAR NA TRILHA" para transição fluida de volta ao jogo.
-   - Ações de autenticação e suporte (Login Guest/Google/Apple, Toggle VIP de teste).
-3. **Navegação & Botão de Retorno ao Perfil:**
-   - Adicionado botão de perfil (`Icons.account_circle_outlined`) no topo da trilha em `lib/widgets/top_bar_stats.dart` com tooltip e badge de status.
-   - Conectado o callback `onOpenProfile` no `lib/screens/home_screen.dart`.
-   - Adicionada a aba `Perfil` como primeira opção na barra de navegação do `lib/screens/dashboard_screen.dart`.
-4. **Testes Unitários & Validação:**
-   - Adicionado `test/profile_screen_test.dart`.
-   - Executado `dart analyze lib` (0 issues).
-   - Executado `flutter test` (15 testes passando, 100% de sucesso).
-5. **Build Web & Grafo:**
-   - Recompilado `flutter build web --release` atualizando o diretório `build/web`.
-   - Servidor local Python ativo e funcional em `http://localhost:8085/`.
-   - Atualizado grafo AST via `python -m graphify update .` (1491 nós, 1638 arestas, 147 comunidades).
+1. **Modelagem Spec-Driven Development (SDD):**
+   - Criada especificação formal em `specs/002-activity-waves-cadence/` (`spec.md`, `plan.md`, `tasks.md`) decomposta em 5 Sprints Scrum verticais.
+2. **Sistema de Cadência de 5 Horas & 5 Atividades:**
+   - Criado `ActivityCadence` (`lib/models/activity_cadence.dart`) com 5 slots de atividade por ciclo de 5h.
+   - Criado `CadenceService` (`lib/services/cadence_service.dart`) gerenciando o cooldown de 5 horas, temporizador regressivo (`HH:mm:ss`), consumo de cota e acesso VIP irrestrito.
+3. **Mecânica de Onda Cognitiva (Wave) com 3 Desafios Distintos:**
+   - Modelado `WaveChallenge` e `ChallengeRoundConfig` em `lib/models/wave_models.dart`.
+   - **Desafio 1 - Flash Matrix:** Memória de trabalho visuoespacial com 3 a 7 rodadas e banner tutorial na Rodada 1.
+   - **Desafio 2 - Stroop Reflex:** Inibição cognitiva e reflexo atencional pré-frontal (`lib/games/stroop_reflex_game.dart`) com tempo progressivo (4.0s -> 1.2s).
+   - **Desafio 3 - Digit Memory:** Memória sequencial de dígitos com teclado virtual numérico (`lib/games/digit_sequence_game.dart`) escalando de 3 a 7 dígitos.
+4. **Orquestrador de Onda (`WaveActivityScreen`):**
+   - Fluxo ininterrupto que encadeia Desafio 1 -> Desafio 2 -> Desafio 3.
+   - Barra de progresso visual de onda, sistema de 3 vidas por desafio e tela final de celebração concedendo +150 a +225 XP.
+5. **Interface de Usuário & Integração:**
+   - Criado `ActivityCadenceBar` (`lib/widgets/activity_cadence_bar.dart`) com timer reativo em tempo real e visualização em pills dos 5 slots.
+   - Integrado na `HomeScreen` (acionamento das ondas pelos nós da trilha) e na `ProfileScreen` (visão das 5 atividades e tempo para recarga).
+   - Compartilhamento limpo de estado reativo via `DashboardScreen`.
+6. **Qualidade & Testes:**
+   - `dart analyze lib`: 0 erros, 0 warnings.
+   - `flutter test`: 24 testes unitários e de widget com 100% de aprovação (`cadence_service_test.dart`, `stroop_reflex_test.dart`, `digit_sequence_test.dart`, etc.).
+7. **Deploy Web & Grafo:**
+   - `flutter build web --release` compilado com sucesso para `build/web`.
+   - Servidor Python ativo na porta 8085 (`http://localhost:8085/`).
+   - Grafo AST atualizado via `python -m graphify update .` (1700 nós, 1903 arestas, 163 comunidades).
 
 ---
 
 ## 2. Onde Parou
-- Repaginação da aba de perfil, aplicação da paleta neuroergonômica, testes, build web e sincronização do grafo concluídos com sucesso.
-- Servidor web ativo em `http://localhost:8085/`.
+- Todas as funcionalidades do marco foram implementadas, testadas e compiladas para Web.
+- Servidor web ativo respondendo em `http://localhost:8085/`.
 
 ---
 
 ## 3. Contexto Técnico Atual
 - **Branch:** `main`
-- **Ambiente:** Flutter 3.x Web Release
-- **Local Web Server:** `http://localhost:8085/` (Python HTTP server background task `task-407`)
-- **Arquivos Criados/Alterados:**
-  - `lib/theme/app_theme.dart`
-  - `lib/screens/profile_screen.dart`
-  - `lib/screens/dashboard_screen.dart`
-  - `lib/screens/home_screen.dart`
-  - `lib/widgets/top_bar_stats.dart`
-  - `test/profile_screen_test.dart`
-  - `checkpoint.md`
-- **Qualidade & Testes:** 15 testes aprovados, 0 warnings/erros no analisador.
-- **Grafo:** `graphify-out/` atualizado.
+- **Ambiente:** Flutter 3.x / Web Release
+- **Local Web Server:** `http://localhost:8085/`
+- **Testes:** 24 testes passando (100% de sucesso).
+- **Grafo:** `graphify-out/` com 1700 nós.
+- **Novos Arquivos:**
+  - `lib/models/wave_models.dart`
+  - `lib/models/activity_cadence.dart`
+  - `lib/services/cadence_service.dart`
+  - `lib/games/stroop_reflex_game.dart`
+  - `lib/games/digit_sequence_game.dart`
+  - `lib/screens/wave_activity_screen.dart`
+  - `lib/widgets/activity_cadence_bar.dart`
+  - `test/cadence_service_test.dart`
+  - `test/stroop_reflex_test.dart`
+  - `test/digit_sequence_test.dart`
+  - `specs/002-activity-waves-cadence/`
 
 ---
 
 ## 4. Próximos Passos
-1. Adicionar novos minijogos cognitivos (ex: Dual N-Back, Stroop Effect Neuro-Reflex, cálculo mental veloz).
-2. Adicionar persistência local com Hive ou SharedPreferences para guardar o estado após recarregar a página web.
-3. Adicionar animações táteis e feedback sonoro sintético binaural/haptic para cada acerto no Flash Matrix.
+1. Implementar persistência local (IndexedDB no Web / SharedPreferences) para o timer de 5h persistir mesmo se a aba for fechada.
+2. Adicionar efeitos sonoros sutis de neurofeedback (frequências binaurais de foco / clique tátil).
+3. Adicionar mais variações de desafios para as ondas posteriores da trilha.

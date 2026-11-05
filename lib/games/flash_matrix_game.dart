@@ -421,3 +421,258 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     return const SizedBox(height: 50);
   }
 }
+
+
+class FlashMatrixWaveChallenge extends StatefulWidget {
+  final int currentRound;
+  final int totalRounds;
+  final VoidCallback onRoundComplete;
+  final VoidCallback onFailed;
+
+  const FlashMatrixWaveChallenge({
+    super.key,
+    required this.currentRound,
+    required this.totalRounds,
+    required this.onRoundComplete,
+    required this.onFailed,
+  });
+
+  @override
+  State<FlashMatrixWaveChallenge> createState() => _FlashMatrixWaveChallengeState();
+}
+
+class _FlashMatrixWaveChallengeState extends State<FlashMatrixWaveChallenge> {
+  late FlashMatrixConfig _config;
+  final Set<int> _targetTiles = {};
+  final Set<int> _selectedTiles = {};
+  int? _lastWrongTile;
+
+  GameState _state = GameState.ready;
+  Timer? _memorizeTimer;
+  Timer? _countdownTicker;
+  double _timerProgress = 1.0;
+
+  bool get _isTutorial => widget.currentRound == 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupRound();
+  }
+
+  void _setupRound() {
+    _config = _configForWave(widget.currentRound, widget.totalRounds);
+    _startRound();
+  }
+
+  FlashMatrixConfig _configForWave(int round, int totalRounds) {
+    if (round <= 1) {
+      return const FlashMatrixConfig(dimension: 3, targetCount: 3, durationMs: 2200);
+    } else if (round == 2) {
+      return const FlashMatrixConfig(dimension: 3, targetCount: 4, durationMs: 1800);
+    } else if (round == 3) {
+      return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 1500);
+    } else if (round == 4) {
+      return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 1300);
+    } else if (round == 5) {
+      return const FlashMatrixConfig(dimension: 4, targetCount: 6, durationMs: 1100);
+    } else {
+      return const FlashMatrixConfig(dimension: 5, targetCount: 7, durationMs: 900);
+    }
+  }
+
+  void _startRound() {
+    _targetTiles.clear();
+    _selectedTiles.clear();
+    _lastWrongTile = null;
+
+    final totalTiles = _config.dimension * _config.dimension;
+    final random = Random();
+
+    while (_targetTiles.length < _config.targetCount) {
+      _targetTiles.add(random.nextInt(totalTiles));
+    }
+
+    setState(() {
+      _state = GameState.memorizing;
+      _timerProgress = 1.0;
+    });
+
+    const stepMs = 50;
+    final totalSteps = _config.durationMs / stepMs;
+    int currentStep = 0;
+
+    _countdownTicker?.cancel();
+    _countdownTicker = Timer.periodic(const Duration(milliseconds: stepMs), (timer) {
+      currentStep++;
+      if (mounted) {
+        setState(() {
+          _timerProgress = max(0.0, 1.0 - (currentStep / totalSteps));
+        });
+      }
+    });
+
+    _memorizeTimer?.cancel();
+    _memorizeTimer = Timer(Duration(milliseconds: _config.durationMs), () {
+      _countdownTicker?.cancel();
+      if (mounted) {
+        setState(() {
+          _state = GameState.guessing;
+        });
+      }
+    });
+  }
+
+  void _onTileTap(int index) {
+    if (_state != GameState.guessing || _selectedTiles.contains(index)) return;
+
+    if (_targetTiles.contains(index)) {
+      setState(() {
+        _selectedTiles.add(index);
+      });
+
+      if (_selectedTiles.length == _targetTiles.length) {
+        widget.onRoundComplete();
+      }
+    } else {
+      setState(() {
+        _lastWrongTile = index;
+        _state = GameState.failed;
+      });
+      widget.onFailed();
+    }
+  }
+
+  @override
+  void dispose() {
+    _memorizeTimer?.cancel();
+    _countdownTicker?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (_isTutorial)
+          Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline, color: AppTheme.primaryNeuroCyan, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'RODADA 1 (TUTORIAL): Memorize as células iluminadas em ciano e toque nelas quando apagarem.',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryNeuroCyan,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: _state == GameState.memorizing ? _timerProgress : 1.0,
+            backgroundColor: AppTheme.cardDeepSlate,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _state == GameState.memorizing
+                  ? AppTheme.accentSolarAmber
+                  : AppTheme.accentBioGreen,
+            ),
+            minHeight: 6,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          _state == GameState.memorizing
+              ? 'MEMORIZE AS POSIÇÕES'
+              : 'SELECIONE AS CÉLULAS (${_selectedTiles.length}/${_targetTiles.length})',
+          style: GoogleFonts.orbitron(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            color: _state == GameState.memorizing
+                ? AppTheme.accentSolarAmber
+                : AppTheme.primaryNeuroCyan,
+          ),
+        ),
+        const Spacer(),
+        Center(
+          child: AspectRatio(
+            aspectRatio: 1.0,
+            child: _buildGrid(),
+          ),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+
+  Widget _buildGrid() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _config.dimension * _config.dimension,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: _config.dimension,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemBuilder: (context, index) {
+        final isTarget = _targetTiles.contains(index);
+        final isSelected = _selectedTiles.contains(index);
+        final isWrong = _lastWrongTile == index;
+
+        Color tileColor = AppTheme.cardDeepSlate;
+        Border? border = Border.all(color: AppTheme.cardBorderMuted, width: 1.5);
+        List<BoxShadow> shadows = [];
+
+        if (_state == GameState.memorizing && isTarget) {
+          tileColor = AppTheme.primaryNeuroCyan;
+          border = Border.all(color: AppTheme.primaryNeuroCyan, width: 2);
+          shadows = [
+            BoxShadow(
+              color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.5),
+              blurRadius: 14,
+            ),
+          ];
+        } else if (isSelected) {
+          tileColor = AppTheme.accentBioGreen;
+          border = Border.all(color: AppTheme.accentBioGreen, width: 2);
+          shadows = [
+            BoxShadow(
+              color: AppTheme.accentBioGreen.withValues(alpha: 0.5),
+              blurRadius: 12,
+            ),
+          ];
+        } else if (isWrong) {
+          tileColor = const Color(0xFFFF4D4D);
+          border = Border.all(color: const Color(0xFFFF4D4D), width: 2);
+        }
+
+        return GestureDetector(
+          onTap: () => _onTileTap(index),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: tileColor,
+              borderRadius: BorderRadius.circular(12),
+              border: border,
+              boxShadow: shadows,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

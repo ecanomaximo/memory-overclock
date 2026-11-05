@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 import 'paywall_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProgressService progressService;
+  final CadenceService? cadenceService;
   final VoidCallback onGoToTrack;
 
   const ProfileScreen({
     super.key,
     required this.progressService,
+    this.cadenceService,
     required this.onGoToTrack,
   });
 
@@ -276,6 +279,43 @@ class ProfileScreen extends StatelessWidget {
                 ),
             ],
           ),
+          if (cadenceService != null) ...[
+            const Divider(color: AppTheme.surfaceBorder, height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.flash_on_rounded, color: AppTheme.focusCyan, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Ciclo de 5 Horas:',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  cadenceService!.isVip
+                      ? 'Ilimitadas'
+                      : '${cadenceService!.availableActivities} / ${cadenceService!.maxActivities} Atividades',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.focusCyan,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Recarga de 5 atividades em: ${cadenceService!.formatTimeRemaining()}',
+              style: GoogleFonts.inter(fontSize: 11, color: AppTheme.habitAmber),
+            ),
+          ],
         ],
       ),
     );
