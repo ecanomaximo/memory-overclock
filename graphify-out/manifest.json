@@ -72,9 +72,9 @@
     "semantic_hash": ""
   },
   "lib/games/flash_matrix_game.dart": {
-    "mtime": 1793902853.2158637,
-    "seen": 1793902966.616559,
-    "ast_hash": "d5e3cc3686dfbd6a2642da2c7448a3b7",
+    "mtime": 1793920458.134757,
+    "seen": 1793921048.362672,
+    "ast_hash": "2a92f11ef968c27be677b3d7ba1e4f4a",
     "semantic_hash": ""
   },
   "lib/games/reading_recall_game.dart": {
@@ -108,33 +108,33 @@
     "semantic_hash": ""
   },
   "lib/screens/dashboard_screen.dart": {
-    "mtime": 1793892530.7098093,
-    "seen": 1793892694.2395706,
-    "ast_hash": "38291e726110facbcbb4c9263f0afcc1",
+    "mtime": 1793920551.2033439,
+    "seen": 1793921048.362672,
+    "ast_hash": "bab6f5700633fe3d3579cd2b3b320b5d",
     "semantic_hash": ""
   },
   "lib/screens/home_screen.dart": {
-    "mtime": 1793894774.6262355,
-    "seen": 1793894951.2025115,
-    "ast_hash": "2af0c2986d5b557dfd6fc1346fc36a65",
+    "mtime": 1793920511.2010834,
+    "seen": 1793921048.362672,
+    "ast_hash": "a1f6467bd6dbe136286d68b61e054d3d",
     "semantic_hash": ""
   },
   "lib/screens/league_screen.dart": {
-    "mtime": 1793889473.142238,
-    "seen": 1793889758.9648235,
-    "ast_hash": "b196b1ace995b32e002a6fb497dad222",
+    "mtime": 1793920570.7660227,
+    "seen": 1793921048.362672,
+    "ast_hash": "5c51306ec9d6eb62e5d76195e8b7d3eb",
     "semantic_hash": ""
   },
   "lib/screens/login_screen.dart": {
-    "mtime": 1793900085.1857448,
-    "seen": 1793900231.7579195,
-    "ast_hash": "457fb8d198c394e962174ab065a7be00",
+    "mtime": 1793920757.8876498,
+    "seen": 1793921048.362672,
+    "ast_hash": "65cbfd96878dfca29263e904e7537dd4",
     "semantic_hash": ""
   },
   "lib/screens/paywall_screen.dart": {
-    "mtime": 1793889522.6939988,
-    "seen": 1793889758.9648235,
-    "ast_hash": "08d0baaf8fe4fa4bac03f12c72f8e581",
+    "mtime": 1793920778.3150675,
+    "seen": 1793921048.362672,
+    "ast_hash": "2f20565f09e5ee0874317b08879ed3fe",
     "semantic_hash": ""
   },
   "lib/services/progress_service.dart": {
@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1793902651.9324949,
-    "seen": 1793902966.616559,
-    "ast_hash": "3301fc9ca638a4426a3b7258df620377",
+    "mtime": 1793920941.7431784,
+    "seen": 1793921048.362672,
+    "ast_hash": "101199c4567b561f1f5c78a19a1ecdbe",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "lib/screens/profile_screen.dart": {
-    "mtime": 1793894821.9738529,
-    "seen": 1793894951.2025115,
-    "ast_hash": "09e34131233b01fcac80f6ff495c33c5",
+    "mtime": 1793920845.4728787,
+    "seen": 1793921048.362672,
+    "ast_hash": "54e7e9ba89164822fe2306fcadd71848",
     "semantic_hash": ""
   },
   "test/profile_screen_test.dart": {
@@ -1236,15 +1236,15 @@
     "semantic_hash": ""
   },
   "lib/games/digit_sequence_game.dart": {
-    "mtime": 1793895799.0792222,
-    "seen": 1793895921.3577323,
-    "ast_hash": "bab093b8e378281a8ba009590e15e892",
+    "mtime": 1793920500.3818426,
+    "seen": 1793921048.362672,
+    "ast_hash": "be81d94a24f2d586a90160939bab1729",
     "semantic_hash": ""
   },
   "lib/games/stroop_reflex_game.dart": {
-    "mtime": 1793902762.013341,
-    "seen": 1793902966.616559,
-    "ast_hash": "d7b275f5d4369530642e9077390e249a",
+    "mtime": 1793920476.1458323,
+    "seen": 1793921048.362672,
+    "ast_hash": "107928c54b46972f98ed46c2ae9e9b27",
     "semantic_hash": ""
   },
   "lib/models/activity_cadence.dart": {
@@ -1260,9 +1260,9 @@
     "semantic_hash": ""
   },
   "lib/screens/wave_activity_screen.dart": {
-    "mtime": 1793902835.3185728,
-    "seen": 1793902966.616559,
-    "ast_hash": "c288fa31bc884d7d5ee46105ec764b80",
+    "mtime": 1793920788.565997,
+    "seen": 1793921048.362672,
+    "ast_hash": "34578d4aed750d5f3f91bdf60aa87b5d",
     "semantic_hash": ""
   },
   "lib/services/cadence_service.dart": {

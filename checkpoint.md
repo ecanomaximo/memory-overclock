@@ -1,58 +1,41 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Deploy Realizado no GitHub Pages & Responsividade Dinâmica Ativa)
+**Status do Projeto:** Concluído (Bug do BottomNavigationBar Corrigido & Deploy Realizado)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Diagnóstico da Causa Raiz Visual:**
-   - Em resoluções widescreen (desktop/navegador aberto em 1080p ou superior), a falta de contenção de largura máxima (`maxWidth`) fazia os widgets filhos do Flutter expandirem para a largura inteira (1920px).
-   - O `FlashMatrix` usava `AspectRatio(1.0)` sem clamp de tamanho máximo, esticando as células da matriz para centenas de pixels de altura e largura.
-   - O `StroopReflexGame` esticava os botões de resposta "SIM" e "NÃO" por quase 1000px cada, e o cartão do estímulo ficava desproporcional.
-   - O `DigitSequenceGame` e telas estruturais (`DashboardScreen`, `ProfileScreen`, `HomeScreen`, `LeagueScreen`, `PaywallScreen`, `LoginScreen`) expandiam o layout linearmente sem limites ergonômicos.
+1. **Diagnóstico do Bug do Print (`media_1793922766195_4895806c.png`):**
+   - O usuário enviou print mostrando a tela inteira vazia, apenas com o menu inferior (`Perfil | Trilha | Ligas | Clube VIP`) flutuando exatamente no centro vertical da tela (y = 500.5 num monitor 1080p).
+   - **Causa Raiz:** No Flutter, `Scaffold.bottomNavigationBar` passa restrições de altura não limitadas (`0 <= h <= maxHeight`). O `Container` com `child: Center` tentava ocupar 100% da altura da tela (1080px), empurrando e cobrindo o `IndexedStack` (corpo com o Perfil/Trilha) e centralizando a barra de navegação no meio da tela.
+   - **Correção:** Definida altura intrínseca fixa `height: 80` e `alignment: Alignment.center` no container do `bottomNavigationBar`, ancorando a barra de navegação rigidamente no rodapé da tela (`y = 1001` num monitor 1080p).
 
-2. **Implementação de Contenção & Ergonomia Dinâmica:**
-   - **`WaveActivityScreen` & Jogos:**
-     - `SafeArea` e `AppBar` encapsulados em `Center` + `ConstrainedBox(maxWidth: 580)`.
-     - HUD ao vivo (Acertos, Erros, Pontos XP), barra de progressão e banner de desafio alinhados ergonometricamente no desktop e ocupando 100% no mobile.
-     - `_buildCompletionView` contido com `maxWidth: 520`.
-   - **`FlashMatrixWaveChallenge` & `FlashMatrixGame`:**
-     - Substituído `AspectRatio` irrestrito por `LayoutBuilder` com cálculo dinâmico:
-       `size = min(min(constraints.maxWidth, 340.0), screenHeight * 0.42)`.
-     - No desktop, a grade fica contida num tamanho confortável (máx 340px) e centralizada. No celular, se adapta fluidamente ao tamanho disponível sem quebrar proporções.
-   - **`StroopReflexGame`:**
-     - Cartão do estímulo padronizado com `ConstrainedBox(maxWidth: 320, minWidth: 200)` e tipografia balanceada (`fontSize: 32`).
-     - Botões inferiores "SIM" e "NÃO" contidos com `maxWidth: 480` e centralizados.
-   - **`DigitSequenceGame`:**
-     - Visor e slots de dígitos contidos com `maxWidth: 340`, com rolagem horizontal de segurança para sequências de até 7 dígitos em celulares compactos.
-     - Teclado numérico virtual centralizado e ergonômico (`maxWidth: 340`).
-   - **Telas Globais (`HomeScreen`, `ProfileScreen`, `LeagueScreen`, `PaywallScreen`, `LoginScreen`, `DashboardScreen`):**
-     - Todas contidas com `maxWidth: 440-600` centralizado, com `PreferredSize` nos `AppBar`s e barra de navegação inferior centralizada no desktop.
-     - Corrigidos overflows horizontais no `ProfileScreen` com `Expanded` e `TextOverflow.ellipsis`.
+2. **Validação & Testes:**
+   - Criado teste de layout `test/dashboard_layout_test.dart` simulando viewport 1920x1080 e comprovando:
+     - `PAINEL COGNITIVO` visível e renderizado.
+     - `NavigationBar top dy: 1001.0` (ancorado no rodapé, não mais em 500.5).
+   - `flutter test`: 30/30 testes passando 100%.
+   - `flutter build web --release --base-href "/memory-overclock/"`: compilação concluída com sucesso.
 
-3. **Publicação no GitHub Pages:**
-   - O erro transitório do GitHub (`remote: fatal error in commit_refs_rules`) cessou.
-   - `main` sincronizado (commit `6956ebf`).
-   - `gh-pages` atualizado com o novo build estático compilado (commit `35535c4`).
-   - Build do GitHub Pages finalizado com sucesso (`status: built` às 20:50:59).
+3. **Deploy:**
+   - Push realizado na branch `gh-pages` (commit `2a8d8f2`).
+   - Sincronização realizada na branch `main`.
 
 ---
 
 ## 2. Onde Parou
-- Deploy concluído e ativo publicamente no GitHub Pages.
+- Deploy atualizado no GitHub Pages com o layout 100% visível e responsivo.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Branch:** `main` (código-fonte sincronizado)
-- **Branch de Produção:** `gh-pages` (compilado e ativo)
-- **Status GitHub Pages:** `built`
-- **Ambiente:** Flutter 3.x Web Production
-- **Testes Atuais:** 29 testes passando.
+- **Branch:** `main` (código-fonte)
+- **Branch de Produção:** `gh-pages` (ativo)
+- **Testes:** 30 testes passando (100%).
 - **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
 
 ---
 
 ## 4. Próximos Passos
-1. Informar o usuário e orientar a dar um Hard Refresh (`Ctrl + F5` ou `Ctrl + Shift + R`) para invalidar o cache antigo do ServiceWorker do Flutter Web.
+1. Informar o usuário e confirmar a visualização com `Ctrl + F5`.

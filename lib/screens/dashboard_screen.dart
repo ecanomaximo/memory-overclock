@@ -71,17 +71,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: screens,
       ),
       bottomNavigationBar: Container(
+        height: 80,
         decoration: const BoxDecoration(
           color: AppTheme.surface,
           border: Border(
             top: BorderSide(color: AppTheme.surfaceBorder, width: 1),
           ),
         ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: NavigationBar(
-              backgroundColor: AppTheme.surface,
+        alignment: Alignment.center,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: NavigationBar(
+            backgroundColor: Colors.transparent,
               selectedIndex: _currentIndex,
               indicatorColor: AppTheme.focusCyan.withValues(alpha: 0.18),
               elevation: 0,
@@ -111,7 +112,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
