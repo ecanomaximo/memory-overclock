@@ -1,17 +1,17 @@
 # Graph Report - memory  (2026-11-05)
 
 ## Corpus Check
-- 186 files · ~118,301 words
+- 192 files · ~120,392 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 35 file(s) not represented in the graph (top: .xml 7, (none) 6, .plist 4)
 
 ## Summary
-- 1705 nodes · 1908 edges · 155 communities (114 shown, 41 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.86)
+- 1777 nodes · 1988 edges · 172 communities (132 shown, 40 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 46 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `26f73371`
+- Built from commit: `9fb2bbc7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,19 +25,19 @@
 - utils.cpp
 - AppDelegate
 - pubspec.yaml
-- generated_plugin_registrant.h
+- generated_plugin_registrant.cc
 - dashboard_screen.dart
 - home_screen.dart
-- ProgressService
+- ../theme/app_theme.dart
 - app_theme.dart
 - manifest.json
-- State
+- progress_service.dart
 - league_model.dart
-- package:flutter/material.dart
+- auth_service.dart
 - wave_activity_screen.dart
 - analysis_options.yaml
 - stroop_reflex_game.dart
-- league_screen.dart
+- firebase_options.dart
 - 🧠 Memory Overclock (Jogo de Memória com Trilha & Ligas)
 - MainActivity.kt
 - LaunchImage.imageset/README.md
@@ -63,7 +63,7 @@
 - Condition-Based Waiting
 - Using Git Worktrees
 - Dispatching Parallel Agents
-- top_bar_stats.dart
+- package:flutter/material.dart
 - Testing Skills With Subagents
 - Feature Specification: [FEATURE NAME]
 - Defense-in-Depth Validation
@@ -89,7 +89,7 @@
 - Skill authoring best practices
 - Advanced: Skills with executable code
 - writing-skills/SKILL.md
-- StatelessWidget
+- login_screen.dart
 - Core Principles
 - Implementation Plan: [FEATURE]
 - speckit-checklist/SKILL.md
@@ -112,7 +112,7 @@
 - activity_cadence_bar.dart
 - Muse Tool Mapping
 - using-superpowers/SKILL.md
-- phase_node_widget.dart
+- code-reviewer.md
 - ponytail-audit/SKILL.md
 - Ponytail Gain
 - ponytail-review/SKILL.md
@@ -131,6 +131,7 @@
 - Core principles
 - Especificação da Funcionalidade: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
 - Point
+- Skill Discovery Optimization (SDO)
 - Regra: Checkpoint Obrigatório
 - start-server.sh
 - Antigravity CLI (`agy`) Tool Mapping
@@ -143,15 +144,31 @@
 - redaction-policy.md
 - session-discovery.md
 - find-polluter.sh
+- Especificação da Funcionalidade: Autenticação Real com Firebase (Google & Apple/iCloud)
+- Gemini CLI Tool Mapping
 - Tasks: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
+- Bulletproofing Skills Against Rationalization
 - Implementation Plan: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
+- Code Reviewer Prompt Template
+- Subagent-Driven Development
+- Requesting Code Review
+- The Task Loop
+- renderBranding
+- The Task Loop
+- Anti-Patterns
+- Testing All Skill Types
+- RED-GREEN-REFACTOR for Skills
+- Implementation Plan: Autenticação Real com Firebase (Google & Apple/iCloud)
+- File Organization
+- Skill Types
+- Size
 
 ## God Nodes (most connected - your core abstractions)
 1. `Win32Window` - 21 edges
 2. `Writing Skills` - 21 edges
 3. `Testing Skills With Subagents` - 16 edges
-4. `handleRequest()` - 14 edges
-5. `ProgressService` - 14 edges
+4. `ProgressService` - 14 edges
+5. `handleRequest()` - 14 edges
 6. `Code Review Reception` - 14 edges
 7. `Test-Driven Development (TDD)` - 13 edges
 8. `Tasks: [FEATURE NAME]` - 13 edges
@@ -161,39 +178,39 @@
 ## Surprising Connections (you probably didn't know these)
 - `3. Contexto Técnico Atual` --references--> `main()`  [INFERRED]
   checkpoint.md → .agents/skills/writing-skills/render-graphs.js
+- `Implementation Plan: Autenticação Real com Firebase (Google & Apple/iCloud)` --references--> `main()`  [INFERRED]
+  specs/003-auth-firebase-google-apple/plan.md → .agents/skills/writing-skills/render-graphs.js
+- `Sprint 3: Validação, Build Web, Grafo & Versionamento` --references--> `main()`  [INFERRED]
+  specs/003-auth-firebase-google-apple/tasks.md → .agents/skills/writing-skills/render-graphs.js
 - `Implementation Plan: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas` --references--> `main()`  [INFERRED]
   specs/002-activity-waves-cadence/plan.md → .agents/skills/writing-skills/render-graphs.js
 - `Implementation` --references--> `waitForEvent()`  [INFERRED]
-  .agents/skills/systematic-debugging/condition-based-waiting.md → .agents/skills/systematic-debugging/condition-based-waiting-example.ts
-- `Implementation` --references--> `waitForEventCount()`  [INFERRED]
-  .agents/skills/systematic-debugging/condition-based-waiting.md → .agents/skills/systematic-debugging/condition-based-waiting-example.ts
-- `Implementation` --references--> `waitForEventMatch()`  [INFERRED]
   .agents/skills/systematic-debugging/condition-based-waiting.md → .agents/skills/systematic-debugging/condition-based-waiting-example.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (155 total, 41 thin omitted)
+## Communities (172 total, 40 thin omitted)
 
 ### Community 0 - "win32_window.cpp"
-Cohesion: 0.14
+Cohesion: 0.16
 Nodes (8): EnableNonClientDpiScaling, Scale(), Win32Window::Win32Window(), WindowClassRegistrar, class_registered_, WindowClassRegistrar::GetWindowClass(), instance_, WindowClassRegistrar::UnregisterWindowClass()
 
 ### Community 1 - "color_clash_game.dart"
 Cohesion: 0.07
-Nodes (27): availableColors, build, _buildBottomAction, _buildCenterDisplay, _buildInputPalette, _buildRuleCard, ColorGameState, ColorItem (+19 more)
+Nodes (29): availableColors, build, _buildBottomAction, _buildCenterDisplay, _buildInputPalette, _buildRuleCard, ColorClashGame, _ColorClashGameState (+21 more)
 
 ### Community 2 - "reading_recall_game.dart"
 Cohesion: 0.07
-Nodes (26): allPrompts, build, _buildBottomControls, _buildMainContent, _buildTopInstruction, correctOptionIndex, _countdownTicker, createState (+18 more)
+Nodes (28): allPrompts, build, _buildBottomControls, _buildMainContent, _buildTopInstruction, correctOptionIndex, _countdownTicker, createState (+20 more)
 
 ### Community 3 - "flash_matrix_game.dart"
 Cohesion: 0.05
-Nodes (36): build, _buildBottomControls, _buildGrid, _buildProgressBar, _buildStatusCard, _buildTopStats, calculateXp, _config (+28 more)
+Nodes (38): build, _buildBottomControls, _buildGrid, _buildProgressBar, _buildStatusCard, _buildTopStats, calculateXp, _config (+30 more)
 
 ### Community 4 - "progress_service.dart"
-Cohesion: 0.04
-Nodes (25): canPlay, checkDailyReset, consumeChallenge, _formatDate, _init, _isInitialized, loginAsGuest, loginWithApple (+17 more)
+Cohesion: 0.08
+Nodes (8): main, main, main, main, main, main, main, main
 
 ### Community 5 - "user_progress.dart"
 Cohesion: 0.10
@@ -208,20 +225,20 @@ Cohesion: 0.11
 Nodes (6): Flutter, AppDelegate, SceneDelegate, RunnerTests, UIKit, XCTest
 
 ### Community 8 - "pubspec.yaml"
-Cohesion: 0.11
-Nodes (18): dependencies, flutter, google_fonts, intl, shared_preferences, description, dev_dependencies, flutter_lints (+10 more)
+Cohesion: 0.10
+Nodes (20): dependencies, firebase_auth, firebase_core, flutter, google_fonts, intl, shared_preferences, description (+12 more)
 
 ### Community 10 - "dashboard_screen.dart"
-Cohesion: 0.12
-Nodes (11): build, _cadenceService, createState, _currentIndex, dispose, initState, _onProgressChanged, progressService (+3 more)
+Cohesion: 0.14
+Nodes (11): build, _cadenceService, createState, _currentIndex, DashboardScreen, _DashboardScreenState, dispose, initState (+3 more)
 
 ### Community 11 - "home_screen.dart"
 Cohesion: 0.12
-Nodes (11): build, _buildDuolingoTrack, cadenceService, _onNodeTapped, onOpenProfile, _openDevSheet, _openLeague, _openPaywall (+3 more)
+Nodes (12): build, _buildDuolingoTrack, cadenceService, _onNodeTapped, onOpenProfile, _openDevSheet, _openLeague, _openPaywall (+4 more)
 
-### Community 12 - "ProgressService"
-Cohesion: 0.14
-Nodes (9): build, main, progressService, build, _buildFeatureItem, progressService, build, _buildBenefitRow (+1 more)
+### Community 12 - "../theme/app_theme.dart"
+Cohesion: 0.08
+Nodes (18): build, initialize, main, MemoryOverclockApp, progressService, HomeScreen, build, _buildPlayerCard (+10 more)
 
 ### Community 13 - "app_theme.dart"
 Cohesion: 0.05
@@ -231,13 +248,17 @@ Nodes (35): description, GameType, getConfig, icon, level, LevelConfig, title, t
 Cohesion: 0.18
 Nodes (10): background_color, description, display, icons, name, orientation, prefer_related_applications, short_name (+2 more)
 
-### Community 15 - "State"
-Cohesion: 0.23
-Nodes (10): ColorClashGame, _ColorClashGameState, FlashMatrixGame, _FlashMatrixGameState, FlashMatrixWaveChallenge, _FlashMatrixWaveChallengeState, ReadingRecallGame, _ReadingRecallGameState (+2 more)
+### Community 15 - "progress_service.dart"
+Cohesion: 0.08
+Nodes (19): _authService, canPlay, checkDailyReset, consumeChallenge, _formatDate, _init, _isInitialized, loginAsGuest (+11 more)
 
 ### Community 16 - "league_model.dart"
 Cohesion: 0.25
 Nodes (7): avatarEmoji, generateLeague, isCurrentUser, LeagueManager, LeaguePlayer, name, xp
+
+### Community 17 - "auth_service.dart"
+Cohesion: 0.10
+Nodes (17): AuthResult, AuthService, displayName, email, errorMessage, failure, _firebaseInitialized, fromFirebaseUser (+9 more)
 
 ### Community 18 - "wave_activity_screen.dart"
 Cohesion: 0.06
@@ -248,24 +269,24 @@ Cohesion: 0.33
 Nodes (5): analyzer, exclude, include, linter, rules
 
 ### Community 20 - "stroop_reflex_game.dart"
-Cohesion: 0.07
-Nodes (30): actualColorName, _answered, build, color, colorPalette, createState, currentRound, _currentStimulus (+22 more)
+Cohesion: 0.06
+Nodes (32): FlashMatrixGame, _FlashMatrixGameState, actualColorName, _answered, build, color, colorPalette, createState (+24 more)
 
-### Community 21 - "league_screen.dart"
-Cohesion: 0.22
-Nodes (6): build, _buildPlayerCard, _buildUserPositionBanner, _buildZoneMarker, LeagueScreen, progressService
+### Community 21 - "firebase_options.dart"
+Cohesion: 0.12
+Nodes (10): android, DefaultFirebaseOptions, ios, isConfigured, web, webApiKey, webAppId, webAuthDomain (+2 more)
 
 ### Community 22 - "🧠 Memory Overclock (Jogo de Memória com Trilha & Ligas)"
 Cohesion: 0.50
 Nodes (3): 🚀 Como Rodar o Projeto, 🧠 Memory Overclock (Jogo de Memória com Trilha & Ligas), 🎮 O que já está implementado no código:
 
 ### Community 29 - "Writing Skills"
-Cohesion: 0.05
-Nodes (39): Anti-Patterns, Bulletproofing Against Rationalization, Code Examples, ❌ Code in Flowcharts, Common Rationalizations for Skipping Testing, Directory Structure, Discipline-Enforcing Skills (rules/requirements), Discovery Workflow (+31 more)
+Cohesion: 0.12
+Nodes (16): Bulletproofing Against Rationalization, Code Examples, Common Rationalizations for Skipping Testing, Directory Structure, Discovery Workflow, Flowcharts, Match the Form to the Failure, Overview (+8 more)
 
 ### Community 30 - "subagent-driven-development/SKILL.md"
-Cohesion: 0.06
-Nodes (24): Implementer Subagent Prompt Template, Scoped Re-Review Prompt Template, Batching Small Same-Shape Work, "Cannot Verify From Diff" Items, Final Review and Finish, Finish, The Fix Loop, Handling a Report That Isn't DONE (+16 more)
+Cohesion: 0.13
+Nodes (7): Implementer Subagent Prompt Template, Batching Small Same-Shape Work, "Cannot Verify From Diff" Items, Handling a Report That Isn't DONE, The Pre-flight Scan, Resuming From an Existing Ledger, Task Reviewer Prompt Template
 
 ### Community 31 - "Test-Driven Development (TDD)"
 Cohesion: 0.06
@@ -277,11 +298,11 @@ Nodes (30): args, inputs, integration, spec, default, prompt, type, any (+22 mor
 
 ### Community 33 - "server.cjs"
 Cohesion: 0.08
-Nodes (24): brandMarkup(), clients, CONTENT_DIR, crypto, debounceTimers, escapeHtmlText(), frameTemplate, fs (+16 more)
+Nodes (24): clients, CONTENT_DIR, crypto, debounceTimers, frameTemplate, fs, helperScript, http (+16 more)
 
 ### Community 34 - "Executing Plans"
-Cohesion: 0.07
-Nodes (25): 1. Take the task, 2. Work the steps, 3. The completion contract, 4. Complete the task, Common Rationalizations, Executing Plans, Final Review, Finish (+17 more)
+Cohesion: 0.29
+Nodes (7): Common Rationalizations, Executing Plans, Final Review, Finish, Setup, The Process, When to Use
 
 ### Community 35 - "Tasks: [FEATURE NAME]"
 Cohesion: 0.07
@@ -347,9 +368,9 @@ Nodes (14): 1a. Native Worktree Tools (preferred), 1b. Git Worktree Fallback, Co
 Cohesion: 0.14
 Nodes (13): 1. Identify Independent Domains, 2. Create Focused Agent Tasks, 3. Dispatch in Parallel, 4. Review and Integrate, Agent Prompt Structure, Common Mistakes, Dispatching Parallel Agents, Overview (+5 more)
 
-### Community 51 - "top_bar_stats.dart"
-Cohesion: 0.25
-Nodes (7): build, onOpenDevSheet, onOpenLeague, onOpenPaywall, onOpenProfile, progressService, TopBarStats
+### Community 51 - "package:flutter/material.dart"
+Cohesion: 0.11
+Nodes (12): PhaseNode, build, node, onTap, build, onOpenDevSheet, onOpenLeague, onOpenPaywall (+4 more)
 
 ### Community 52 - "Testing Skills With Subagents"
 Cohesion: 0.07
@@ -368,16 +389,16 @@ Cohesion: 0.17
 Nodes (11): Execution Handoff, File Structure, Overview, Plan Document Header, Scope Check, Self-Review, Step Granularity, Task Right-Sizing (+3 more)
 
 ### Community 56 - "profile_screen.dart"
-Cohesion: 0.15
-Nodes (10): build, _buildCognitiveMetrics, _buildDailyBattery, _buildDailyMissionCard, _buildMetricTile, _buildPlayActionCard, _buildUserHeader, cadenceService (+2 more)
+Cohesion: 0.14
+Nodes (11): build, _buildCognitiveMetrics, _buildDailyMissionCard, _buildMetricTile, _buildPlayActionCard, _buildUserHeader, cadenceService, onGoToTrack (+3 more)
 
 ### Community 57 - "FlutterWindow"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (4): FlutterWindow, flutter_controller_, FlutterWindow::FlutterWindow(), project_
 
 ### Community 58 - "handleRequest"
-Cohesion: 0.18
-Nodes (14): bootstrapPage(), getNewestScreen(), handleRequest(), isAuthorized(), isFullDocument(), isRegularFileInsideContentDir(), parseCookies(), pathnameOf() (+6 more)
+Cohesion: 0.22
+Nodes (11): bootstrapPage(), getNewestScreen(), handleRequest(), isAuthorized(), isFullDocument(), isRegularFileInsideContentDir(), parseCookies(), pathnameOf() (+3 more)
 
 ### Community 59 - "startServer"
 Cohesion: 0.25
@@ -400,8 +421,8 @@ Cohesion: 0.18
 Nodes (10): Checklist Format (REQUIRED), Completion Report, Done When, Mandatory Post-Execution Hooks, Outline, Phase Structure, Pre-Execution Checks, Task Generation Rules (+2 more)
 
 ### Community 64 - "Win32Window"
-Cohesion: 0.16
-Nodes (7): Size, height, width, Win32Window, child_content_, quit_on_close_, window_handle_
+Cohesion: 0.21
+Nodes (4): Win32Window, child_content_, quit_on_close_, window_handle_
 
 ### Community 65 - "Core Principles"
 Cohesion: 0.18
@@ -428,8 +449,8 @@ Cohesion: 0.42
 Nodes (7): connect(), nextReconnectDelay(), reloadAfterRecovery(), sessionKey(), setStatus(), showTombstone(), websocketUrl()
 
 ### Community 72 - "maybeOpenBrowser"
-Cohesion: 0.16
-Nodes (11): browserLauncherForPlatform(), chmodOwnerOnly(), companionUrl(), generateToken(), initialToken(), maybeOpenBrowser(), preferredPort(), randomPort() (+3 more)
+Cohesion: 0.20
+Nodes (9): browserLauncherForPlatform(), chmodOwnerOnly(), companionUrl(), generateToken(), initialToken(), maybeOpenBrowser(), startServer(), onListen() (+1 more)
 
 ### Community 73 - "Ponytail Help"
 Cohesion: 0.22
@@ -444,12 +465,12 @@ Cohesion: 0.22
 Nodes (9): Advanced: Skills with executable code, Avoid assuming tools are installed, Create verifiable intermediate outputs, MCP tool references, Package dependencies, Provide utility scripts, Runtime environment, Solve, don't punt (+1 more)
 
 ### Community 76 - "writing-skills/SKILL.md"
-Cohesion: 0.06
-Nodes (29): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children, Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file (+21 more)
+Cohesion: 0.18
+Nodes (7): Codex App Finishing, Environment Detection, Model routing on spawns, Subagent dispatch requires multi-agent support, Waiting on children, Flowchart Usage, Flowcharts in Skills
 
-### Community 77 - "StatelessWidget"
-Cohesion: 0.29
-Nodes (6): MemoryOverclockApp, HomeScreen, LoginScreen, PaywallScreen, ProfileScreen, PhaseNodeWidget
+### Community 77 - "login_screen.dart"
+Cohesion: 0.20
+Nodes (10): _activeProvider, build, _buildFeatureItem, createState, _handleAppleLogin, _handleGoogleLogin, _isLoading, LoginScreen (+2 more)
 
 ### Community 78 - "Core Principles"
 Cohesion: 0.22
@@ -468,8 +489,8 @@ Cohesion: 0.11
 Nodes (14): availableActivities, copyWith, cycleDuration, cycleStartTime, defaultCycleDuration, defaultMaxActivities, fromJson, hasAvailableActivity (+6 more)
 
 ### Community 83 - "render-graphs.js"
-Cohesion: 0.39
-Nodes (5): combineGraphs(), extractDotBlocks(), extractGraphBody(), main(), renderToSvg()
+Cohesion: 0.21
+Nodes (9): combineGraphs(), extractDotBlocks(), extractGraphBody(), main(), renderToSvg(), Sprint 1: Setup & Serviço de Autenticação Desacoplado (US1, US2, US3), Sprint 2: Integração no ProgressService e Telas de UI, Sprint 3: Validação, Build Web, Grafo & Versionamento (+1 more)
 
 ### Community 84 - "digit_sequence_game.dart"
 Cohesion: 0.06
@@ -528,7 +549,7 @@ Cohesion: 0.33
 Nodes (5): Outline, Post-Execution Checks, Pre-Execution Checks, Scope Guard, User Input
 
 ### Community 98 - "activity_cadence_bar.dart"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (10): ActivityCadenceBar, _ActivityCadenceBarState, build, cadenceService, _countdownTicker, createState, dispose, initState (+2 more)
 
 ### Community 99 - "Muse Tool Mapping"
@@ -539,9 +560,9 @@ Nodes (5): Instructions file, Muse Tool Mapping, Skill invocation, Subagent disp
 Cohesion: 0.33
 Nodes (5): Platform Adaptation, Red Flags, Skill Priority, The Rule, User Instructions
 
-### Community 101 - "phase_node_widget.dart"
-Cohesion: 0.29
-Nodes (4): PhaseNode, build, node, onTap
+### Community 101 - "code-reviewer.md"
+Cohesion: 0.20
+Nodes (4): Scoped Re-Review Prompt Template, Final Review and Finish, Finish, The Fix Loop
 
 ### Community 102 - "ponytail-audit/SKILL.md"
 Cohesion: 0.40
@@ -568,7 +589,7 @@ Cohesion: 0.17
 Nodes (10): copyWith, id, isBoss, isCompleted, isCurrent, isLocked, PhaseStatus, status (+2 more)
 
 ### Community 108 - "league_service.dart"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (9): _baseOpponents, generateRankedList, getUserRank, isPromotion, isRelegation, LeagueService, promotionThreshold, relegationThreshold (+1 more)
 
 ### Community 109 - "[CHECKLIST TYPE] Checklist: [FEATURE NAME]"
@@ -615,6 +636,10 @@ Nodes (9): 1. Visão Geral do Produto, 2. User Stories (Formato Scrum), 3. Model
 Cohesion: 0.50
 Nodes (3): Point, x, y
 
+### Community 120 - "Skill Discovery Optimization (SDO)"
+Cohesion: 0.22
+Nodes (8): 1. Rich Description Field, 2. Keyword Coverage, 3. Descriptive Naming, 4. Token Efficiency (Critical), 5. Cross-Referencing Other Skills, Skill Discovery Optimization (SDO), SKILL.md Structure, Writing SKILL.md for Discovery
+
 ### Community 126 - "Anti-patterns to avoid"
 Cohesion: 0.67
 Nodes (3): Anti-patterns to avoid, Avoid offering too many options, Avoid Windows-style paths
@@ -623,33 +648,97 @@ Nodes (3): Anti-patterns to avoid, Avoid offering too many options, Avoid Window
 Cohesion: 0.67
 Nodes (3): Technical notes, Token budgets, YAML frontmatter requirements
 
+### Community 154 - "Especificação da Funcionalidade: Autenticação Real com Firebase (Google & Apple/iCloud)"
+Cohesion: 0.22
+Nodes (8): 1. Visão Geral do Produto, 2. User Stories (Formato Scrum), 3. Modelo de Dados & Arquitetura, Especificação da Funcionalidade: Autenticação Real com Firebase (Google & Apple/iCloud), Identificador: `003-auth-firebase-google-apple`, US-01: Autenticação com Google via Firebase Auth, US-02: Autenticação com Apple / iCloud via Firebase Auth, US-03: Persistência de Sessão e Logout Limpo
+
+### Community 155 - "Gemini CLI Tool Mapping"
+Cohesion: 0.25
+Nodes (7): Additional Gemini CLI tools, Gemini CLI Tool Mapping, Instructions file, Parallel dispatch, Personal skills directory, Prompt filling, Subagent support
+
 ### Community 156 - "Tasks: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas"
 Cohesion: 0.29
 Nodes (6): Sprint 1: Modelos de Onda, Desafios & Cadência de 5 Horas (US1, US2), Sprint 2: Minijogos Cognitivos com 3 a 7 Rodadas & Round 1 Explicativo (US2, US3), Sprint 3: Orquestrador da Onda Cognitiva (US2), Sprint 4: Widget de Cadência & Integração na Trilha e Perfil (US1), Sprint 5: Qualidade, Build Web, Grafo & Versionamento, Tasks: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
+
+### Community 157 - "Bulletproofing Skills Against Rationalization"
+Cohesion: 0.25
+Nodes (7): Address "Spirit vs Letter" Arguments, Build Rationalization Table, Bulletproofing Skills Against Rationalization, Bulletproofing Skills Against Rationalization, Close Every Loophole Explicitly, Create Red Flags List, Update SDO for Violation Symptoms
 
 ### Community 158 - "Implementation Plan: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas"
 Cohesion: 0.33
 Nodes (5): 1. Sumário Executivo, 2. Decisões Arquiteturais & Ponytail Check, 3. Estrutura de Arquivos Planejada, 4. Estratégia de Testes Unitários, Implementation Plan: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
 
+### Community 159 - "Code Reviewer Prompt Template"
+Cohesion: 0.29
+Nodes (7): Assessment, Code Reviewer Prompt Template, Important, Issues, Minor, Recommendations, Strengths
+
+### Community 160 - "Subagent-Driven Development"
+Cohesion: 0.29
+Nodes (7): Common Rationalizations, Final Review, Model Selection, Setup, Subagent-Driven Development, The Process, When to Use
+
+### Community 161 - "Requesting Code Review"
+Cohesion: 0.33
+Nodes (6): Common Rationalizations, Example, How to Request, Red Flags, Requesting Code Review, When to Request Review
+
+### Community 162 - "The Task Loop"
+Cohesion: 0.33
+Nodes (6): 1. Dispatch the implementer, 2. Handle the report, 3. Review the task, 4. The fix loop, 5. Complete the task, The Task Loop
+
+### Community 163 - "renderBranding"
+Cohesion: 0.40
+Nodes (5): brandMarkup(), escapeHtmlText(), renderBranding(), waitingPage(), wrapInFrame()
+
+### Community 164 - "The Task Loop"
+Cohesion: 0.40
+Nodes (5): 1. Take the task, 2. Work the steps, 3. The completion contract, 4. Complete the task, The Task Loop
+
+### Community 165 - "Anti-Patterns"
+Cohesion: 0.40
+Nodes (5): Anti-Patterns, ❌ Code in Flowcharts, ❌ Generic Labels, ❌ Multi-Language Dilution, ❌ Narrative Example
+
+### Community 166 - "Testing All Skill Types"
+Cohesion: 0.40
+Nodes (5): Discipline-Enforcing Skills (rules/requirements), Pattern Skills (mental models), Reference Skills (documentation/APIs), Technique Skills (how-to guides), Testing All Skill Types
+
+### Community 167 - "RED-GREEN-REFACTOR for Skills"
+Cohesion: 0.40
+Nodes (5): GREEN: Write Minimal Skill, Micro-Test Wording Before Full Scenarios, RED-GREEN-REFACTOR for Skills, RED: Write Failing Test (Baseline), REFACTOR: Close Loopholes
+
+### Community 168 - "Implementation Plan: Autenticação Real com Firebase (Google & Apple/iCloud)"
+Cohesion: 0.40
+Nodes (4): 1. Sumário Executivo, 2. Decisões Arquiteturais & Ponytail Check, 3. Estrutura de Arquivos Planejada, Implementation Plan: Autenticação Real com Firebase (Google & Apple/iCloud)
+
+### Community 169 - "File Organization"
+Cohesion: 0.50
+Nodes (4): File Organization, Self-Contained Skill, Skill with Heavy Reference, Skill with Reusable Tool
+
+### Community 170 - "Skill Types"
+Cohesion: 0.50
+Nodes (4): Pattern, Reference, Skill Types, Technique
+
+### Community 171 - "Size"
+Cohesion: 0.50
+Nodes (3): Size, height, width
+
 ## Knowledge Gaps
-- **397 isolated node(s):** `DigitSequenceEngine`, `currentRound`, `totalRounds`, `onRoundComplete`, `onFailed` (+392 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1252 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **41 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **431 isolated node(s):** `DefaultFirebaseOptions`, `webApiKey`, `webAppId`, `webMessagingSenderId`, `webProjectId` (+426 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1311 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ProgressService` connect `dashboard_screen.dart` to `color_clash_game.dart`, `reading_recall_game.dart`, `flash_matrix_game.dart`, `progress_service.dart`, `home_screen.dart`, `ProgressService`, `wave_activity_screen.dart`, `top_bar_stats.dart`, `league_screen.dart`, `profile_screen.dart`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **What connects `DigitSequenceEngine`, `currentRound`, `totalRounds` to the rest of the system?**
-  _397 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `win32_window.cpp` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
-- **Why does `Testing Skills With Subagents` connect `Testing Skills With Subagents` to `writing-skills/SKILL.md`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Why does `ProgressService` connect `profile_screen.dart` to `color_clash_game.dart`, `reading_recall_game.dart`, `flash_matrix_game.dart`, `dashboard_screen.dart`, `home_screen.dart`, `../theme/app_theme.dart`, `login_screen.dart`, `progress_service.dart`, `wave_activity_screen.dart`, `package:flutter/material.dart`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **What connects `DefaultFirebaseOptions`, `webApiKey`, `webAppId` to the rest of the system?**
+  _431 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `color_clash_game.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
-- **Why does `CadenceService` connect `dashboard_screen.dart` to `activity_cadence_bar.dart`, `home_screen.dart`, `wave_activity_screen.dart`, `profile_screen.dart`, `cadence_service.dart`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
+- **Why does `AuthService` connect `auth_service.dart` to `progress_service.dart`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Should `reading_recall_game.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
+- **Why does `Win32Window` connect `Win32Window` to `win32_window.cpp`, `.MessageHandler`, `Size`, `flutter_window.h`, `Point`, `FlutterWindow`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Should `flash_matrix_game.dart` be split into smaller, more focused modules?**
+  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._

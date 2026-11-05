@@ -3,16 +3,22 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_progress.dart';
+import 'auth_service.dart';
 
 class ProgressService extends ChangeNotifier {
   static const String _storageKey = 'user_memory_progress_v1';
   late UserProgress _progress;
+  final AuthService _authService;
 
   UserProgress get progress => _progress;
+  AuthService get authService => _authService;
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  ProgressService({UserProgress? initialProgress}) {
+  ProgressService({
+    UserProgress? initialProgress,
+    AuthService? authService,
+  }) : _authService = authService ?? AuthService() {
     if (initialProgress != null) {
       _progress = initialProgress;
       _isInitialized = true;
@@ -153,7 +159,7 @@ class ProgressService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Autenticação rápida de perfil
+  // Autenticação integrada (Firebase Auth com suporte a Fallback)
   Future<void> loginAsGuest() async {
     _progress.isLoggedIn = true;
     _progress.userName = 'Operador Convidado';
@@ -162,25 +168,45 @@ class ProgressService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loginWithGoogle() async {
-    _progress.isLoggedIn = true;
-    _progress.userName = 'Alexandre Silva';
-    _progress.userEmail = 'alexandre.silva@gmail.com';
-    _progress.authProvider = 'google';
-    await _save();
-    notifyListeners();
+  Future<AuthResult> loginWithGoogle() async {
+    final result = await _authService.signInWithGoogle();
+    if (result.success) {
+      _progress.isLoggedIn = true;
+      if (result.displayName != null && result.displayName!.isNotEmpty) {
+        _progress.userName = result.displayName!;
+      }
+      if (result.email != null) {
+        _progress.userEmail = result.email!;
+      }
+      if (result.photoUrl != null) {
+        _progress.userPhotoUrl = result.photoUrl!;
+      }
+      _progress.authProvider = 'google';
+      await _save();
+      notifyListeners();
+    }
+    return result;
   }
 
-  Future<void> loginWithApple() async {
-    _progress.isLoggedIn = true;
-    _progress.userName = 'Alexandre (Apple ID)';
-    _progress.userEmail = 'alexandre@privaterelay.appleid.com';
-    _progress.authProvider = 'apple';
-    await _save();
-    notifyListeners();
+  Future<AuthResult> loginWithApple() async {
+    final result = await _authService.signInWithApple();
+    if (result.success) {
+      _progress.isLoggedIn = true;
+      if (result.displayName != null && result.displayName!.isNotEmpty) {
+        _progress.userName = result.displayName!;
+      }
+      if (result.email != null) {
+        _progress.userEmail = result.email!;
+      }
+      _progress.authProvider = 'apple';
+      await _save();
+      notifyListeners();
+    }
+    return result;
   }
 
   Future<void> logout() async {
+    await _authService.signOut();
     _progress.isLoggedIn = false;
     await _save();
     notifyListeners();

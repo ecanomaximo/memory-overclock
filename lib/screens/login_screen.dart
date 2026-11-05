@@ -3,10 +3,70 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   final ProgressService progressService;
 
   const LoginScreen({super.key, required this.progressService});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _isLoading = false;
+  String _activeProvider = '';
+
+  Future<void> _handleGoogleLogin() async {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+      _activeProvider = 'Google';
+    });
+
+    final result = await widget.progressService.loginWithGoogle();
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _activeProvider = '';
+      });
+
+      if (!result.success && result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: AppTheme.alertPink,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleAppleLogin() async {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+      _activeProvider = 'Apple';
+    });
+
+    final result = await widget.progressService.loginWithApple();
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _activeProvider = '';
+      });
+
+      if (!result.success && result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: AppTheme.alertPink,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,45 +79,45 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo e Ícone Futurista
+                // Logo Futurista
                 Container(
                   width: 84,
                   height: 84,
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceElevated,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppTheme.neonCyan, width: 2),
+                    border: Border.all(color: AppTheme.focusCyan, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.neonCyan.withValues(alpha: 0.4),
+                        color: AppTheme.focusCyan.withValues(alpha: 0.35),
                         blurRadius: 24,
                         spreadRadius: 2,
                       ),
                     ],
                   ),
                   child: const Center(
-                    child: Icon(Icons.psychology, color: AppTheme.neonCyan, size: 44),
+                    child: Icon(Icons.psychology_rounded, color: AppTheme.focusCyan, size: 44),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // Título
                 Text(
-                  'OVERCLOCK',
+                  'MEMORY OVERCLOCK',
                   style: GoogleFonts.orbitron(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 3,
-                    color: Colors.white,
+                    letterSpacing: 2.5,
+                    color: AppTheme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Treine sua memória e foco todos os dias.\nVença o Brain Rot.',
+                  'Treine sua memória e foco todos os dias.\nVença o Brain Rot com neurociência.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: Colors.white70,
+                    color: AppTheme.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -65,13 +125,33 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 28),
 
                 // Destaques Rápidos
-                _buildFeatureItem(Icons.bolt, '3 Desafios Diários de alta performance', AppTheme.neonCyan),
+                _buildFeatureItem(Icons.bolt_rounded, '5 Atividades a cada 5 horas em ondas de 3 jogos', AppTheme.focusCyan),
                 const SizedBox(height: 10),
-                _buildFeatureItem(Icons.military_tech, 'Ligas Semanais e Ranking com 30 rivais', AppTheme.gold),
+                _buildFeatureItem(Icons.military_tech_rounded, 'Ligas Semanais e Ranking com 30 rivais', AppTheme.prestigeGold),
                 const SizedBox(height: 10),
-                _buildFeatureItem(Icons.sync, 'Progresso offline com sincronização automática', AppTheme.neonGreen),
+                _buildFeatureItem(Icons.cloud_done_rounded, 'Autenticação segura e sincronização em nuvem', AppTheme.rewardGreen),
 
                 const SizedBox(height: 32),
+
+                if (_isLoading)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.focusCyan),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Conectando $_activeProvider...',
+                          style: GoogleFonts.inter(fontSize: 13, color: AppTheme.focusCyan),
+                        ),
+                      ],
+                    ),
+                  ),
 
                 // Botão 1: Entrar com o Google
                 SizedBox(
@@ -91,7 +171,7 @@ class LoginScreen extends StatelessWidget {
                       'Continuar com o Google',
                       style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () => progressService.loginWithGoogle(),
+                    onPressed: _isLoading ? null : _handleGoogleLogin,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -104,7 +184,7 @@ class LoginScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.surfaceElevated,
                       foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white24),
+                      side: const BorderSide(color: AppTheme.surfaceBorder),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -114,17 +194,17 @@ class LoginScreen extends StatelessWidget {
                       'Continuar com Apple / iCloud',
                       style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () => progressService.loginWithApple(),
+                    onPressed: _isLoading ? null : _handleAppleLogin,
                   ),
                 ),
                 const SizedBox(height: 14),
 
                 // Botão Convidado (modo teste rápido)
                 TextButton(
-                  onPressed: () => progressService.loginAsGuest(),
+                  onPressed: _isLoading ? null : () => widget.progressService.loginAsGuest(),
                   child: Text(
-                    'Entrar como Convidado (Modo Teste)',
-                    style: GoogleFonts.inter(color: Colors.white54, fontSize: 13),
+                    'Entrar como Convidado (Modo Offline / Teste)',
+                    style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 13),
                   ),
                 ),
               ],
@@ -141,7 +221,7 @@ class LoginScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: AppTheme.surfaceBorder),
       ),
       child: Row(
         children: [
@@ -152,7 +232,7 @@ class LoginScreen extends StatelessWidget {
               text,
               style: GoogleFonts.inter(
                 fontSize: 12.5,
-                color: Colors.white70,
+                color: AppTheme.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
