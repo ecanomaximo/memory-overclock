@@ -1,10 +1,56 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 
 enum GameState { ready, memorizing, guessing, success, failed }
+
+class FlashMatrixConfig {
+  final int dimension;
+  final int targetCount;
+  final int durationMs;
+
+  const FlashMatrixConfig({
+    required this.dimension,
+    required this.targetCount,
+    required this.durationMs,
+  });
+
+  static FlashMatrixConfig forLevel(int level) {
+    if (level <= 2) {
+      return FlashMatrixConfig(
+        dimension: 3,
+        targetCount: 3 + (level - 1),
+        durationMs: 1800,
+      );
+    } else if (level <= 5) {
+      return FlashMatrixConfig(
+        dimension: 4,
+        targetCount: 4 + (level - 3),
+        durationMs: 1400,
+      );
+    } else if (level <= 8) {
+      return FlashMatrixConfig(
+        dimension: 4,
+        targetCount: 6 + (level - 6),
+        durationMs: 1000,
+      );
+    } else {
+      return FlashMatrixConfig(
+        dimension: 5,
+        targetCount: min(12, 7 + (level - 9)),
+        durationMs: 800,
+      );
+    }
+  }
+
+  static int calculateXp(int level, {bool isVip = false}) {
+    final base = 40 + (level * 10);
+    return isVip ? (base * 1.5).round() : base;
+  }
+}
 
 class FlashMatrixGame extends StatefulWidget {
   final int level;
@@ -21,45 +67,21 @@ class FlashMatrixGame extends StatefulWidget {
 }
 
 class _FlashMatrixGameState extends State<FlashMatrixGame> {
-  late int _gridDimension; // Ex: 3 para 3x3, 4 para 4x4
-  late int _targetTileCount;
-  late int _memorizeDurationMs;
-
+  late FlashMatrixConfig _config;
   final Set<int> _targetTiles = {};
   final Set<int> _selectedTiles = {};
   int? _lastWrongTile;
 
   GameState _state = GameState.ready;
   Timer? _memorizeTimer;
-  double _timerProgress = 1.0;
   Timer? _countdownTicker;
+  double _timerProgress = 1.0;
 
   @override
   void initState() {
     super.initState();
-    _setupDifficulty();
+    _config = FlashMatrixConfig.forLevel(widget.level);
     _startRound();
-  }
-
-  void _setupDifficulty() {
-    final lvl = widget.level;
-    if (lvl <= 2) {
-      _gridDimension = 3; // 3x3 = 9 blocos
-      _targetTileCount = 3 + (lvl - 1);
-      _memorizeDurationMs = 1800;
-    } else if (lvl <= 5) {
-      _gridDimension = 4; // 4x4 = 16 blocos
-      _targetTileCount = 4 + (lvl - 3);
-      _memorizeDurationMs = 1400;
-    } else if (lvl <= 8) {
-      _gridDimension = 4;
-      _targetTileCount = 6 + (lvl - 6);
-      _memorizeDurationMs = 1000;
-    } else {
-      _gridDimension = 5; // 5x5 = 25 blocos
-      _targetTileCount = 7 + min(lvl - 9, 4);
-      _memorizeDurationMs = 800;
-    }
   }
 
   void _startRound() {
@@ -67,10 +89,10 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     _selectedTiles.clear();
     _lastWrongTile = null;
 
-    final totalTiles = _gridDimension * _gridDimension;
+    final totalTiles = _config.dimension * _config.dimension;
     final random = Random();
 
-    while (_targetTiles.length < _targetTileCount) {
+    while (_targetTiles.length < _config.targetCount) {
       _targetTiles.add(random.nextInt(totalTiles));
     }
 
@@ -80,7 +102,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     });
 
     const stepMs = 50;
-    final totalSteps = _memorizeDurationMs / stepMs;
+    final totalSteps = _config.durationMs / stepMs;
     int currentStep = 0;
 
     _countdownTicker?.cancel();
@@ -94,7 +116,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     });
 
     _memorizeTimer?.cancel();
-    _memorizeTimer = Timer(Duration(milliseconds: _memorizeDurationMs), () {
+    _memorizeTimer = Timer(Duration(milliseconds: _config.durationMs), () {
       _countdownTicker?.cancel();
       if (mounted) {
         setState(() {
@@ -112,17 +134,14 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
         _selectedTiles.add(index);
       });
 
-      // Se encontrou todos os corretos
       if (_selectedTiles.length == _targetTiles.length) {
         _handleSuccess();
       }
     } else {
-      // Errou o bloco
       setState(() {
         _lastWrongTile = index;
         _state = GameState.failed;
       });
-      _handleFailure();
     }
   }
 
@@ -131,15 +150,15 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
       _state = GameState.success;
     });
 
-    final earnedXp = 40 + (widget.level * 10);
+    final earnedXp = FlashMatrixConfig.calculateXp(
+      widget.level,
+      isVip: widget.progressService.progress.isVip,
+    );
+
     widget.progressService.recordGameCompleted(
       levelCompleted: widget.level,
       earnedXp: earnedXp,
     );
-  }
-
-  void _handleFailure() {
-    // Dá opção de tentar novamente
   }
 
   @override
@@ -154,29 +173,21 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Fase ${widget.level} • ${_gridDimension}x$_gridDimension',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          'FASE ${widget.level}',
+          style: GoogleFonts.orbitron(letterSpacing: 2.0),
         ),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             children: [
-              _buildHeader(),
+              _buildTopStats(),
               const SizedBox(height: 16),
-              if (_state == GameState.memorizing) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: _timerProgress,
-                    minHeight: 8,
-                    backgroundColor: AppTheme.surfaceElevated,
-                    color: AppTheme.neonCyan,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
+              _buildProgressBar(),
+              const SizedBox(height: 16),
+              _buildStatusCard(),
+              const SizedBox(height: 24),
               Expanded(
                 child: Center(
                   child: AspectRatio(
@@ -194,9 +205,51 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     );
   }
 
-  Widget _buildHeader() {
-    String message = '';
-    Color statusColor = AppTheme.neonCyan;
+  Widget _buildTopStats() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.flash_on, color: AppTheme.neonCyan, size: 20),
+            const SizedBox(width: 6),
+            Text(
+              'Grade ${_config.dimension}x${_config.dimension}',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            const Icon(Icons.check_circle_outline, color: AppTheme.neonGreen, size: 20),
+            const SizedBox(width: 6),
+            Text(
+              '${_selectedTiles.length} / ${_config.targetCount} Alvos',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProgressBar() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: LinearProgressIndicator(
+        value: _state == GameState.memorizing ? _timerProgress : 0.0,
+        backgroundColor: AppTheme.surfaceElevated,
+        valueColor: AlwaysStoppedAnimation<Color>(
+          _timerProgress > 0.3 ? AppTheme.neonCyan : AppTheme.neonPink,
+        ),
+        minHeight: 6,
+      ),
+    );
+  }
+
+  Widget _buildStatusCard() {
+    String message;
+    Color statusColor;
 
     switch (_state) {
       case GameState.ready:
@@ -205,7 +258,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
         statusColor = AppTheme.neonCyan;
         break;
       case GameState.guessing:
-        message = 'Toque nos blocos certos: ${_selectedTiles.length} / ${_targetTiles.length}';
+        message = 'Toque nos blocos memorizados!';
         statusColor = Colors.white;
         break;
       case GameState.success:
@@ -213,17 +266,18 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
         statusColor = AppTheme.neonGreen;
         break;
       case GameState.failed:
-        message = 'Ops! Bloco incorreto.';
+        message = 'Bloco incorreto! Tente de novo.';
         statusColor = AppTheme.neonPink;
         break;
     }
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: statusColor.withOpacity(0.4)),
+        border: Border.all(color: statusColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +295,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
             child: Text(
               message,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: statusColor,
               ),
@@ -254,12 +308,12 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
   }
 
   Widget _buildGrid() {
-    final total = _gridDimension * _gridDimension;
+    final total = _config.dimension * _config.dimension;
 
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: _gridDimension,
+        crossAxisCount: _config.dimension,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
@@ -279,8 +333,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
         } else if (isWrong) {
           tileColor = AppTheme.neonPink;
         } else if (_state == GameState.failed && isTarget) {
-          // Revela os que o jogador deveria ter clicado
-          tileColor = AppTheme.neonCyan.withOpacity(0.3);
+          tileColor = AppTheme.neonCyan.withValues(alpha: 0.3);
           border = Border.all(color: AppTheme.neonCyan, width: 2);
         }
 
@@ -295,7 +348,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
               boxShadow: (tileColor == AppTheme.neonCyan || tileColor == AppTheme.neonGreen)
                   ? [
                       BoxShadow(
-                        color: tileColor.withOpacity(0.5),
+                        color: tileColor.withValues(alpha: 0.5),
                         blurRadius: 10,
                         spreadRadius: 1,
                       )
@@ -317,12 +370,16 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
 
   Widget _buildBottomControls() {
     if (_state == GameState.success) {
-      final earnedXp = 40 + (widget.level * 10);
+      final earnedXp = FlashMatrixConfig.calculateXp(
+        widget.level,
+        isVip: widget.progressService.progress.isVip,
+      );
+
       return Column(
         children: [
           Text(
-            '+$earnedXp XP Ganho na Liga!',
-            style: const TextStyle(
+            '+$earnedXp XP Acumulado!',
+            style: GoogleFonts.orbitron(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppTheme.gold,
@@ -331,20 +388,14 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 50,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.neonGreen,
                 foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
               ),
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'CONTINUAR NA TRILHA',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
+              child: const Text('AVANÇAR NA TRILHA'),
             ),
           ),
         ],
@@ -354,25 +405,19 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
     if (_state == GameState.failed) {
       return SizedBox(
         width: double.infinity,
-        height: 52,
+        height: 50,
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.surfaceElevated,
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
           ),
           icon: const Icon(Icons.refresh),
-          label: const Text(
-            'TENTAR NOVAMENTE',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
+          label: const Text('TENTAR NOVAMENTE'),
           onPressed: _startRound,
         ),
       );
     }
 
-    return const SizedBox(height: 52);
+    return const SizedBox(height: 50);
   }
 }

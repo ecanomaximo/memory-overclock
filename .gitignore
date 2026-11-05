@@ -37,3 +37,8 @@ app.*.symbols
 /android/app/debug
 /android/app/profile
 /android/app/release
+*.apk
+
+# Graphify cache
+graphify-out/cache/
+graphify-out/.*

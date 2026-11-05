@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/league_model.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../models/league_player.dart';
+import '../services/league_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 
@@ -11,8 +13,8 @@ class LeagueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProgress = progressService.progress;
-    final players = LeagueManager.generateLeague(userProgress.weeklyXp);
-    final userIndex = players.indexWhere((p) => p.isCurrentUser);
+    final players = LeagueService.generateRankedList(userProgress.weeklyXp);
+    final userRank = LeagueService.getUserRank(userProgress.weeklyXp);
 
     return Scaffold(
       appBar: AppBar(
@@ -20,53 +22,23 @@ class LeagueScreen extends StatelessWidget {
           children: [
             Text(
               userProgress.leagueTier.toUpperCase(),
-              style: const TextStyle(
+              style: GoogleFonts.orbitron(
                 fontWeight: FontWeight.w900,
-                fontSize: 18,
-                letterSpacing: 1.2,
+                fontSize: 16,
+                letterSpacing: 1.5,
                 color: AppTheme.gold,
               ),
             ),
-            const Text(
+            Text(
               'Reset semanal em 3d 14h',
-              style: TextStyle(fontSize: 12, color: Colors.white60),
+              style: GoogleFonts.inter(fontSize: 11, color: Colors.white60),
             ),
           ],
         ),
       ),
       body: Column(
         children: [
-          // Banner de Destaque da Posição do Usuário
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            color: AppTheme.surfaceElevated,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.leaderboard, color: AppTheme.neonCyan),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Sua Posição: #${userIndex + 1} de 30',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  '${userProgress.weeklyXp} XP',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.gold,
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildUserPositionBanner(userRank, userProgress.weeklyXp),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -76,14 +48,12 @@ class LeagueScreen extends StatelessWidget {
                 final rank = index + 1;
 
                 Widget? zoneDivider;
-                if (index == 7) {
-                  // Linha de corte de promoção
+                if (index == LeagueService.promotionThreshold) {
                   zoneDivider = _buildZoneMarker(
                     '⬆️ TOP 7 SOBEM PARA A PRÓXIMA LIGA',
                     AppTheme.neonGreen,
                   );
-                } else if (index == 25) {
-                  // Linha de corte de rebaixamento
+                } else if (index == LeagueService.relegationThreshold) {
                   zoneDivider = _buildZoneMarker(
                     '⬇️ ÚLTIMOS 5 CAEM DE DIVISÃO',
                     AppTheme.neonPink,
@@ -104,22 +74,67 @@ class LeagueScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildUserPositionBanner(int userRank, int weeklyXp) {
+    final isPromo = LeagueService.isPromotion(userRank);
+    final isReleg = LeagueService.isRelegation(userRank);
+    final statusColor = isPromo
+        ? AppTheme.neonGreen
+        : isReleg
+            ? AppTheme.neonPink
+            : AppTheme.neonCyan;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceElevated,
+        border: Border(bottom: BorderSide(color: statusColor.withValues(alpha: 0.4))),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.leaderboard, color: statusColor, size: 22),
+              const SizedBox(width: 8),
+              Text(
+                'Sua Posição: #$userRank de 30',
+                style: GoogleFonts.orbitron(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            '$weeklyXp XP',
+            style: GoogleFonts.orbitron(
+              fontWeight: FontWeight.bold,
+              color: AppTheme.gold,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildZoneMarker(String label, Color color) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.5)),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Center(
         child: Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.orbitron(
             color: color,
             fontWeight: FontWeight.bold,
-            fontSize: 12,
+            fontSize: 11,
             letterSpacing: 0.5,
           ),
         ),
@@ -128,31 +143,35 @@ class LeagueScreen extends StatelessWidget {
   }
 
   Widget _buildPlayerCard(LeaguePlayer player, int rank) {
-    Color rankColor = Colors.white70;
-    Widget rankWidget = Text(
-      '#$rank',
-      style: TextStyle(fontWeight: FontWeight.bold, color: rankColor),
-    );
-
+    Widget rankWidget;
     if (rank == 1) {
       rankWidget = const Icon(Icons.emoji_events, color: AppTheme.gold, size: 24);
     } else if (rank == 2) {
       rankWidget = const Icon(Icons.emoji_events, color: Colors.grey, size: 22);
     } else if (rank == 3) {
       rankWidget = const Icon(Icons.emoji_events, color: Colors.brown, size: 20);
+    } else {
+      rankWidget = Text(
+        '#$rank',
+        style: GoogleFonts.orbitron(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+          color: Colors.white70,
+        ),
+      );
     }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: player.isCurrentUser
-            ? AppTheme.neonCyan.withOpacity(0.15)
+            ? AppTheme.neonCyan.withValues(alpha: 0.15)
             : AppTheme.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: player.isCurrentUser
               ? AppTheme.neonCyan
-              : Colors.white.withOpacity(0.05),
+              : Colors.white.withValues(alpha: 0.05),
           width: player.isCurrentUser ? 1.5 : 1,
         ),
       ),
@@ -179,9 +198,9 @@ class LeagueScreen extends StatelessWidget {
         ),
         trailing: Text(
           '${player.xp} XP',
-          style: const TextStyle(
+          style: GoogleFonts.orbitron(
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 13,
             color: AppTheme.gold,
           ),
         ),

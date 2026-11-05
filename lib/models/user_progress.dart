@@ -2,6 +2,12 @@ class UserProgress {
   static const int freeDailyLimit = 3;
   static const int vipDailyLimit = 10;
 
+  bool isLoggedIn;
+  String userName;
+  String userEmail;
+  String userPhotoUrl;
+  String authProvider; // 'google', 'apple', 'guest'
+
   int streak;
   DateTime? lastPlayedDate;
   int dailyChallengesLeft;
@@ -13,6 +19,11 @@ class UserProgress {
   String leagueTier;
 
   UserProgress({
+    this.isLoggedIn = false,
+    this.userName = 'Alexandre Silva',
+    this.userEmail = 'alexandre@gmail.com',
+    this.userPhotoUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    this.authProvider = 'google',
     this.streak = 0,
     this.lastPlayedDate,
     this.dailyChallengesLeft = freeDailyLimit,
@@ -31,6 +42,11 @@ class UserProgress {
           : freeDailyLimit;
 
   Map<String, dynamic> toJson() => {
+        'isLoggedIn': isLoggedIn,
+        'userName': userName,
+        'userEmail': userEmail,
+        'userPhotoUrl': userPhotoUrl,
+        'authProvider': authProvider,
         'streak': streak,
         'lastPlayedDate': lastPlayedDate?.toIso8601String(),
         'dailyChallengesLeft': dailyChallengesLeft,
@@ -44,6 +60,12 @@ class UserProgress {
 
   factory UserProgress.fromJson(Map<String, dynamic> json) {
     return UserProgress(
+      isLoggedIn: json['isLoggedIn'] as bool? ?? false,
+      userName: json['userName'] as String? ?? 'Alexandre Silva',
+      userEmail: json['userEmail'] as String? ?? 'alexandre@gmail.com',
+      userPhotoUrl: json['userPhotoUrl'] as String? ??
+          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      authProvider: json['authProvider'] as String? ?? 'google',
       streak: json['streak'] as int? ?? 0,
       lastPlayedDate: json['lastPlayedDate'] != null
           ? DateTime.tryParse(json['lastPlayedDate'] as String)

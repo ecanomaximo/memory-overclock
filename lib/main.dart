@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/login_screen.dart';
 import 'services/progress_service.dart';
 import 'theme/app_theme.dart';
 
@@ -21,7 +22,24 @@ class MemoryOverclockApp extends StatelessWidget {
       title: 'Memory Overclock',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: HomeScreen(progressService: progressService),
+      home: ListenableBuilder(
+        listenable: progressService,
+        builder: (context, _) {
+          if (!progressService.isInitialized) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(color: AppTheme.neonCyan),
+              ),
+            );
+          }
+
+          if (progressService.progress.isLoggedIn) {
+            return DashboardScreen(progressService: progressService);
+          } else {
+            return LoginScreen(progressService: progressService);
+          }
+        },
+      ),
     );
   }
 }

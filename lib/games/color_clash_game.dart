@@ -200,11 +200,11 @@ class _ColorClashGameState extends State<ColorClashGame> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.neonPurple.withValues(alpha: 0.4)),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          const Icon(Icons.psychology, color: AppTheme.neonPurple, size: 28),
-          const SizedBox(width: 12),
-          const Expanded(
+          Icon(Icons.psychology, color: AppTheme.neonPurple, size: 28),
+          SizedBox(width: 12),
+          Expanded(
             child: Text(
               'REGRA: Memorize a COR VISUAL real do texto, ignore a palavra escrita!',
               style: TextStyle(
