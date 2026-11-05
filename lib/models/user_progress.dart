@@ -1,5 +1,5 @@
 class UserProgress {
-  static const int freeDailyLimit = 3;
+  static const int freeDailyLimit = 5;
   static const int vipDailyLimit = 10;
 
   bool isLoggedIn;

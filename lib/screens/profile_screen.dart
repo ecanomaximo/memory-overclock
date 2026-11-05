@@ -219,7 +219,7 @@ class ProfileScreen extends StatelessWidget {
                   const Icon(Icons.battery_charging_full_rounded, color: AppTheme.focusCyan, size: 20),
                   const SizedBox(width: 8),
                   Text(
-                    'Bateria de Foco Diário',
+                    'Bateria de Foco (5 Atividades)',
                     style: GoogleFonts.inter(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
@@ -229,7 +229,7 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
               Text(
-                progress.isDevUnlimited ? 'ILIMITADO' : '$left / $max hoje',
+                progress.isDevUnlimited ? 'ILIMITADO' : '$left / $max slots',
                 style: GoogleFonts.orbitron(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -255,7 +255,7 @@ class ProfileScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Reseta automaticamente à meia-noite',
+                'Recarrega 5 atividades a cada 5 horas',
                 style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMuted),
               ),
               if (!progress.isVip)

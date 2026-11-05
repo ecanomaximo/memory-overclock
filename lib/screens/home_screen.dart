@@ -140,10 +140,9 @@ class HomeScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => WaveActivityScreen(
-          activityNumber: (5 - effectiveCadence.availableActivities) + 1,
+          phaseLevel: node.id,
           progressService: progressService,
           cadenceService: effectiveCadence,
-          roundsPerChallenge: 5,
         ),
       ),
     );

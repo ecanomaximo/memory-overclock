@@ -9,11 +9,11 @@ void main() {
   });
 
   group('ProgressService Tests', () {
-    test('Inicializa com 3 desafios diários gratuitos para usuário Free', () {
+    test('Inicializa com 5 desafios diários gratuitos para usuário Free', () {
       final initial = UserProgress(lastResetDate: '2026-11-05');
       final service = ProgressService(initialProgress: initial);
 
-      expect(service.progress.dailyChallengesLeft, 3);
+      expect(service.progress.dailyChallengesLeft, 5);
       expect(service.progress.isVip, false);
       expect(service.canPlay(), true);
     });
@@ -22,15 +22,12 @@ void main() {
       final initial = UserProgress(lastResetDate: '2026-11-05');
       final service = ProgressService(initialProgress: initial);
 
-      expect(service.consumeChallenge(), true);
-      expect(service.progress.dailyChallengesLeft, 2);
+      for (int i = 5; i > 0; i--) {
+        expect(service.progress.dailyChallengesLeft, i);
+        expect(service.consumeChallenge(), true);
+      }
 
-      expect(service.consumeChallenge(), true);
-      expect(service.progress.dailyChallengesLeft, 1);
-
-      expect(service.consumeChallenge(), true);
       expect(service.progress.dailyChallengesLeft, 0);
-
       expect(service.canPlay(), false);
       expect(service.consumeChallenge(), false);
     });
@@ -43,7 +40,7 @@ void main() {
       final service = ProgressService(initialProgress: initial);
 
       service.checkDailyReset(DateTime(2026, 11, 5, 0, 1));
-      expect(service.progress.dailyChallengesLeft, 3);
+      expect(service.progress.dailyChallengesLeft, 5);
       expect(service.progress.lastResetDate, '2026-11-05');
     });
 

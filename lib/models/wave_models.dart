@@ -1,6 +1,6 @@
 enum ChallengeType {
-  flashMatrix,
   stroopReflex,
+  flashMatrix,
   digitSequence,
 }
 
@@ -35,28 +35,33 @@ class WaveChallenge {
     required this.cognitiveDomain,
   });
 
-  static List<WaveChallenge> createDefaultWave({int roundsPerChallenge = 5}) {
+  static List<WaveChallenge> createPhaseSession({int level = 1}) {
+    // Range de 3 a 7 rodadas calibrado por tipo de jogo e nível
+    final int stroopRounds = (level <= 3) ? 4 : 5;
+    final int matrixRounds = (level <= 2) ? 4 : (level <= 6 ? 5 : 6);
+    final int digitRounds = (level <= 4) ? 4 : 5;
+
     return [
+      WaveChallenge(
+        type: ChallengeType.stroopReflex,
+        title: 'Seleção de Cores (Stroop)',
+        description: 'Bateria de reflexo: valide se a cor da tinta confere com a palavra.',
+        totalRounds: stroopRounds,
+        cognitiveDomain: 'Controle Inibitório & Reflexo',
+      ),
       WaveChallenge(
         type: ChallengeType.flashMatrix,
         title: 'Flash Matrix',
-        description: 'Memorize e selecione as células ativadas no grid.',
-        totalRounds: roundsPerChallenge,
+        description: 'Bateria espacial: memorize as células ativadas no grid.',
+        totalRounds: matrixRounds,
         cognitiveDomain: 'Memória de Trabalho Espacial',
       ),
       WaveChallenge(
-        type: ChallengeType.stroopReflex,
-        title: 'Stroop Reflex',
-        description: 'Responda rápido se a cor da tinta corresponde à palavra.',
-        totalRounds: roundsPerChallenge,
-        cognitiveDomain: 'Controle Inibitório',
-      ),
-      WaveChallenge(
         type: ChallengeType.digitSequence,
-        title: 'Digit Memory',
-        description: 'Memorize a sequência numérica e reproduza-a com precisão.',
-        totalRounds: roundsPerChallenge,
-        cognitiveDomain: 'Memória Sequencial',
+        title: 'Memória Numérica (Digit Span)',
+        description: 'Bateria sequencial: reproduza a ordem dos dígitos memorizados.',
+        totalRounds: digitRounds,
+        cognitiveDomain: 'Memória Sequencial de Curto Prazo',
       ),
     ];
   }
