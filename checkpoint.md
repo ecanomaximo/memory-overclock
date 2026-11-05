@@ -1,7 +1,7 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Marco: Responsividade Dinâmica & Ergonômica para Desktop e Mobile)
+**Status do Projeto:** Concluído (Deploy Realizado no GitHub Pages & Responsividade Dinâmica Ativa)
 
 ---
 
@@ -31,20 +31,23 @@
      - Todas contidas com `maxWidth: 440-600` centralizado, com `PreferredSize` nos `AppBar`s e barra de navegação inferior centralizada no desktop.
      - Corrigidos overflows horizontais no `ProfileScreen` com `Expanded` e `TextOverflow.ellipsis`.
 
-3. **Validação & Testes Automatizados:**
-   - `dart analyze lib test`: 0 erros / 0 avisos.
-   - `flutter test`: 29/29 testes automatizados passando 100%.
-   - `flutter build web --release --base-href "/memory-overclock/"`: compilação concluída com sucesso.
+3. **Publicação no GitHub Pages:**
+   - O erro transitório do GitHub (`remote: fatal error in commit_refs_rules`) cessou.
+   - `main` sincronizado (commit `6956ebf`).
+   - `gh-pages` atualizado com o novo build estático compilado (commit `35535c4`).
+   - Build do GitHub Pages finalizado com sucesso (`status: built` às 20:50:59).
 
 ---
 
 ## 2. Onde Parou
-- Build Web compilado pronto para deploy nas branches `gh-pages` e `main`.
+- Deploy concluído e ativo publicamente no GitHub Pages.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Branch:** `main`
+- **Branch:** `main` (código-fonte sincronizado)
+- **Branch de Produção:** `gh-pages` (compilado e ativo)
+- **Status GitHub Pages:** `built`
 - **Ambiente:** Flutter 3.x Web Production
 - **Testes Atuais:** 29 testes passando.
 - **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
@@ -52,6 +55,4 @@
 ---
 
 ## 4. Próximos Passos
-1. Atualizar a branch `gh-pages` e `main` via Git.
-2. Executar atualização do grafo Graphify (`python -m graphify update .`).
-3. Notificar o usuário com o link atualizado e detalhes da responsividade.
+1. Informar o usuário e orientar a dar um Hard Refresh (`Ctrl + F5` ou `Ctrl + Shift + R`) para invalidar o cache antigo do ServiceWorker do Flutter Web.
