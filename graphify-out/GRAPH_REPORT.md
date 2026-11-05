@@ -1,7 +1,7 @@
 # Graph Report - memory  (2026-11-05)
 
 ## Corpus Check
-- 186 files · ~118,401 words
+- 186 files · ~118,301 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 35 file(s) not represented in the graph (top: .xml 7, (none) 6, .plist 4)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9817efb2`
+- Built from commit: `26f73371`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -151,8 +151,8 @@
 2. `Writing Skills` - 21 edges
 3. `Testing Skills With Subagents` - 16 edges
 4. `handleRequest()` - 14 edges
-5. `Code Review Reception` - 14 edges
-6. `ProgressService` - 14 edges
+5. `ProgressService` - 14 edges
+6. `Code Review Reception` - 14 edges
 7. `Test-Driven Development (TDD)` - 13 edges
 8. `Tasks: [FEATURE NAME]` - 13 edges
 9. `Visual Companion Guide` - 12 edges
@@ -632,7 +632,7 @@ Cohesion: 0.33
 Nodes (5): 1. Sumário Executivo, 2. Decisões Arquiteturais & Ponytail Check, 3. Estrutura de Arquivos Planejada, 4. Estratégia de Testes Unitários, Implementation Plan: 5 Atividades em Ondas de 3 Desafios & Cadência de 5 Horas
 
 ## Knowledge Gaps
-- **397 isolated node(s):** `freeDailyLimit`, `vipDailyLimit`, `isLoggedIn`, `userName`, `userEmail` (+392 more)
+- **397 isolated node(s):** `DigitSequenceEngine`, `currentRound`, `totalRounds`, `onRoundComplete`, `onFailed` (+392 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1252 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **41 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -640,16 +640,16 @@ Nodes (5): 1. Sumário Executivo, 2. Decisões Arquiteturais & Ponytail Check, 3
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ProgressService` connect `dashboard_screen.dart` to `color_clash_game.dart`, `reading_recall_game.dart`, `flash_matrix_game.dart`, `progress_service.dart`, `home_screen.dart`, `ProgressService`, `wave_activity_screen.dart`, `top_bar_stats.dart`, `league_screen.dart`, `profile_screen.dart`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **What connects `freeDailyLimit`, `vipDailyLimit`, `isLoggedIn` to the rest of the system?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **What connects `DigitSequenceEngine`, `currentRound`, `totalRounds` to the rest of the system?**
   _397 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `win32_window.cpp` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
-- **Why does `CadenceService` connect `dashboard_screen.dart` to `activity_cadence_bar.dart`, `home_screen.dart`, `wave_activity_screen.dart`, `profile_screen.dart`, `cadence_service.dart`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Why does `Testing Skills With Subagents` connect `Testing Skills With Subagents` to `writing-skills/SKILL.md`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Should `color_clash_game.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
-- **Why does `Writing Skills` connect `Writing Skills` to `writing-skills/SKILL.md`?**
-  _High betweenness centrality (0.003) - this node is a cross-community bridge._
+- **Why does `CadenceService` connect `dashboard_screen.dart` to `activity_cadence_bar.dart`, `home_screen.dart`, `wave_activity_screen.dart`, `profile_screen.dart`, `cadence_service.dart`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Should `reading_recall_game.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._

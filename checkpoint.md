@@ -1,43 +1,35 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Marco: Bateria de Foco Ajustada para 5, Sessão de Fases com 3 Baterias de Jogos, HUD de Acertos/Erros & Pontuação nas Ligas)
+**Status do Projeto:** Concluído (Marco: Calibração e Expansão do Tempo de Resolução dos Desafios)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Ajuste da Bateria de Foco para 5 Slots:**
-   - Corrigido `UserProgress.freeDailyLimit = 5` em `lib/models/user_progress.dart`.
-   - Atualizados `TopBarStats` e `ProfileScreen` para exibir a capacidade de 5/5 slots (e 10 para VIP).
-   - Testes unitários em `test/progress_service_test.dart` e `test/profile_screen_test.dart` adaptados e aprovados.
-2. **Estrutura de Sessão da Fase (3 Baterias Sequenciais de Jogos):**
-   - Ao tocar em qualquer nó da trilha, inicia-se a Sessão Completa da Fase em `lib/screens/wave_activity_screen.dart`.
-   - **Jogo 1 — Seleção de Cores (Stroop Reflex):** Bateria de 4 a 5 rodadas progressivas com tempo regressivo (4.0s -> 1.2s). Rodada 1 explicativa.
-   - **Jogo 2 — Flash Matrix:** Bateria de 4 a 6 rodadas progressivas (3x3 até 5x5). Rodada 1 explicativa.
-   - **Jogo 3 — Memória Numérica (Digit Span):** Bateria de 4 a 5 rodadas progressivas (3 a 7 dígitos). Rodada 1 explicativa.
-   - O jogador precisa superar a bateria de um jogo para avançar ao próximo; os 3 jogos completam a fase.
-3. **HUD Superior com Medição em Tempo Real:**
-   - Painel fixo no topo exibindo:
-     - `🎯 Acertos` (com multiplicador de combo por acertos consecutivos)
-     - `❌ Erros`
-     - `⚡ Pontos XP` acumulados em tempo real
-     - Progresso da rodada atual e do jogo atual (`Jogo 1 de 3 • Rodada 2 de 5`)
-4. **Integração de Pontuação com as Ligas Semanais:**
-   - Cada acerto adiciona pontos base (+20 XP) mais bônus de combo (+5 a +10 XP).
-   - Conclusão da fase adiciona bônus de fase (+50 XP) e multiplicador VIP (1.5x) se ativo.
-   - Pontuação total é creditada diretamente no `weeklyXp` via `ProgressService.recordGameCompleted()`.
-   - O ranking semanal de 30 competidores (`LeagueService`) reflete imediatamente o novo XP e a subida de divisão/posição do jogador.
-5. **Qualidade, Build & Grafo:**
+1. **Calibração de Tempo e Ergonomia Cognitiva dos Jogos:**
+   - **Seleção de Cores (Stroop Reflex - `lib/games/stroop_reflex_game.dart`):**
+     - Rodada 1 (Tutorial): tempo elevado de 4.0s para **6.0s** para leitura e assimilação com calma.
+     - Rodadas 2 a 5: faixa de tempo expandida para **4.5s até 2.5s** (antes caía bruscamente até 1.2s).
+   - **Flash Matrix (`lib/games/flash_matrix_game.dart`):**
+     - Rodada 1 (Tutorial): tempo de memorização do grid elevado de 2.2s para **3.5s**.
+     - Rodadas subsequentes: escalando suavemente de **2.8s a 1.7s** (anteriormente caía até 900ms).
+   - **Memória Numérica (Digit Memory - `lib/games/digit_sequence_game.dart`):**
+     - Rodada 1 (Tutorial): tempo de exibição de cada número elevado de 1.2s para **1.8s**.
+     - Rodadas avançadas: exibição ajustada para **1.3s e 1.0s** (anteriormente 700ms).
+     - Pausa de absorção pré-teclado aumentada para **600ms** (antes 300ms).
+2. **Testes Unitários & Qualidade:**
+   - `test/stroop_reflex_test.dart` e `test/digit_sequence_test.dart` atualizados para as novas constantes.
    - `dart analyze lib`: 0 issues.
-   - `flutter test`: 24 testes passando (100% aprovados).
-   - `flutter build web --release`: compilado e ativo em `http://localhost:8085/`.
-   - Grafo Graphify atualizado para 1705 nós e 1908 arestas.
+   - `flutter test`: 24 testes unitários e de widget com 100% de aprovação.
+3. **Build Web & Grafo:**
+   - `flutter build web --release` recompilado com sucesso para `build/web`.
+   - Servidor Python ativo na porta 8085 (`http://localhost:8085/`).
+   - Grafo Graphify atualizado via `python -m graphify update .` (1705 nós, 1908 arestas).
 
 ---
 
 ## 2. Onde Parou
-- Sessão de 3 baterias de jogos, HUD de medição de acertos/erros, pontuação sincronizada com as ligas e bateria de 5 slots concluídos e funcionais no ar.
-- Servidor web ativo respondendo em `http://localhost:8085/`.
+- Calibração de tempo concluída, testada e no ar em `http://localhost:8085/`.
 
 ---
 
@@ -51,5 +43,5 @@
 ---
 
 ## 4. Próximos Passos
-1. Persistência em IndexedDB/LocalStorage para que recarregar a página (F5) não resete o estado da sessão em memória.
-2. Efeitos sonoros sutis de neurofeedback (ondas alfa/binaurais) para acertos e combo streaks.
+1. Persistência local em IndexedDB/LocalStorage para que recarregar a aba (F5) mantenha a pontuação e estado da bateria de 5 slots.
+2. Efeitos sonoros táteis/neuroacústicos para acertos e combo streaks.

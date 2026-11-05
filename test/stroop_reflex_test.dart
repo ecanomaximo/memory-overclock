@@ -20,10 +20,10 @@ void main() {
       final round3Duration = StroopEngine.getDurationMsForRound(3, 5);
       final round5Duration = StroopEngine.getDurationMsForRound(5, 5);
 
-      expect(round1Duration, equals(4000));
+      expect(round1Duration, equals(6000));
       expect(round3Duration, lessThan(round1Duration));
       expect(round5Duration, lessThan(round3Duration));
-      expect(round5Duration, equals(1200));
+      expect(round5Duration, equals(2500));
     });
   });
 }

@@ -24,9 +24,9 @@ void main() {
       final r2Speed = DigitSequenceEngine.getDisplayDurationMs(2);
       final r4Speed = DigitSequenceEngine.getDisplayDurationMs(4);
 
-      expect(r1Speed, equals(1200));
-      expect(r2Speed, equals(900));
-      expect(r4Speed, equals(700));
+      expect(r1Speed, equals(1800));
+      expect(r2Speed, equals(1300));
+      expect(r4Speed, equals(1000));
     });
   });
 }

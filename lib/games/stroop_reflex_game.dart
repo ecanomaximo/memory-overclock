@@ -61,10 +61,10 @@ class StroopEngine {
   }
 
   static int getDurationMsForRound(int round, int totalRounds) {
-    if (round <= 1) return 4000;
+    if (round <= 1) return 6000;
     final progress = (round - 1) / (totalRounds - 1);
-    // Varia de 3000ms até 1200ms
-    return (3000 - (progress * 1800)).round();
+    // Varia suavemente de 4500ms até 2500ms
+    return (4500 - (progress * 2000)).round();
   }
 }
 

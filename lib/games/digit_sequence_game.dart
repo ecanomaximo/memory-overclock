@@ -21,9 +21,9 @@ class DigitSequenceEngine {
   }
 
   static int getDisplayDurationMs(int round) {
-    if (round <= 1) return 1200;
-    if (round <= 3) return 900;
-    return 700;
+    if (round <= 1) return 1800;
+    if (round <= 3) return 1300;
+    return 1000;
   }
 }
 
