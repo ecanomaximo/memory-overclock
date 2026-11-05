@@ -41,13 +41,17 @@
 
 ## 2. Onde Parou
 - A reconstrução completa foi finalizada com sucesso (0 erros de análise, 14 testes passando, grafo atualizado).
-- Conta GitHub (`ecanomaximo`) já autenticada via GitHub CLI (`gh`).
-- **Ponto Atual:** Pronto para criar o novo repositório ou comitar e sincronizar com o GitHub.
+- Versionamento com GitHub concluído:
+  - Repositório remoto: `https://github.com/ecanomaximo/memory-overclock`
+  - Commit realizado: `feat: refactor Memory Overclock with Spec Kit SDD, Ponytail minimalism, Superpowers & Graphify` (`87c1fcb`)
+  - Push enviado com sucesso para a branch `main`.
+- **Ponto Atual:** Repositório sincronizado e branch limpa.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Branch:** `main` (com feature spec `001-memory-overclock-core`)
+- **Branch:** `main` (sincronizada com `origin/main`)
+- **Repositório GitHub:** [ecanomaximo/memory-overclock](https://github.com/ecanomaximo/memory-overclock)
 - **Conta GitHub:** `ecanomaximo`
 - **Ambiente:** Flutter 3.x / Dart 3.x
 - **Build Status:** Estável, 0 warnings de análise, 14 testes unitários passando.
@@ -56,6 +60,6 @@
 ---
 
 ## 4. Próximos Passos
-1. Definir o nome do novo repositório ou vincular/atualizar o repositório existente (`ecanomaximo/memory-overclock`).
-2. Fazer o commit padronizado de todo o projeto refatorado (especificações, testes, core e regras).
-3. Publicar (push) para o GitHub.
+1. Executar o app via `flutter run` no emulador ou dispositivo físico para validação visual.
+2. Adicionar novos minigames na trilha (ex: integrar `color_clash_game` e `reading_recall_game` como variações nos nós de fase).
+3. Gerar build release do APK (`flutter build apk --release`).
