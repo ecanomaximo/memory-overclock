@@ -44,27 +44,32 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           body: SafeArea(
-            child: Column(
-              children: [
-                TopBarStats(
-                  progressService: progressService,
-                  onOpenProfile: () {
-                    if (onOpenProfile != null) {
-                      onOpenProfile!();
-                    }
-                  },
-                  onOpenPaywall: () => _openPaywall(context),
-                  onOpenLeague: () => _openLeague(context),
-                  onOpenDevSheet: () => _openDevSheet(context),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    TopBarStats(
+                      progressService: progressService,
+                      onOpenProfile: () {
+                        if (onOpenProfile != null) {
+                          onOpenProfile!();
+                        }
+                      },
+                      onOpenPaywall: () => _openPaywall(context),
+                      onOpenLeague: () => _openLeague(context),
+                      onOpenDevSheet: () => _openDevSheet(context),
+                    ),
+                    ActivityCadenceBar(
+                      cadenceService: effectiveCadence,
+                      onCadenceExhaustedTap: () => _openPaywall(context),
+                    ),
+                    Expanded(
+                      child: _buildDuolingoTrack(context),
+                    ),
+                  ],
                 ),
-                ActivityCadenceBar(
-                  cadenceService: effectiveCadence,
-                  onCadenceExhaustedTap: () => _openPaywall(context),
-                ),
-                Expanded(
-                  child: _buildDuolingoTrack(context),
-                ),
-              ],
+              ),
             ),
           ),
         );

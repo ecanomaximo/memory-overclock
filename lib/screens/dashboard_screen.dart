@@ -77,34 +77,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
             top: BorderSide(color: AppTheme.surfaceBorder, width: 1),
           ),
         ),
-        child: NavigationBar(
-          backgroundColor: AppTheme.surface,
-          selectedIndex: _currentIndex,
-          indicatorColor: AppTheme.focusCyan.withValues(alpha: 0.18),
-          elevation: 0,
-          onDestinationSelected: _switchTab,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.person_outline_rounded, color: AppTheme.textMuted),
-              selectedIcon: Icon(Icons.person_rounded, color: AppTheme.focusCyan),
-              label: 'Perfil',
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: NavigationBar(
+              backgroundColor: AppTheme.surface,
+              selectedIndex: _currentIndex,
+              indicatorColor: AppTheme.focusCyan.withValues(alpha: 0.18),
+              elevation: 0,
+              onDestinationSelected: _switchTab,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.person_outline_rounded, color: AppTheme.textMuted),
+                  selectedIcon: Icon(Icons.person_rounded, color: AppTheme.focusCyan),
+                  label: 'Perfil',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.map_outlined, color: AppTheme.textMuted),
+                  selectedIcon: Icon(Icons.map_rounded, color: AppTheme.focusCyan),
+                  label: 'Trilha',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.military_tech_outlined, color: AppTheme.textMuted),
+                  selectedIcon: Icon(Icons.military_tech_rounded, color: AppTheme.prestigeGold),
+                  label: 'Ligas',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.workspace_premium_outlined, color: AppTheme.textMuted),
+                  selectedIcon: Icon(Icons.workspace_premium_rounded, color: AppTheme.calmIndigo),
+                  label: 'Clube VIP',
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: Icon(Icons.map_outlined, color: AppTheme.textMuted),
-              selectedIcon: Icon(Icons.map_rounded, color: AppTheme.focusCyan),
-              label: 'Trilha',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.military_tech_outlined, color: AppTheme.textMuted),
-              selectedIcon: Icon(Icons.military_tech_rounded, color: AppTheme.prestigeGold),
-              label: 'Ligas',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.workspace_premium_outlined, color: AppTheme.textMuted),
-              selectedIcon: Icon(Icons.workspace_premium_rounded, color: AppTheme.calmIndigo),
-              label: 'Clube VIP',
-            ),
-          ],
+          ),
         ),
       ),
     );

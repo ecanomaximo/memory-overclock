@@ -191,55 +191,69 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(
-        backgroundColor: AppTheme.background,
-        elevation: 0,
-        title: Text(
-          'FASE ${widget.phaseLevel} • SESSÃO',
-          style: GoogleFonts.orbitron(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Row(
-              children: [
-                const Icon(Icons.favorite_rounded, color: AppTheme.alertPink, size: 20),
-                const SizedBox(width: 4),
-                Text(
-                  '$_challengeLives',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.alertPink,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 580),
+            child: AppBar(
+              backgroundColor: AppTheme.background,
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                'FASE ${widget.phaseLevel} • SESSÃO',
+                style: GoogleFonts.orbitron(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.favorite_rounded, color: AppTheme.alertPink, size: 20),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$_challengeLives',
+                        style: GoogleFonts.orbitron(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.alertPink,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          child: Column(
-            children: [
-              _buildLiveStatsHeader(),
-              const SizedBox(height: 12),
-              _buildGameBatteryProgression(),
-              const SizedBox(height: 14),
-              _buildChallengeBanner(),
-              const SizedBox(height: 14),
-              Expanded(
-                child: KeyedSubtree(
-                  key: ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter'),
-                  child: _buildCurrentChallengeWidget(),
-                ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 580),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Column(
+                children: [
+                  _buildLiveStatsHeader(),
+                  const SizedBox(height: 12),
+                  _buildGameBatteryProgression(),
+                  const SizedBox(height: 14),
+                  _buildChallengeBanner(),
+                  const SizedBox(height: 14),
+                  Expanded(
+                    child: KeyedSubtree(
+                      key: ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter'),
+                      child: _buildCurrentChallengeWidget(),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -465,11 +479,14 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               const Spacer(),
               Container(
                 width: 100,
@@ -595,8 +612,10 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
   Widget _buildStatItem(String label, String value, Color color) {
     return Column(

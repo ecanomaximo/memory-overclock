@@ -26,40 +26,53 @@ class ProfileScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: AppTheme.background,
-          appBar: AppBar(
-            title: Text(
-              'PAINEL COGNITIVO',
-              style: GoogleFonts.orbitron(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: AppBar(
+                  title: Text(
+                    'PAINEL COGNITIVO',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      tooltip: 'Sair da Conta',
+                      icon: const Icon(Icons.logout_rounded, size: 20, color: AppTheme.textMuted),
+                      onPressed: () => progressService.logout(),
+                    ),
+                  ],
+                ),
               ),
             ),
-            actions: [
-              IconButton(
-                tooltip: 'Sair da Conta',
-                icon: const Icon(Icons.logout_rounded, size: 20, color: AppTheme.textMuted),
-                onPressed: () => progressService.logout(),
-              ),
-            ],
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildUserHeader(context, progress),
-                  const SizedBox(height: 18),
-                  _buildPlayActionCard(context),
-                  const SizedBox(height: 18),
-                  _buildDailyBattery(context, progress),
-                  const SizedBox(height: 18),
-                  _buildCognitiveMetrics(progress),
-                  const SizedBox(height: 18),
-                  _buildDailyMissionCard(progress),
-                  const SizedBox(height: 24),
-                ],
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildUserHeader(context, progress),
+                      const SizedBox(height: 18),
+                      _buildPlayActionCard(context),
+                      const SizedBox(height: 18),
+                      _buildDailyBattery(context, progress),
+                      const SizedBox(height: 18),
+                      _buildCognitiveMetrics(progress),
+                      const SizedBox(height: 18),
+                      _buildDailyMissionCard(progress),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -214,20 +227,26 @@ class ProfileScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.battery_charging_full_rounded, color: AppTheme.focusCyan, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Bateria de Foco (5 Atividades)',
-                    style: GoogleFonts.inter(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimary,
+              Expanded(
+                child: Row(
+                  children: [
+                    const Icon(Icons.battery_charging_full_rounded, color: AppTheme.focusCyan, size: 20),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Bateria de Foco (5 Atividades)',
+                        style: GoogleFonts.inter(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 progress.isDevUnlimited ? 'ILIMITADO' : '$left / $max slots',
                 style: GoogleFonts.orbitron(
@@ -254,11 +273,15 @@ class ProfileScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Recarrega 5 atividades a cada 5 horas',
-                style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMuted),
+              Expanded(
+                child: Text(
+                  'Recarrega 5 atividades a cada 5 horas',
+                  style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMuted),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              if (!progress.isVip)
+              if (!progress.isVip) ...[
+                const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -277,6 +300,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
             ],
           ),
           if (cadenceService != null) ...[

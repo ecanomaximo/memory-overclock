@@ -14,16 +14,27 @@ class PaywallScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(
-        title: Text(
-          'CLUBE OVERCLOCK',
-          style: GoogleFonts.orbitron(letterSpacing: 2.0),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: AppBar(
+              title: Text(
+                'CLUBE OVERCLOCK',
+                style: GoogleFonts.orbitron(letterSpacing: 2.0),
+              ),
+            ),
+          ),
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-          child: Column(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
+              child: Column(
             children: [
               const Icon(Icons.workspace_premium, color: AppTheme.gold, size: 64),
               const SizedBox(height: 14),
@@ -109,8 +120,10 @@ class PaywallScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
   Widget _buildBenefitRow({
     required IconData icon,

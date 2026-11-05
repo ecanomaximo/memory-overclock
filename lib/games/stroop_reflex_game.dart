@@ -220,78 +220,90 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
           ],
         ),
         const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-          decoration: BoxDecoration(
-            color: AppTheme.cardDeepSlate,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: _currentStimulus.displayColor.withValues(alpha: 0.4),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: _currentStimulus.displayColor.withValues(alpha: 0.15),
-                blurRadius: 30,
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320, minWidth: 200),
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 26),
+              decoration: BoxDecoration(
+                color: AppTheme.cardDeepSlate,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: _currentStimulus.displayColor.withValues(alpha: 0.4),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _currentStimulus.displayColor.withValues(alpha: 0.15),
+                    blurRadius: 24,
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Text(
-            _currentStimulus.word,
-            style: GoogleFonts.orbitron(
-              fontSize: 38,
-              fontWeight: FontWeight.w900,
-              color: _currentStimulus.displayColor,
-              letterSpacing: 4.0,
+              child: Text(
+                _currentStimulus.word,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.orbitron(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: _currentStimulus.displayColor,
+                  letterSpacing: 3.5,
+                ),
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         Text(
           'A cor da tinta corresponde à palavra?',
           style: GoogleFonts.inter(
-            fontSize: 14,
+            fontSize: 13,
             color: AppTheme.textMutedSlate,
           ),
         ),
         const Spacer(),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _submitAnswer(false),
-                icon: const Icon(Icons.close_rounded),
-                label: Text(
-                  'NÃO (DIFERENTE)',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _submitAnswer(false),
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    label: Text(
+                      'NÃO (DIFERENTE)',
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1E293B),
+                      foregroundColor: const Color(0xFFFF4D4D),
+                      side: const BorderSide(color: Color(0xFFFF4D4D), width: 1.5),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                  ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E293B),
-                  foregroundColor: const Color(0xFFFF4D4D),
-                  side: const BorderSide(color: Color(0xFFFF4D4D), width: 1.5),
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _submitAnswer(true),
+                    icon: const Icon(Icons.check_rounded, size: 20),
+                    label: Text(
+                      'SIM (CORRETO)',
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.accentBioGreen,
+                      foregroundColor: const Color(0xFF0A0F1D),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _submitAnswer(true),
-                icon: const Icon(Icons.check_rounded),
-                label: Text(
-                  'SIM (CORRETO)',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.accentBioGreen,
-                  foregroundColor: const Color(0xFF0A0F1D),
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );

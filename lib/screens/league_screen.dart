@@ -17,59 +17,72 @@ class LeagueScreen extends StatelessWidget {
     final userRank = LeagueService.getUserRank(userProgress.weeklyXp);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              userProgress.leagueTier.toUpperCase(),
-              style: GoogleFonts.orbitron(
-                fontWeight: FontWeight.w900,
-                fontSize: 16,
-                letterSpacing: 1.5,
-                color: AppTheme.gold,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: AppBar(
+              title: Column(
+                children: [
+                  Text(
+                    userProgress.leagueTier.toUpperCase(),
+                    style: GoogleFonts.orbitron(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                      letterSpacing: 1.5,
+                      color: AppTheme.gold,
+                    ),
+                  ),
+                  Text(
+                    'Reset semanal em 3d 14h',
+                    style: GoogleFonts.inter(fontSize: 11, color: Colors.white60),
+                  ),
+                ],
               ),
             ),
-            Text(
-              'Reset semanal em 3d 14h',
-              style: GoogleFonts.inter(fontSize: 11, color: Colors.white60),
-            ),
-          ],
+          ),
         ),
       ),
-      body: Column(
-        children: [
-          _buildUserPositionBanner(userRank, userProgress.weeklyXp),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: players.length,
-              itemBuilder: (context, index) {
-                final player = players[index];
-                final rank = index + 1;
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Column(
+            children: [
+              _buildUserPositionBanner(userRank, userProgress.weeklyXp),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: players.length,
+                  itemBuilder: (context, index) {
+                    final player = players[index];
+                    final rank = index + 1;
 
-                Widget? zoneDivider;
-                if (index == LeagueService.promotionThreshold) {
-                  zoneDivider = _buildZoneMarker(
-                    '⬆️ TOP 7 SOBEM PARA A PRÓXIMA LIGA',
-                    AppTheme.neonGreen,
-                  );
-                } else if (index == LeagueService.relegationThreshold) {
-                  zoneDivider = _buildZoneMarker(
-                    '⬇️ ÚLTIMOS 5 CAEM DE DIVISÃO',
-                    AppTheme.neonPink,
-                  );
-                }
+                    Widget? zoneDivider;
+                    if (index == LeagueService.promotionThreshold) {
+                      zoneDivider = _buildZoneMarker(
+                        '⬆️ TOP 7 SOBEM PARA A PRÓXIMA LIGA',
+                        AppTheme.neonGreen,
+                      );
+                    } else if (index == LeagueService.relegationThreshold) {
+                      zoneDivider = _buildZoneMarker(
+                        '⬇️ ÚLTIMOS 5 CAEM DE DIVISÃO',
+                        AppTheme.neonPink,
+                      );
+                    }
 
-                return Column(
-                  children: [
-                    if (zoneDivider != null) zoneDivider,
-                    _buildPlayerCard(player, rank),
-                  ],
-                );
-              },
-            ),
+                    return Column(
+                      children: [
+                        if (zoneDivider != null) zoneDivider,
+                        _buildPlayerCard(player, rank),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

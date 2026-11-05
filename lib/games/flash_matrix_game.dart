@@ -171,34 +171,56 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'FASE ${widget.level}',
-          style: GoogleFonts.orbitron(letterSpacing: 2.0),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: AppBar(
+              title: Text(
+                'FASE ${widget.level}',
+                style: GoogleFonts.orbitron(letterSpacing: 2.0),
+              ),
+            ),
+          ),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Column(
-            children: [
-              _buildTopStats(),
-              const SizedBox(height: 16),
-              _buildProgressBar(),
-              const SizedBox(height: 16),
-              _buildStatusCard(),
-              const SizedBox(height: 24),
-              Expanded(
-                child: Center(
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: _buildGrid(),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                children: [
+                  _buildTopStats(),
+                  const SizedBox(height: 16),
+                  _buildProgressBar(),
+                  const SizedBox(height: 16),
+                  _buildStatusCard(),
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: Center(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double size = min(
+                            min(constraints.maxWidth, 340.0),
+                            constraints.maxHeight * 0.9,
+                          );
+                          return SizedBox(
+                            width: size,
+                            height: size,
+                            child: _buildGrid(),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  _buildBottomControls(),
+                ],
               ),
-              const SizedBox(height: 20),
-              _buildBottomControls(),
-            ],
+            ),
           ),
         ),
       ),
@@ -609,9 +631,19 @@ class _FlashMatrixWaveChallengeState extends State<FlashMatrixWaveChallenge> {
         ),
         const Spacer(),
         Center(
-          child: AspectRatio(
-            aspectRatio: 1.0,
-            child: _buildGrid(),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final screenHeight = MediaQuery.of(context).size.height;
+              final double size = min(
+                min(constraints.maxWidth, 340.0),
+                screenHeight * 0.42,
+              );
+              return SizedBox(
+                width: size,
+                height: size,
+                child: _buildGrid(),
+              );
+            },
           ),
         ),
         const Spacer(),

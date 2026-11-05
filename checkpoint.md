@@ -1,48 +1,57 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Marco: Correção de Bloqueio de Retry no Stroop & Expansão de Tempo para 60s-90s)
+**Status do Projeto:** Concluído (Marco: Responsividade Dinâmica & Ergonômica para Desktop e Mobile)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Correção do Bloqueio de Retry (Tela Travada ao Perder):**
-   - **Diagnóstico:** O widget `KeyedSubtree` em `WaveActivityScreen` mantinha a mesma chave `ValueKey('g_0_r_1')` quando a rodada falhava ou a bateria reiniciava na rodada 1, fazendo com que o Flutter recicl会上 o estado `_StroopReflexGameState` com `_answered = true` e os timers cancelados, ignorando novos cliques.
-   - **Correção:** Introduzido `_attemptCounter` dinâmico na chave do `KeyedSubtree` (`ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter')`). A cada falha ou reinício de bateria, a chave é invalidada, garantindo a recriação limpa e imediata do widget de desafio, novo estímulo e timers reiniciados.
-   - Adicionada notificação `didUpdateWidget` em `StroopReflexGame` para garantir consistência.
-2. **Aumento Generoso do Tempo de Resolução (60s a 90s):**
-   - **Seleção de Cores (Stroop Reflex - `lib/games/stroop_reflex_game.dart`):**
-     - Rodada 1 (Tutorial): Elevado para **90 segundos (1 minuto e meio)**.
-     - Rodadas 2 a 5: Faixa progressiva relaxada entre **75 segundos e 60 segundos (1 minuto)**.
-     - Adicionado indicador visual textual de contagem regressiva: `XXs restantes`.
-   - **Flash Matrix (`lib/games/flash_matrix_game.dart`):**
-     - Tempo de memorização na Rodada 1 elevado para **6.0 segundos** e rodadas avançadas entre **5.0s e 3.0s**.
-3. **Qualidade & Testes:**
-   - Teste unitário `test/stroop_reflex_test.dart` atualizado e aprovado.
-   - `dart analyze lib`: 0 erros, 0 warnings.
-   - `flutter test`: 29 testes aprovados (100% de sucesso).
-4. **Deploy & Publicação:**
-   - Recompilado `flutter build web --release --base-href "/memory-overclock/"`.
-   - Publicado na branch `gh-pages` e disponível em tempo real no GitHub Pages (`https://ecanomaximo.github.io/memory-overclock/`).
-   - Grafo Graphify atualizado para 1780 nós e 1991 arestas.
+1. **Diagnóstico da Causa Raiz Visual:**
+   - Em resoluções widescreen (desktop/navegador aberto em 1080p ou superior), a falta de contenção de largura máxima (`maxWidth`) fazia os widgets filhos do Flutter expandirem para a largura inteira (1920px).
+   - O `FlashMatrix` usava `AspectRatio(1.0)` sem clamp de tamanho máximo, esticando as células da matriz para centenas de pixels de altura e largura.
+   - O `StroopReflexGame` esticava os botões de resposta "SIM" e "NÃO" por quase 1000px cada, e o cartão do estímulo ficava desproporcional.
+   - O `DigitSequenceGame` e telas estruturais (`DashboardScreen`, `ProfileScreen`, `HomeScreen`, `LeagueScreen`, `PaywallScreen`, `LoginScreen`) expandiam o layout linearmente sem limites ergonômicos.
+
+2. **Implementação de Contenção & Ergonomia Dinâmica:**
+   - **`WaveActivityScreen` & Jogos:**
+     - `SafeArea` e `AppBar` encapsulados em `Center` + `ConstrainedBox(maxWidth: 580)`.
+     - HUD ao vivo (Acertos, Erros, Pontos XP), barra de progressão e banner de desafio alinhados ergonometricamente no desktop e ocupando 100% no mobile.
+     - `_buildCompletionView` contido com `maxWidth: 520`.
+   - **`FlashMatrixWaveChallenge` & `FlashMatrixGame`:**
+     - Substituído `AspectRatio` irrestrito por `LayoutBuilder` com cálculo dinâmico:
+       `size = min(min(constraints.maxWidth, 340.0), screenHeight * 0.42)`.
+     - No desktop, a grade fica contida num tamanho confortável (máx 340px) e centralizada. No celular, se adapta fluidamente ao tamanho disponível sem quebrar proporções.
+   - **`StroopReflexGame`:**
+     - Cartão do estímulo padronizado com `ConstrainedBox(maxWidth: 320, minWidth: 200)` e tipografia balanceada (`fontSize: 32`).
+     - Botões inferiores "SIM" e "NÃO" contidos com `maxWidth: 480` e centralizados.
+   - **`DigitSequenceGame`:**
+     - Visor e slots de dígitos contidos com `maxWidth: 340`, com rolagem horizontal de segurança para sequências de até 7 dígitos em celulares compactos.
+     - Teclado numérico virtual centralizado e ergonômico (`maxWidth: 340`).
+   - **Telas Globais (`HomeScreen`, `ProfileScreen`, `LeagueScreen`, `PaywallScreen`, `LoginScreen`, `DashboardScreen`):**
+     - Todas contidas com `maxWidth: 440-600` centralizado, com `PreferredSize` nos `AppBar`s e barra de navegação inferior centralizada no desktop.
+     - Corrigidos overflows horizontais no `ProfileScreen` com `Expanded` e `TextOverflow.ellipsis`.
+
+3. **Validação & Testes Automatizados:**
+   - `dart analyze lib test`: 0 erros / 0 avisos.
+   - `flutter test`: 29/29 testes automatizados passando 100%.
+   - `flutter build web --release --base-href "/memory-overclock/"`: compilação concluída com sucesso.
 
 ---
 
 ## 2. Onde Parou
-- As correções de retry e os tempos ampliados de 60s a 90s estão 100% ativos e funcionais no ar.
-- Servidor web e GitHub Pages atualizados.
+- Build Web compilado pronto para deploy nas branches `gh-pages` e `main`.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Branch:** `main` (código-fonte) / `gh-pages` (distribuição pública)
-- **Local Web Server:** `http://localhost:8085/`
-- **URL Pública Oficial:** `https://ecanomaximo.github.io/memory-overclock/`
-- **Testes:** 29 testes passando.
-- **Grafo:** `graphify-out/` com 1780 nós.
+- **Branch:** `main`
+- **Ambiente:** Flutter 3.x Web Production
+- **Testes Atuais:** 29 testes passando.
+- **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
 
 ---
 
 ## 4. Próximos Passos
-1. Integração com Firebase Console para credenciais reais de produção caso o usuário decida vincular seu projeto.
-2. Adicionar efeitos sonoros sutis de neurofeedback para acertos e combo streaks.
+1. Atualizar a branch `gh-pages` e `main` via Git.
+2. Executar atualização do grafo Graphify (`python -m graphify update .`).
+3. Notificar o usuário com o link atualizado e detalhes da responsividade.

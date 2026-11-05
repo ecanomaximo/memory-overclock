@@ -171,10 +171,16 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
             color: _isShowingSequence ? AppTheme.accentSolarAmber : AppTheme.accentBioGreen,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         _buildDisplayArea(),
         const Spacer(),
-        if (!_isShowingSequence) _buildKeypad(),
+        if (!_isShowingSequence)
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 340),
+              child: _buildKeypad(),
+            ),
+          ),
         const SizedBox(height: 10),
       ],
     );
@@ -184,24 +190,24 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
     if (_isShowingSequence) {
       final currentDigit = _targetSequence[_activeDigitIndex];
       return Container(
-        width: 110,
-        height: 130,
+        width: 90,
+        height: 104,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppTheme.cardDeepSlate,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppTheme.primaryNeuroCyan, width: 2),
           boxShadow: [
             BoxShadow(
               color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.25),
-              blurRadius: 25,
+              blurRadius: 20,
             ),
           ],
         ),
         child: Text(
           '$currentDigit',
           style: GoogleFonts.orbitron(
-            fontSize: 64,
+            fontSize: 52,
             fontWeight: FontWeight.w900,
             color: AppTheme.primaryNeuroCyan,
           ),
@@ -210,35 +216,38 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
     }
 
     // Input slots
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_targetSequence.length, (index) {
-        final hasDigit = index < _enteredDigits.length;
-        final digit = hasDigit ? _enteredDigits[index] : null;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(_targetSequence.length, (index) {
+          final hasDigit = index < _enteredDigits.length;
+          final digit = hasDigit ? _enteredDigits[index] : null;
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: 44,
-          height: 54,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppTheme.cardDeepSlate,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: hasDigit ? AppTheme.accentBioGreen : AppTheme.cardBorderMuted,
-              width: hasDigit ? 2 : 1,
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 3),
+            width: 40,
+            height: 48,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppTheme.cardDeepSlate,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: hasDigit ? AppTheme.accentBioGreen : AppTheme.cardBorderMuted,
+                width: hasDigit ? 2 : 1,
+              ),
             ),
-          ),
-          child: Text(
-            digit != null ? '$digit' : '_',
-            style: GoogleFonts.orbitron(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: hasDigit ? AppTheme.accentBioGreen : AppTheme.textMutedSlate,
+            child: Text(
+              digit != null ? '$digit' : '_',
+              style: GoogleFonts.orbitron(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: hasDigit ? AppTheme.accentBioGreen : AppTheme.textMutedSlate,
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -282,8 +291,8 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
           borderRadius: BorderRadius.circular(14),
           onTap: () => _onDigitPressed(digit),
           child: Container(
-            width: 62,
-            height: 52,
+            width: 58,
+            height: 48,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: AppTheme.cardBorderMuted),
@@ -313,8 +322,8 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
           borderRadius: BorderRadius.circular(14),
           onTap: onTap,
           child: Container(
-            width: 62,
-            height: 52,
+            width: 58,
+            height: 48,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: AppTheme.cardBorderMuted),
