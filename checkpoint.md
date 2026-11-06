@@ -1,39 +1,34 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 06/11/2026  
-**Status do Projeto:** Concluído (Reset Automático de Sessão Mock Antiga, Suporte a Login com GitHub Adicionado e Deploy Atualizado)
+**Status do Projeto:** Concluído (Gatilho Imediato de Deslogar via Parâmetro URL e Botão de Logout em Destaque)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Correção do Bypass de Login (Sessão Mock em Cache do Navegador):**
-   - No [`ProgressService._init()`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/progress_service.dart), adicionada validação com `AuthService.currentUser`: se o Firebase estiver inicializado e não houver usuário autenticado no Firebase Auth (ou seja, se a flag `isLoggedIn` no LocalStorage do navegador pertencia ao mock antigo), o app força `isLoggedIn = false`, garantindo que a tela de login real sempre seja exibida para novos usuários e recargas.
-2. **Adição do Provedor de Login GitHub:**
-   - Adicionado método `signInWithGithub()` em [`AuthService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/auth_service.dart).
-   - Adicionado `loginWithGithub()` em [`ProgressService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/progress_service.dart).
-   - Adicionado botão elegante "Continuar com GitHub" na [`LoginScreen`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/screens/login_screen.dart).
-3. **Mapeamento de Mensagens Amigáveis do Firebase:**
-   - Erros como `popup-closed-by-user`, `popup-blocked` e `unauthorized-domain` traduzidos para orientações claras ao usuário.
-4. **Validação & Testes:**
+1. **Gatilho de Logout Automático na Inicialização (`main.dart`):**
+   - Implementado suporte para forçar logout imediato via URL: se o usuário acessar qualquer URL com `?logout=true` ou `#logout`, o app chama `progressService.logout()`, limpando todas as sessões anteriores e exibindo a tela de login.
+2. **Botão de Logout em Destaque no Perfil:**
+   - Adicionado botão rosa de saída rápida com ícone `Icons.logout_rounded` dentro do card principal do perfil em [`ProfileScreen`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/screens/profile_screen.dart).
+3. **Validação & Testes:**
    - `dart analyze lib test`: 0 erros.
-   - `flutter test`: 40/40 testes aprovados (100%).
+   - `flutter test`: 40/40 testes passando.
    - `flutter build web --release`: compilado e publicado na branch `gh-pages`.
 
 ---
 
 ## 2. Onde Parou
-- Build atualizado e publicado no GitHub Pages. Ao recarregar a página (com `Ctrl + F5`), a tela de login real aparecerá imediatamente com Google, Apple e GitHub.
+- Deploy atualizado com link de logout direto e botão visível.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Provedores Suportados:** Google, Apple/iCloud, GitHub, Modo Convidado.
-- **Banco de Dados:** Cloud Firestore (`onboarding_surveys`) ativo em `nam5`.
-- **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
+- **Link de Logout Direto:** `https://ecanomaximo.github.io/memory-overclock/?logout=true`
+- **URL Base:** `https://ecanomaximo.github.io/memory-overclock/`
 - **Testes:** 40/40 passando.
 
 ---
 
 ## 4. Próximos Passos
-1. Usuário abrir o site no navegador e fazer login com Google, Apple ou GitHub.
-2. Responder ao questionário e visualizar as respostas na coleção `onboarding_surveys` do Firestore.
+1. Usuário clicar no link com `?logout=true` ou no botão de sair do perfil para abrir a tela de login.
+2. Clicar em "Continuar com o Google" para autenticar sua conta oficial.

@@ -11,6 +11,11 @@ Future<void> main() async {
   await AuthService.initialize();
   final progressService = ProgressService();
 
+  // Força logout se a URL tiver ?logout=true ou #logout
+  if (Uri.base.queryParameters['logout'] == 'true' || Uri.base.fragment == 'logout') {
+    await progressService.logout();
+  }
+
   runApp(MemoryOverclockApp(progressService: progressService));
 }
 

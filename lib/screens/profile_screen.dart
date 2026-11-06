@@ -192,6 +192,13 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           ),
+
+          // Botão Sair da Conta
+          IconButton(
+            tooltip: 'Sair da Conta (Trocar de Usuário)',
+            icon: const Icon(Icons.logout_rounded, color: AppTheme.alertPink, size: 22),
+            onPressed: () => progressService.logout(),
+          ),
         ],
       ),
     );
