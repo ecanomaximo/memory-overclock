@@ -29,3 +29,15 @@
 - [x] **T012** Publicar build atualizado na branch `gh-pages` e sincronizar `main`.
 - [x] **T013** Atualizar grafo AST com `python -m graphify update .`.
 - [x] **T014** Atualizar `checkpoint.md` e entregar instrução de configuração ao usuário.
+
+---
+
+## Sprint 4: Credenciais Reais de Produção, GitHub OAuth, Firestore & Fechamento Formal
+- [x] **T015** Configurar credenciais reais do projeto Firebase `memory-overclock-f8259` no `lib/firebase_options.dart`.
+- [x] **T016** Eliminar todos os mocks ("Alexandre Silva", bots de liga simulados) de `user_progress.dart`, `auth_service.dart` e `league_service.dart`.
+- [x] **T017** Adicionar autenticação oficial com GitHub (`signInWithGithub`) integrada no Firebase Auth e botão no `LoginScreen`.
+- [x] **T018** Criar `FirestoreService` e integrar sincronização do formulário de onboarding na coleção `onboarding_surveys`.
+- [x] **T019** Implementar validação de sessão Firebase no `ProgressService._init()` e suporte ao parâmetro `?logout=true`.
+- [x] **T020** Executar suite completa com 40 testes unitários aprovados e `dart analyze` com 0 issues.
+- [x] **T021** Build e deploy final em produção no GitHub Pages (`gh-pages`).
+- [x] **T022** Fechamento e homologação formal da especificação `003-auth-firebase-google-apple`.

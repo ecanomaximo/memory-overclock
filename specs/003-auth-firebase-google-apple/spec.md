@@ -1,8 +1,8 @@
 # Especificação da Funcionalidade: Autenticação Real com Firebase (Google & Apple/iCloud)
 
 ## Identificador: `003-auth-firebase-google-apple`
-**Status:** Aprovado  
-**Data:** 05/11/2026  
+**Status:** Concluído & Homologado (Fechado)  
+**Data de Conclusão:** 06/11/2026  
 **Metodologia:** Spec-Driven Development (SDD) & Scrum Slicing
 
 ---
