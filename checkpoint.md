@@ -1,46 +1,39 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 06/11/2026  
-**Status do Projeto:** Concluído (Firebase Real Conectado, Remoção de Mocks e Sincronização de Formulário no Cloud Firestore)
+**Status do Projeto:** Concluído (Reset Automático de Sessão Mock Antiga, Suporte a Login com GitHub Adicionado e Deploy Atualizado)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Configuração do Firebase Real com Credenciais Web:**
-   - Inseridas as credenciais do projeto `memory-overclock-f8259` em [`DefaultFirebaseOptions`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/firebase_options.dart).
-   - Login com Google e Apple agora executam diretamente através do SDK oficial do Firebase Authentication.
-2. **Eliminação Completa de Dados Simulados (Mocks):**
-   - Usuário de teste "Alexandre Silva" e e-mail fictício removidos de [`UserProgress`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/models/user_progress.dart) e [`AuthService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/auth_service.dart).
-   - Os 29 bots simulados (`Lucas_Foco`, `Ana_Neuro`, etc.) foram removidos de [`LeagueService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/league_service.dart).
-   - Arquivo legado `lib/models/league_model.dart` excluído.
-   - [`LeagueScreen`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/screens/league_screen.dart) adaptado para competidores reais com banner explicativo quando a divisão estiver no início da rodada.
-3. **Sincronização em Nuvem do Formulário no Cloud Firestore:**
-   - Adicionado pacote `cloud_firestore: ^7.1.0`.
-   - Criado [`FirestoreService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/firestore_service.dart) para salvar os dados da anamnese cognitiva na coleção `onboarding_surveys`.
-   - Conectado ao término do questionário em [`ProgressService.completeOnboarding`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/progress_service.dart).
+1. **Correção do Bypass de Login (Sessão Mock em Cache do Navegador):**
+   - No [`ProgressService._init()`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/progress_service.dart), adicionada validação com `AuthService.currentUser`: se o Firebase estiver inicializado e não houver usuário autenticado no Firebase Auth (ou seja, se a flag `isLoggedIn` no LocalStorage do navegador pertencia ao mock antigo), o app força `isLoggedIn = false`, garantindo que a tela de login real sempre seja exibida para novos usuários e recargas.
+2. **Adição do Provedor de Login GitHub:**
+   - Adicionado método `signInWithGithub()` em [`AuthService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/auth_service.dart).
+   - Adicionado `loginWithGithub()` em [`ProgressService`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/services/progress_service.dart).
+   - Adicionado botão elegante "Continuar com GitHub" na [`LoginScreen`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/screens/login_screen.dart).
+3. **Mapeamento de Mensagens Amigáveis do Firebase:**
+   - Erros como `popup-closed-by-user`, `popup-blocked` e `unauthorized-domain` traduzidos para orientações claras ao usuário.
 4. **Validação & Testes:**
-   - `dart analyze lib test`: 0 erros / 0 avisos.
-   - `flutter test`: 38/38 testes passando (100%).
-   - `flutter build web --release`: compilado com sucesso em `build/web`.
+   - `dart analyze lib test`: 0 erros.
+   - `flutter test`: 40/40 testes aprovados (100%).
+   - `flutter build web --release`: compilado e publicado na branch `gh-pages`.
 
 ---
 
 ## 2. Onde Parou
-- Todas as alterações implementadas, validadas com testes automatizados e compiladas para deploy.
+- Build atualizado e publicado no GitHub Pages. Ao recarregar a página (com `Ctrl + F5`), a tela de login real aparecerá imediatamente com Google, Apple e GitHub.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Projeto Firebase:** `memory-overclock-f8259`
-- **Coleção Firestore:** `onboarding_surveys`
-- **Branch:** `main` (código-fonte), `gh-pages` (produção web)
+- **Provedores Suportados:** Google, Apple/iCloud, GitHub, Modo Convidado.
+- **Banco de Dados:** Cloud Firestore (`onboarding_surveys`) ativo em `nam5`.
 - **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
-- **Testes:** 38/38 aprovados.
+- **Testes:** 40/40 passando.
 
 ---
 
 ## 4. Próximos Passos
-1. No Firebase Console do usuário:
-   - Habilitar **Cloud Firestore** em modo de produção/teste (se ainda não clicou em "Criar banco de dados").
-   - Em **Authentication > Settings > Domínios autorizados**, certificar-se de ter adicionado `ecanomaximo.github.io`.
-   - Em **Authentication > Sign-in method**, confirmar a ativação do Google e da Apple.
+1. Usuário abrir o site no navegador e fazer login com Google, Apple ou GitHub.
+2. Responder ao questionário e visualizar as respostas na coleção `onboarding_surveys` do Firestore.

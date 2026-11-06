@@ -49,6 +49,28 @@ class ProgressService extends ChangeNotifier {
       _progress = UserProgress(lastResetDate: today);
     }
 
+    // Se o Firebase estiver inicializado, garante que a sessão local corresponde a uma conta real.
+    // Se o usuário não estiver autenticado no Firebase (ou se o login salvo era um mock antigo),
+    // força a exibição da tela de login para autenticação oficial.
+    if (AuthService.isFirebaseInitialized) {
+      final user = AuthService.currentUser;
+      if (user == null) {
+        _progress.isLoggedIn = false;
+        await _save();
+      } else {
+        _progress.isLoggedIn = true;
+        if (user.displayName != null && user.displayName!.isNotEmpty) {
+          _progress.userName = user.displayName!;
+        }
+        if (user.email != null && user.email!.isNotEmpty) {
+          _progress.userEmail = user.email!;
+        }
+        if (user.photoURL != null) {
+          _progress.userPhotoUrl = user.photoURL;
+        }
+      }
+    }
+
     checkDailyReset();
     _isInitialized = true;
     notifyListeners();
@@ -226,6 +248,26 @@ class ProgressService extends ChangeNotifier {
         _progress.userEmail = result.email!;
       }
       _progress.authProvider = 'apple';
+      await _save();
+      notifyListeners();
+    }
+    return result;
+  }
+
+  Future<AuthResult> loginWithGithub() async {
+    final result = await _authService.signInWithGithub();
+    if (result.success) {
+      _progress.isLoggedIn = true;
+      if (result.displayName != null && result.displayName!.isNotEmpty) {
+        _progress.userName = result.displayName!;
+      }
+      if (result.email != null) {
+        _progress.userEmail = result.email!;
+      }
+      if (result.photoUrl != null) {
+        _progress.userPhotoUrl = result.photoUrl!;
+      }
+      _progress.authProvider = 'github';
       await _save();
       notifyListeners();
     }

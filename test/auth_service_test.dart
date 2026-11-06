@@ -30,6 +30,16 @@ void main() {
       expect(result.email, contains('@privaterelay.appleid.com'));
     });
 
+    test('AuthService fallback mode returns valid GitHub user in test environment', () async {
+      final authService = AuthService();
+      final result = await authService.signInWithGithub();
+
+      expect(result.success, true);
+      expect(result.provider, 'github');
+      expect(result.displayName, contains('GitHub'));
+      expect(result.email, contains('@github.com'));
+    });
+
     test('ProgressService loginWithGoogle updates user state and marks logged in', () async {
       final progress = UserProgress(lastResetDate: '2026-11-05');
       final progressService = ProgressService(initialProgress: progress);
@@ -53,6 +63,18 @@ void main() {
       expect(result.success, true);
       expect(progressService.progress.isLoggedIn, true);
       expect(progressService.progress.authProvider, 'apple');
+    });
+
+    test('ProgressService loginWithGithub updates user state and marks logged in', () async {
+      final progress = UserProgress(lastResetDate: '2026-11-05');
+      final progressService = ProgressService(initialProgress: progress);
+
+      final result = await progressService.loginWithGithub();
+
+      expect(result.success, true);
+      expect(progressService.progress.isLoggedIn, true);
+      expect(progressService.progress.authProvider, 'github');
+      expect(progressService.progress.userName, contains('GitHub'));
     });
 
     test('ProgressService logout revokes session and clears loggedIn state', () async {

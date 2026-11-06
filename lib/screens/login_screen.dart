@@ -42,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+
   Future<void> _handleAppleLogin() async {
     if (_isLoading) return;
     setState(() {
@@ -67,6 +69,34 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
+  Future<void> _handleGithubLogin() async {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+      _activeProvider = 'GitHub';
+    });
+
+    final result = await widget.progressService.loginWithGithub();
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _activeProvider = '';
+      });
+
+      if (!result.success && result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: AppTheme.alertPink,
+          ),
+        );
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +227,29 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                     onPressed: _isLoading ? null : _handleAppleLogin,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Botão 3: Entrar com GitHub
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF24292E),
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: AppTheme.surfaceBorder),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: const Icon(Icons.code_rounded, size: 24, color: AppTheme.focusCyan),
+                    label: Text(
+                      'Continuar com GitHub',
+                      style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: _isLoading ? null : _handleGithubLogin,
                   ),
                 ),
                 const SizedBox(height: 14),
