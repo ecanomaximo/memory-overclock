@@ -64,13 +64,13 @@ class AuthService {
 
   Future<AuthResult> signInWithGoogle() async {
     if (!_firebaseInitialized) {
-      // Fallback gracioso para desenvolvimento/teste sem travar o app
+      // Fallback gracioso para ambiente de testes unitários locais
       return const AuthResult(
         success: true,
-        userId: 'dev_google_user_01',
-        displayName: 'Alexandre Silva (Google)',
-        email: 'alexandre.silva@gmail.com',
-        photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        userId: 'dev_google_user',
+        displayName: 'Operador Google',
+        email: 'operador@gmail.com',
+        photoUrl: null,
         provider: 'google',
       );
     }
@@ -96,12 +96,12 @@ class AuthService {
 
   Future<AuthResult> signInWithApple() async {
     if (!_firebaseInitialized) {
-      // Fallback gracioso para desenvolvimento/teste sem travar o app
+      // Fallback gracioso para ambiente de testes unitários locais
       return const AuthResult(
         success: true,
-        userId: 'dev_apple_user_01',
-        displayName: 'Alexandre Silva (Apple ID)',
-        email: 'alexandre@privaterelay.appleid.com',
+        userId: 'dev_apple_user',
+        displayName: 'Operador Apple',
+        email: 'operador@privaterelay.appleid.com',
         photoUrl: null,
         provider: 'apple',
       );

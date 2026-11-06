@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/onboarding_survey.dart';
 import '../models/user_progress.dart';
 import 'auth_service.dart';
+import 'firestore_service.dart';
 
 class ProgressService extends ChangeNotifier {
   static const String _storageKey = 'user_memory_progress_v1';
@@ -174,6 +175,15 @@ class ProgressService extends ChangeNotifier {
     _progress.surveyData = surveyData;
     await _save();
     notifyListeners();
+
+    // Sincroniza respostas no Cloud Firestore
+    await FirestoreService.saveSurveyResponse(
+      userId: _progress.userEmail.isNotEmpty ? _progress.userEmail : null,
+      userName: _progress.userName,
+      userEmail: _progress.userEmail,
+      authProvider: _progress.authProvider,
+      surveyData: surveyData,
+    );
   }
 
   // Autenticação integrada (Firebase Auth com suporte a Fallback)

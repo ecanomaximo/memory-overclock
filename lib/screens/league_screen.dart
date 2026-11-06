@@ -13,8 +13,9 @@ class LeagueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProgress = progressService.progress;
-    final players = LeagueService.generateRankedList(userProgress.weeklyXp);
-    final userRank = LeagueService.getUserRank(userProgress.weeklyXp);
+    final effectiveName = userProgress.userName.isNotEmpty ? userProgress.userName : 'Você (Operador)';
+    final players = LeagueService.generateRankedList(userProgress.weeklyXp, userName: effectiveName);
+    final userRank = LeagueService.getUserRank(userProgress.weeklyXp, userName: effectiveName);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -50,6 +51,28 @@ class LeagueScreen extends StatelessWidget {
           child: Column(
             children: [
               _buildUserPositionBanner(userRank, userProgress.weeklyXp),
+              if (players.length <= 1)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceElevated,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppTheme.surfaceBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.people_outline, color: AppTheme.focusCyan, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Divisão limpa de dados simulados. Conforme novos jogadores pontuarem, eles aparecerão aqui no ranking em tempo real!',
+                          style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, height: 1.3),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8),

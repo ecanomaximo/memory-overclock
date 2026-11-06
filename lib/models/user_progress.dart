@@ -9,7 +9,7 @@ class UserProgress {
   OnboardingSurveyData? surveyData;
   String userName;
   String userEmail;
-  String userPhotoUrl;
+  String? userPhotoUrl;
   String authProvider; // 'google', 'apple', 'guest'
 
   int streak;
@@ -26,10 +26,10 @@ class UserProgress {
     this.isLoggedIn = false,
     this.hasCompletedOnboarding = false,
     this.surveyData,
-    this.userName = 'Alexandre Silva',
-    this.userEmail = 'alexandre@gmail.com',
-    this.userPhotoUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    this.authProvider = 'google',
+    this.userName = 'Operador',
+    this.userEmail = '',
+    this.userPhotoUrl,
+    this.authProvider = '',
     this.streak = 0,
     this.lastPlayedDate,
     this.dailyChallengesLeft = freeDailyLimit,
@@ -73,11 +73,10 @@ class UserProgress {
       surveyData: json['surveyData'] != null
           ? OnboardingSurveyData.fromMap(json['surveyData'] as Map<String, dynamic>)
           : null,
-      userName: json['userName'] as String? ?? 'Alexandre Silva',
-      userEmail: json['userEmail'] as String? ?? 'alexandre@gmail.com',
-      userPhotoUrl: json['userPhotoUrl'] as String? ??
-          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      authProvider: json['authProvider'] as String? ?? 'google',
+      userName: json['userName'] as String? ?? 'Operador',
+      userEmail: json['userEmail'] as String? ?? '',
+      userPhotoUrl: json['userPhotoUrl'] as String?,
+      authProvider: json['authProvider'] as String? ?? '',
       streak: json['streak'] as int? ?? 0,
       lastPlayedDate: json['lastPlayedDate'] != null
           ? DateTime.tryParse(json['lastPlayedDate'] as String)

@@ -3,28 +3,34 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Configuração do Firebase para Memory Overclock.
-/// Pode ser alimentado via variáveis de compilação (--dart-define)
-/// ou preenchido com as chaves geradas pelo `flutterfire configure`.
 class DefaultFirebaseOptions {
   static const String webApiKey = String.fromEnvironment(
     'FIREBASE_WEB_API_KEY',
-    defaultValue: '',
+    defaultValue: 'AIzaSyCBkpLo_seyHvGiU5wm5FVzXUsKwFisFs8',
   );
   static const String webAppId = String.fromEnvironment(
     'FIREBASE_WEB_APP_ID',
-    defaultValue: '',
+    defaultValue: '1:632920872093:web:5e09a50f827c715925f074',
   );
   static const String webMessagingSenderId = String.fromEnvironment(
     'FIREBASE_WEB_MESSAGING_SENDER_ID',
-    defaultValue: '',
+    defaultValue: '632920872093',
   );
   static const String webProjectId = String.fromEnvironment(
     'FIREBASE_WEB_PROJECT_ID',
-    defaultValue: 'memory-overclock',
+    defaultValue: 'memory-overclock-f8259',
   );
   static const String webAuthDomain = String.fromEnvironment(
     'FIREBASE_WEB_AUTH_DOMAIN',
-    defaultValue: 'memory-overclock.firebaseapp.com',
+    defaultValue: 'memory-overclock-f8259.firebaseapp.com',
+  );
+  static const String webStorageBucket = String.fromEnvironment(
+    'FIREBASE_WEB_STORAGE_BUCKET',
+    defaultValue: 'memory-overclock-f8259.firebasestorage.app',
+  );
+  static const String webMeasurementId = String.fromEnvironment(
+    'FIREBASE_WEB_MEASUREMENT_ID',
+    defaultValue: 'G-23DLZ6BXRC',
   );
 
   static bool get isConfigured => webApiKey.isNotEmpty && webAppId.isNotEmpty;
@@ -51,6 +57,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: webMessagingSenderId,
     projectId: webProjectId,
     authDomain: webAuthDomain,
+    storageBucket: webStorageBucket,
+    measurementId: webMeasurementId,
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -58,6 +66,7 @@ class DefaultFirebaseOptions {
     appId: String.fromEnvironment('FIREBASE_ANDROID_APP_ID', defaultValue: ''),
     messagingSenderId: webMessagingSenderId,
     projectId: webProjectId,
+    storageBucket: webStorageBucket,
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -65,6 +74,7 @@ class DefaultFirebaseOptions {
     appId: String.fromEnvironment('FIREBASE_IOS_APP_ID', defaultValue: ''),
     messagingSenderId: webMessagingSenderId,
     projectId: webProjectId,
+    storageBucket: webStorageBucket,
     iosBundleId: 'com.example.memoryOverclock',
   );
 }
