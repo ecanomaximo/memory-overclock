@@ -69,8 +69,7 @@ class UserProgress {
   factory UserProgress.fromJson(Map<String, dynamic> json) {
     return UserProgress(
       isLoggedIn: json['isLoggedIn'] as bool? ?? false,
-      hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ??
-          ((json['currentLevel'] as int? ?? 1) > 1 || (json['weeklyXp'] as int? ?? 0) > 0),
+      hasCompletedOnboarding: (json['hasCompletedOnboarding'] as bool? ?? false) && json['surveyData'] != null,
       surveyData: json['surveyData'] != null
           ? OnboardingSurveyData.fromMap(json['surveyData'] as Map<String, dynamic>)
           : null,

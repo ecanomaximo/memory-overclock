@@ -299,6 +299,14 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.assignment_turned_in, color: AppTheme.focusCyan),
+                title: const Text('Reiniciar Questionário (Ver Formulário)'),
+                onTap: () {
+                  progressService.resetOnboarding();
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.restart_alt, color: Colors.redAccent),
                 title: const Text('Resetar Todo Progresso'),
                 onTap: () {

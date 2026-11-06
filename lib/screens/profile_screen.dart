@@ -4,6 +4,7 @@ import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/survey_analytics_sheet.dart';
+import 'onboarding_survey_screen.dart';
 import 'paywall_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -42,6 +43,11 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   actions: [
+                    IconButton(
+                      tooltip: 'Ver / Refazer Formulário',
+                      icon: const Icon(Icons.assignment_turned_in_outlined, size: 20, color: AppTheme.focusCyan),
+                      onPressed: () => _openSurvey(context),
+                    ),
                     IconButton(
                       tooltip: 'Extração Analítica de Formulários',
                       icon: const Icon(Icons.analytics_outlined, size: 20, color: AppTheme.focusCyan),
@@ -530,6 +536,27 @@ class ProfileScreen extends StatelessWidget {
             style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.focusCyan,
+                    foregroundColor: const Color(0xFF0A0F1D),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                  ),
+                  onPressed: () => _openSurvey(context),
+                  icon: const Icon(Icons.assignment_turned_in_rounded, size: 18),
+                  label: Text(
+                    'Ver / Refazer Formulário',
+                    style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -548,6 +575,18 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openSurvey(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OnboardingSurveyScreen(
+          progressService: progressService,
+          onFinished: () => Navigator.pop(context),
+        ),
       ),
     );
   }

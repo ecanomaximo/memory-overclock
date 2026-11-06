@@ -31,13 +31,20 @@ void main() {
       expect(progressNew.hasCompletedOnboarding, false);
       expect(progressNew.surveyData, isNull);
 
-      final progressOldUser = UserProgress.fromJson({
+      final progressWithSurvey = UserProgress.fromJson({
         'currentLevel': 3,
         'weeklyXp': 120,
         'lastResetDate': '2026-11-05',
+        'hasCompletedOnboarding': true,
+        'surveyData': {
+          'primaryGoal': 'anxiety_relief',
+          'dominantSymptom': 'racing_thoughts',
+          'stressFrequency': 'daily',
+          'dailyCommitmentMinutes': 10,
+        },
       });
-      // Usuário antigo que já estava em fases superiores assume onboarding concluído
-      expect(progressOldUser.hasCompletedOnboarding, true);
+      expect(progressWithSurvey.hasCompletedOnboarding, true);
+      expect(progressWithSurvey.surveyData?.primaryGoal, 'anxiety_relief');
     });
   });
 }

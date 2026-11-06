@@ -155,7 +155,16 @@ class ProgressService extends ChangeNotifier {
       weeklyXp: 0,
       streak: 0,
       isLoggedIn: false,
+      hasCompletedOnboarding: false,
+      surveyData: null,
     );
+    await _save();
+    notifyListeners();
+  }
+
+  Future<void> resetOnboarding() async {
+    _progress.hasCompletedOnboarding = false;
+    _progress.surveyData = null;
     await _save();
     notifyListeners();
   }
