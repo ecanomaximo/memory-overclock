@@ -84,9 +84,9 @@
     "semantic_hash": ""
   },
   "lib/main.dart": {
-    "mtime": 1793900098.8940961,
-    "seen": 1793900231.7579195,
-    "ast_hash": "a5e48f11e8ec450f9d0067ddd7da4e48",
+    "mtime": 1793925976.199341,
+    "seen": 1793926554.2243984,
+    "ast_hash": "ec6db850e7041c0d927eac5837754a78",
     "semantic_hash": ""
   },
   "lib/models/game_type.dart": {
@@ -102,15 +102,15 @@
     "semantic_hash": ""
   },
   "lib/models/user_progress.dart": {
-    "mtime": 1793894625.3473015,
-    "seen": 1793894951.2025115,
-    "ast_hash": "2b070935ef2c891e7095bfb4569fd678",
+    "mtime": 1793925770.9587798,
+    "seen": 1793926554.2243984,
+    "ast_hash": "65dec5a0d8d5f7bdaa858ae1d99f7edf",
     "semantic_hash": ""
   },
   "lib/screens/dashboard_screen.dart": {
-    "mtime": 1793920551.2033439,
-    "seen": 1793921048.362672,
-    "ast_hash": "bab6f5700633fe3d3579cd2b3b320b5d",
+    "mtime": 1793922913.647216,
+    "seen": 1793926554.2243984,
+    "ast_hash": "7ea723770ac898326c143a662ca86631",
     "semantic_hash": ""
   },
   "lib/screens/home_screen.dart": {
@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "lib/services/progress_service.dart": {
-    "mtime": 1793900057.929111,
-    "seen": 1793900231.7579195,
-    "ast_hash": "948af7aab3b056afc67abe8e267f9c89",
+    "mtime": 1793925941.8904045,
+    "seen": 1793926554.2243984,
+    "ast_hash": "7fe32f70debbc246eca4d197e0e08b5d",
     "semantic_hash": ""
   },
   "lib/theme/app_theme.dart": {
@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1793920941.7431784,
-    "seen": 1793921048.362672,
-    "ast_hash": "101199c4567b561f1f5c78a19a1ecdbe",
+    "mtime": 1793926538.330322,
+    "seen": 1793926554.2259028,
+    "ast_hash": "1ef2d5bc391349c1b0c50697b42bff46",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "lib/screens/profile_screen.dart": {
-    "mtime": 1793920845.4728787,
-    "seen": 1793921048.362672,
-    "ast_hash": "54e7e9ba89164822fe2306fcadd71848",
+    "mtime": 1793926168.416406,
+    "seen": 1793926554.2243984,
+    "ast_hash": "7d9fd6971d105a873c9e60396f61886b",
     "semantic_hash": ""
   },
   "test/profile_screen_test.dart": {
@@ -1347,6 +1347,78 @@
     "mtime": 1793900219.275017,
     "seen": 1793900231.7579195,
     "ast_hash": "e413b2e15c8f5a454e07e130a29e1591",
+    "semantic_hash": ""
+  },
+  "lib/models/onboarding_survey.dart": {
+    "mtime": 1793925743.3798234,
+    "seen": 1793926554.2243984,
+    "ast_hash": "837ba727a792febc1f0ff4d63e571b08",
+    "semantic_hash": ""
+  },
+  "lib/screens/onboarding_survey_screen.dart": {
+    "mtime": 1793925890.1637158,
+    "seen": 1793926554.2243984,
+    "ast_hash": "4d6115bdfa92a9b48ead2679d7f936b8",
+    "semantic_hash": ""
+  },
+  "lib/services/survey_analytics_service.dart": {
+    "mtime": 1793925808.2851064,
+    "seen": 1793926554.2243984,
+    "ast_hash": "5db1f244fc915361cf4dcb0393a67619",
+    "semantic_hash": ""
+  },
+  "lib/widgets/survey_analytics_sheet.dart": {
+    "mtime": 1793926354.1535225,
+    "seen": 1793926554.2243984,
+    "ast_hash": "7626492a95f372e62c41d265f7ce8b08",
+    "semantic_hash": ""
+  },
+  "test/dashboard_layout_test.dart": {
+    "mtime": 1793926231.754296,
+    "seen": 1793926554.2243984,
+    "ast_hash": "5b019d46106a4874144919d9f567092f",
+    "semantic_hash": ""
+  },
+  "test/onboarding_routing_test.dart": {
+    "mtime": 1793926221.6794403,
+    "seen": 1793926554.2243984,
+    "ast_hash": "2d910ce0cbff6ef2c2e48b42410ef088",
+    "semantic_hash": ""
+  },
+  "test/onboarding_survey_model_test.dart": {
+    "mtime": 1793925781.3732705,
+    "seen": 1793926554.2243984,
+    "ast_hash": "5fd44a5def6ed783151277af84c04cd8",
+    "semantic_hash": ""
+  },
+  "test/survey_analytics_service_test.dart": {
+    "mtime": 1793925836.0603838,
+    "seen": 1793926554.2243984,
+    "ast_hash": "3462f4be90f062ba2fa6c3d666a01fbf",
+    "semantic_hash": ""
+  },
+  "test/survey_analytics_sheet_test.dart": {
+    "mtime": 1793926182.8323846,
+    "seen": 1793926554.2243984,
+    "ast_hash": "ef1b42a4fa13347617c18e4338ed8f77",
+    "semantic_hash": ""
+  },
+  "specs/004-onboarding-cognitive-survey/plan.md": {
+    "mtime": 1793925717.08802,
+    "seen": 1793926554.2259028,
+    "ast_hash": "fa43a905576fc5405d3cbef073a9703b",
+    "semantic_hash": ""
+  },
+  "specs/004-onboarding-cognitive-survey/spec.md": {
+    "mtime": 1793925698.9704547,
+    "seen": 1793926554.2259028,
+    "ast_hash": "d7f4dfd32509cef91d1a6ca782541b00",
+    "semantic_hash": ""
+  },
+  "specs/004-onboarding-cognitive-survey/tasks.md": {
+    "mtime": 1793926524.3661315,
+    "seen": 1793926554.2259028,
+    "ast_hash": "92feb6a088833c59003223170187ceb7",
     "semantic_hash": ""
   }
 }

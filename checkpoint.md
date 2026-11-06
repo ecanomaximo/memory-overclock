@@ -1,41 +1,58 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 05/11/2026  
-**Status do Projeto:** Concluído (Bug do BottomNavigationBar Corrigido & Deploy Realizado)
+**Status do Projeto:** Concluído (Marco: Questionário de Onboarding 1º Acesso & Extração Analítica de Dados)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Diagnóstico do Bug do Print (`media_1793922766195_4895806c.png`):**
-   - O usuário enviou print mostrando a tela inteira vazia, apenas com o menu inferior (`Perfil | Trilha | Ligas | Clube VIP`) flutuando exatamente no centro vertical da tela (y = 500.5 num monitor 1080p).
-   - **Causa Raiz:** No Flutter, `Scaffold.bottomNavigationBar` passa restrições de altura não limitadas (`0 <= h <= maxHeight`). O `Container` com `child: Center` tentava ocupar 100% da altura da tela (1080px), empurrando e cobrindo o `IndexedStack` (corpo com o Perfil/Trilha) e centralizando a barra de navegação no meio da tela.
-   - **Correção:** Definida altura intrínseca fixa `height: 80` e `alignment: Alignment.center` no container do `bottomNavigationBar`, ancorando a barra de navegação rigidamente no rodapé da tela (`y = 1001` num monitor 1080p).
+1. **Modelagem de Estudo Neurocognitivo (Benchmarks: Impulse, Lumosity, Elevate, Calm):**
+   - Mapeadas 4 dimensões fundamentais da anamnese inicial:
+     - **Objetivo Principal:** Alívio de Ansiedade & Sobrecarga, Hiperfoco & Produtividade, Memória & Redução de Esquecimentos, Proteção contra Brain Rot.
+     - **Sintoma Dominante:** Pensamentos acelerados à noite, Distração crônica com celular, Névoa mental (Brain Fog), Esquecimentos no cotidiano.
+     - **Frequência de Estresse/Ansiedade:** Constante/alto, Quase todos os dias, Às vezes (1-2x/sem), Raramente.
+     - **Comprometimento Diário:** 5 min (micro-doses), 10 min (recomendado), 15+ min (modo intenso).
 
-2. **Validação & Testes:**
-   - Criado teste de layout `test/dashboard_layout_test.dart` simulando viewport 1920x1080 e comprovando:
-     - `PAINEL COGNITIVO` visível e renderizado.
-     - `NavigationBar top dy: 1001.0` (ancorado no rodapé, não mais em 500.5).
-   - `flutter test`: 30/30 testes passando 100%.
-   - `flutter build web --release --base-href "/memory-overclock/"`: compilação concluída com sucesso.
+2. **Implementação de Modelos & Serviços:**
+   - `lib/models/onboarding_survey.dart`: Armazena as escolhas e calcula o título do perfil e o domínio neurológico recomendado de foco.
+   - `lib/models/user_progress.dart`: Atualizado com flags `hasCompletedOnboarding` e `surveyData` com retrocompatibilidade automática para usuários antigos.
+   - `lib/services/survey_analytics_service.dart`: Motor de agregação estatística com cálculo percentual por categoria e exportador de dataset estruturado em JSON para pesquisa.
+   - `lib/services/progress_service.dart`: Novo método reativo `completeOnboarding(...)`.
 
-3. **Deploy:**
-   - Push realizado na branch `gh-pages` (commit `2a8d8f2`).
-   - Sincronização realizada na branch `main`.
+3. **Telas e Componentes de Interface:**
+   - `lib/screens/onboarding_survey_screen.dart`: Fluxo de 4 passos com barra de progresso suave, cards táteis com feedback ciano/verde, contenção `maxWidth: 540` para mobile e desktop, e tela final de diagnóstico cognitivo.
+   - `lib/main.dart`: Roteador automático condicional — exibe `OnboardingSurveyScreen` apenas no 1º acesso após login/cadastro; em logins subsequentes avança direto para o `DashboardScreen`.
+   - `lib/widgets/survey_analytics_sheet.dart`: Painel analítico modal exibindo a distribuição percentual das respostas em barras coloridas e botão para copiar dataset JSON completo.
+   - `lib/screens/profile_screen.dart`: Card de diagnóstico neural e botão de atalho para consulta das porcentagens e extração do estudo.
+
+4. **Validação & Testes Automatizados:**
+   - `dart analyze lib test`: 0 erros / 0 avisos.
+   - `flutter test`: **37/37 testes unitários e de widget aprovados (100%)**.
+   - Testes novos criados:
+     - `test/onboarding_survey_model_test.dart`
+     - `test/survey_analytics_service_test.dart`
+     - `test/onboarding_routing_test.dart`
+     - `test/survey_analytics_sheet_test.dart`
+   - `flutter build web --release --base-href "/memory-overclock/"`: compilado com sucesso.
+
+5. **Deploy & Sincronização:**
+   - Deploy realizado na branch `gh-pages` (commit `a31aa06`).
+   - Sincronização da branch `main`.
 
 ---
 
 ## 2. Onde Parou
-- Deploy atualizado no GitHub Pages com o layout 100% visível e responsivo.
+- Todas as tarefas da especificação `specs/004-onboarding-cognitive-survey/` foram implementadas, testadas e publicadas.
 
 ---
 
 ## 3. Contexto Técnico Atual
 - **Branch:** `main` (código-fonte)
 - **Branch de Produção:** `gh-pages` (ativo)
-- **Testes:** 30 testes passando (100%).
+- **Testes Atuais:** 37 testes passando (100%).
 - **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
 
 ---
 
 ## 4. Próximos Passos
-1. Informar o usuário e confirmar a visualização com `Ctrl + F5`.
+1. Informar o usuário sobre as opções do questionário, como funciona o 1º acesso e como visualizar e extrair as porcentagens de estudo.

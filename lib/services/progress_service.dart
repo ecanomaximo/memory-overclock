@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/onboarding_survey.dart';
 import '../models/user_progress.dart';
 import 'auth_service.dart';
 
@@ -155,6 +156,13 @@ class ProgressService extends ChangeNotifier {
       streak: 0,
       isLoggedIn: false,
     );
+    await _save();
+    notifyListeners();
+  }
+
+  Future<void> completeOnboarding(OnboardingSurveyData surveyData) async {
+    _progress.hasCompletedOnboarding = true;
+    _progress.surveyData = surveyData;
     await _save();
     notifyListeners();
   }

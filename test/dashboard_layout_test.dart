@@ -33,7 +33,6 @@ void main() {
     final navFinder = find.byType(NavigationBar);
     expect(navFinder, findsOneWidget);
     final navTop = tester.getTopLeft(navFinder).dy;
-    print('NavigationBar top dy: $navTop');
     expect(navTop, greaterThan(950)); // Should be at y >= 1000 near the bottom of 1080!
   });
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/onboarding_survey_screen.dart';
 import 'services/auth_service.dart';
 import 'services/progress_service.dart';
 import 'theme/app_theme.dart';
@@ -36,6 +37,12 @@ class MemoryOverclockApp extends StatelessWidget {
           }
 
           if (progressService.progress.isLoggedIn) {
+            if (!progressService.progress.hasCompletedOnboarding) {
+              return OnboardingSurveyScreen(
+                progressService: progressService,
+                onFinished: () {},
+              );
+            }
             return DashboardScreen(progressService: progressService);
           } else {
             return LoginScreen(progressService: progressService);

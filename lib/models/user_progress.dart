@@ -1,8 +1,12 @@
+import 'onboarding_survey.dart';
+
 class UserProgress {
   static const int freeDailyLimit = 5;
   static const int vipDailyLimit = 10;
 
   bool isLoggedIn;
+  bool hasCompletedOnboarding;
+  OnboardingSurveyData? surveyData;
   String userName;
   String userEmail;
   String userPhotoUrl;
@@ -20,6 +24,8 @@ class UserProgress {
 
   UserProgress({
     this.isLoggedIn = false,
+    this.hasCompletedOnboarding = false,
+    this.surveyData,
     this.userName = 'Alexandre Silva',
     this.userEmail = 'alexandre@gmail.com',
     this.userPhotoUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
@@ -43,6 +49,8 @@ class UserProgress {
 
   Map<String, dynamic> toJson() => {
         'isLoggedIn': isLoggedIn,
+        'hasCompletedOnboarding': hasCompletedOnboarding,
+        'surveyData': surveyData?.toMap(),
         'userName': userName,
         'userEmail': userEmail,
         'userPhotoUrl': userPhotoUrl,
@@ -61,6 +69,11 @@ class UserProgress {
   factory UserProgress.fromJson(Map<String, dynamic> json) {
     return UserProgress(
       isLoggedIn: json['isLoggedIn'] as bool? ?? false,
+      hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ??
+          ((json['currentLevel'] as int? ?? 1) > 1 || (json['weeklyXp'] as int? ?? 0) > 0),
+      surveyData: json['surveyData'] != null
+          ? OnboardingSurveyData.fromMap(json['surveyData'] as Map<String, dynamic>)
+          : null,
       userName: json['userName'] as String? ?? 'Alexandre Silva',
       userEmail: json['userEmail'] as String? ?? 'alexandre@gmail.com',
       userPhotoUrl: json['userPhotoUrl'] as String? ??

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/survey_analytics_sheet.dart';
 import 'paywall_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -42,6 +43,11 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   actions: [
                     IconButton(
+                      tooltip: 'Extração Analítica de Formulários',
+                      icon: const Icon(Icons.analytics_outlined, size: 20, color: AppTheme.focusCyan),
+                      onPressed: () => SurveyAnalyticsSheet.show(context, progressService),
+                    ),
+                    IconButton(
                       tooltip: 'Sair da Conta',
                       icon: const Icon(Icons.logout_rounded, size: 20, color: AppTheme.textMuted),
                       onPressed: () => progressService.logout(),
@@ -61,6 +67,8 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildUserHeader(context, progress),
+                      const SizedBox(height: 18),
+                      _buildCognitiveDiagnosisCard(context, progress),
                       const SizedBox(height: 18),
                       _buildPlayActionCard(context),
                       const SizedBox(height: 18),
@@ -450,6 +458,93 @@ class ProfileScreen extends StatelessWidget {
                   style: GoogleFonts.inter(fontSize: 11.5, color: AppTheme.textSecondary),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCognitiveDiagnosisCard(BuildContext context, dynamic progress) {
+    final survey = progress.surveyData;
+    final title = survey?.profileTitle ?? 'Alívio de Ansiedade & Clareza Mental';
+    final domain = survey?.recommendedFocusDomain ?? 'Controle Inibitório & Atenção Sustentada';
+    final commitment = survey?.dailyCommitmentMinutes ?? 10;
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.focusCyan.withValues(alpha: 0.35)),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.focusCyan.withValues(alpha: 0.08),
+            blurRadius: 16,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.focusCyan.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.psychology_rounded, color: AppTheme.focusCyan, size: 20),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'SEU PERFIL NEUROCOGNITIVO',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.focusCyan,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Foco Primário: $domain • Meta: $commitment min/dia',
+            style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppTheme.focusCyan,
+                side: const BorderSide(color: AppTheme.focusCyan, width: 1.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+              onPressed: () => SurveyAnalyticsSheet.show(context, progressService),
+              icon: const Icon(Icons.bar_chart_rounded, size: 18),
+              label: Text(
+                'Ver Estudo de Porcentagens & Extrair Dados',
+                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ],
