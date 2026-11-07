@@ -27,10 +27,10 @@ class StroopStimulus {
 
 class StroopEngine {
   static const List<StroopColorItem> colorPalette = [
-    StroopColorItem('CIANO', AppTheme.primaryNeuroCyan),
-    StroopColorItem('MENTA', AppTheme.accentBioGreen),
-    StroopColorItem('ÂMBAR', AppTheme.accentSolarAmber),
-    StroopColorItem('MAGENTA', Color(0xFFFF2A85)),
+    StroopColorItem('VERMELHO', Color(0xFFFF334B)),
+    StroopColorItem('AZUL', Color(0xFF2979FF)),
+    StroopColorItem('VERDE', Color(0xFF00E676)),
+    StroopColorItem('AMARELO', Color(0xFFFFD600)),
   ];
 
   static StroopStimulus generateStimulus({
@@ -60,17 +60,18 @@ class StroopEngine {
     }
   }
 
-  static int getDurationMsForRound(int round, int totalRounds) {
-    if (round <= 1) return 90000; // 90 segundos (1m30s) na Rodada 1
-    final progress = (round - 1) / (totalRounds - 1);
-    // Varia suavemente de 75000ms (1m15s) até 60000ms (1 minuto)
-    return (75000 - (progress * 15000)).round();
+  static int getDurationMsForRound(int round, int totalRounds, {double timeMultiplier = 1.0}) {
+    final baseMs = (round <= 1)
+        ? 90000 // 90 segundos na Rodada 1
+        : (75000 - (((round - 1) / (totalRounds - 1)) * 15000)).round();
+    return (baseMs * timeMultiplier).round();
   }
 }
 
 class StroopReflexGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final double timeMultiplier;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -78,6 +79,7 @@ class StroopReflexGame extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.timeMultiplier = 1.0,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -113,7 +115,11 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
   void _startStimulus() {
     _answered = false;
     _currentStimulus = StroopEngine.generateStimulus(round: widget.currentRound);
-    final durationMs = StroopEngine.getDurationMsForRound(widget.currentRound, widget.totalRounds);
+    final durationMs = StroopEngine.getDurationMsForRound(
+      widget.currentRound,
+      widget.totalRounds,
+      timeMultiplier: widget.timeMultiplier,
+    );
     _remainingSeconds = (durationMs / 1000).ceil();
 
     const stepMs = 50;

@@ -34,11 +34,10 @@ class ColorClashGame extends StatefulWidget {
 
 class _ColorClashGameState extends State<ColorClashGame> {
   static const List<Map<String, dynamic>> availableColors = [
-    {'name': 'AZUL', 'color': AppTheme.neonCyan},
-    {'name': 'ROSA', 'color': AppTheme.neonPink},
-    {'name': 'VERDE', 'color': AppTheme.neonGreen},
-    {'name': 'ROXO', 'color': AppTheme.neonPurple},
-    {'name': 'AMARELO', 'color': AppTheme.gold},
+    {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
+    {'name': 'AZUL', 'color': Color(0xFF2979FF)},
+    {'name': 'VERDE', 'color': Color(0xFF00E676)},
+    {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
   ];
 
   late int _sequenceLength;

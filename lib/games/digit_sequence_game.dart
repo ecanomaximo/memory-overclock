@@ -49,6 +49,7 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
   late List<int> _targetSequence;
   final List<int> _enteredDigits = [];
   bool _isShowingSequence = true;
+  bool _isDigitBlinking = false;
   int _activeDigitIndex = 0;
   Timer? _sequenceTimer;
 
@@ -68,26 +69,34 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
     _targetSequence = DigitSequenceEngine.generateSequence(length: length);
     _enteredDigits.clear();
     _isShowingSequence = true;
+    _isDigitBlinking = false;
     _activeDigitIndex = 0;
 
     _runSequenceDisplay();
   }
 
   void _runSequenceDisplay() {
-    final interval = Duration(
-      milliseconds: DigitSequenceEngine.getDisplayDurationMs(widget.currentRound),
-    );
+    final intervalMs = DigitSequenceEngine.getDisplayDurationMs(widget.currentRound);
 
     _sequenceTimer?.cancel();
-    _sequenceTimer = Timer.periodic(interval, (timer) {
+    _sequenceTimer = Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
       if (!mounted) return;
       if (_activeDigitIndex < _targetSequence.length - 1) {
+        // Pisca o dígito para dar feedback visual inconfundível mesmo em repetições
         setState(() {
-          _activeDigitIndex++;
+          _isDigitBlinking = true;
+        });
+
+        Future.delayed(const Duration(milliseconds: 160), () {
+          if (!mounted) return;
+          setState(() {
+            _activeDigitIndex++;
+            _isDigitBlinking = false;
+          });
         });
       } else {
         timer.cancel();
-        Future.delayed(const Duration(milliseconds: 300), () {
+        Future.delayed(const Duration(milliseconds: 400), () {
           if (mounted) {
             setState(() {
               _isShowingSequence = false;
@@ -189,29 +198,54 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
   Widget _buildDisplayArea() {
     if (_isShowingSequence) {
       final currentDigit = _targetSequence[_activeDigitIndex];
-      return Container(
-        width: 90,
-        height: 104,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppTheme.cardDeepSlate,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppTheme.primaryNeuroCyan, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.25),
-              blurRadius: 20,
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 140),
+            opacity: _isDigitBlinking ? 0.05 : 1.0,
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 140),
+              scale: _isDigitBlinking ? 0.82 : 1.0,
+              child: Container(
+                width: 96,
+                height: 110,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppTheme.cardDeepSlate,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: _isDigitBlinking ? Colors.transparent : AppTheme.primaryNeuroCyan,
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryNeuroCyan.withValues(alpha: _isDigitBlinking ? 0.0 : 0.35),
+                      blurRadius: 22,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  '$currentDigit',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 54,
+                    fontWeight: FontWeight.w900,
+                    color: AppTheme.primaryNeuroCyan,
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
-        child: Text(
-          '$currentDigit',
-          style: GoogleFonts.orbitron(
-            fontSize: 52,
-            fontWeight: FontWeight.w900,
-            color: AppTheme.primaryNeuroCyan,
           ),
-        ),
+          const SizedBox(height: 10),
+          Text(
+            'Dígito ${_activeDigitIndex + 1} de ${_targetSequence.length}',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppTheme.textSecondary,
+            ),
+          ),
+        ],
       );
     }
 

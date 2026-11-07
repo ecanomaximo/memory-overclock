@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "lib/games/color_clash_game.dart": {
-    "mtime": 1793889662.7744312,
-    "seen": 1793889758.9648235,
-    "ast_hash": "128967dd04702427713fa10b2ea33669",
+    "mtime": 1794021218.3432794,
+    "seen": 1794023792.7840436,
+    "ast_hash": "b4b88b2a1e047212e9cbff6d343576ec",
     "semantic_hash": ""
   },
   "lib/games/flash_matrix_game.dart": {
@@ -1194,9 +1194,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1793987891.2514877,
-    "seen": 1793989012.8134627,
-    "ast_hash": "b8bc38f41c9e0666802a648a23b3fe99",
+    "mtime": 1793989088.2773807,
+    "seen": 1794023792.7840436,
+    "ast_hash": "e51858eeea606a7bd95e2862be1b9a4e",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1230,15 +1230,15 @@
     "semantic_hash": ""
   },
   "lib/games/digit_sequence_game.dart": {
-    "mtime": 1793920500.3818426,
-    "seen": 1793921048.362672,
-    "ast_hash": "be81d94a24f2d586a90160939bab1729",
+    "mtime": 1794020877.4956992,
+    "seen": 1794023792.7840436,
+    "ast_hash": "20eed61461010a504be323b0d65714eb",
     "semantic_hash": ""
   },
   "lib/games/stroop_reflex_game.dart": {
-    "mtime": 1793920476.1458323,
-    "seen": 1793921048.362672,
-    "ast_hash": "107928c54b46972f98ed46c2ae9e9b27",
+    "mtime": 1794022092.5809407,
+    "seen": 1794023792.7840436,
+    "ast_hash": "7ce6dedf6c456e5a7fdfedf705abb882",
     "semantic_hash": ""
   },
   "lib/models/activity_cadence.dart": {
@@ -1248,15 +1248,15 @@
     "semantic_hash": ""
   },
   "lib/models/wave_models.dart": {
-    "mtime": 1793894689.2234938,
-    "seen": 1793894951.2025115,
-    "ast_hash": "b399ffaecdc648bc0b0bfa7a42da6cc5",
+    "mtime": 1794023262.5805447,
+    "seen": 1794023792.7840436,
+    "ast_hash": "9d6f2a8de8b59377802a498504f7a210",
     "semantic_hash": ""
   },
   "lib/screens/wave_activity_screen.dart": {
-    "mtime": 1793920788.565997,
-    "seen": 1793921048.362672,
-    "ast_hash": "34578d4aed750d5f3f91bdf60aa87b5d",
+    "mtime": 1794022595.0882607,
+    "seen": 1794023792.7840436,
+    "ast_hash": "aa1354e0fd2dd4bfd24d1c1d9ce56acd",
     "semantic_hash": ""
   },
   "lib/services/cadence_service.dart": {
@@ -1425,6 +1425,48 @@
     "mtime": 1793981373.3619254,
     "seen": 1793989012.8134627,
     "ast_hash": "0cb0e1c38908f3f33b4359532177b6d0",
+    "semantic_hash": ""
+  },
+  "lib/games/visual_memory_game.dart": {
+    "mtime": 1794022926.6225095,
+    "seen": 1794023792.7840436,
+    "ast_hash": "ecfb9940739bfaab5d6fe4566bcfbbf0",
+    "semantic_hash": ""
+  },
+  "lib/games/word_search_game.dart": {
+    "mtime": 1794023013.8616695,
+    "seen": 1794023792.7840436,
+    "ast_hash": "27194abfe60cceaab658446f8750923e",
+    "semantic_hash": ""
+  },
+  "lib/models/adaptive_difficulty.dart": {
+    "mtime": 1794020460.4632812,
+    "seen": 1794023792.7840436,
+    "ast_hash": "694e81fa147422564d7bcb9fc5d76e0c",
+    "semantic_hash": ""
+  },
+  "test/adaptive_games_test.dart": {
+    "mtime": 1794023440.2033408,
+    "seen": 1794023792.7840436,
+    "ast_hash": "9270ececfbb87b7dd26ac754eec7d308",
+    "semantic_hash": ""
+  },
+  "specs/005-adaptive-games-expansion/plan.md": {
+    "mtime": 1794020282.5429957,
+    "seen": 1794023792.7850418,
+    "ast_hash": "9d06a242d3af4a5ded99f0f9e1985bcd",
+    "semantic_hash": ""
+  },
+  "specs/005-adaptive-games-expansion/spec.md": {
+    "mtime": 1794020197.7265985,
+    "seen": 1794023792.7850418,
+    "ast_hash": "7cc9f48999228a6ad00121643fc9f432",
+    "semantic_hash": ""
+  },
+  "specs/005-adaptive-games-expansion/tasks.md": {
+    "mtime": 1794020372.48216,
+    "seen": 1794023792.7850418,
+    "ast_hash": "a17992bbc51ee87207aa17f6dad376f0",
     "semantic_hash": ""
   }
 }

@@ -3,6 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../games/digit_sequence_game.dart';
 import '../games/flash_matrix_game.dart';
 import '../games/stroop_reflex_game.dart';
+import '../games/visual_memory_game.dart';
+import '../games/word_search_game.dart';
+import '../models/adaptive_difficulty.dart';
 import '../models/wave_models.dart';
 import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
@@ -25,6 +28,7 @@ class WaveActivityScreen extends StatefulWidget {
 }
 
 class _WaveActivityScreenState extends State<WaveActivityScreen> {
+  late final AdaptiveDifficultyProfile _adaptiveProfile;
   late final List<WaveChallenge> _challenges;
   int _currentChallengeIndex = 0;
   int _currentRound = 1;
@@ -42,7 +46,11 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
   @override
   void initState() {
     super.initState();
-    _challenges = WaveChallenge.createPhaseSession(level: widget.phaseLevel);
+    _adaptiveProfile = AdaptiveDifficultyProfile.fromSurvey(widget.progressService.progress.surveyData);
+    _challenges = WaveChallenge.createPhaseSession(
+      level: widget.phaseLevel,
+      adaptiveProfile: _adaptiveProfile,
+    );
   }
 
   WaveChallenge get _activeChallenge => _challenges[_currentChallengeIndex];
@@ -385,52 +393,85 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
   }
 
   Widget _buildChallengeBanner() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.surfaceBorder),
-      ),
-      child: Row(
-        children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_adaptiveProfile.bonusSeconds > 0 || _adaptiveProfile.primaryGoal == 'anxiety_relief')
           Container(
-            padding: const EdgeInsets.all(8),
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppTheme.focusCyan.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
+              color: AppTheme.accentBioGreen.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppTheme.accentBioGreen.withValues(alpha: 0.3)),
             ),
-            child: Icon(
-              _getIconForChallenge(_activeChallenge.type),
-              color: AppTheme.focusCyan,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  _activeChallenge.title,
-                  style: GoogleFonts.orbitron(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimary,
-                  ),
-                ),
-                Text(
-                  _activeChallenge.cognitiveDomain,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: AppTheme.textSecondary,
+                const Icon(Icons.tune_rounded, size: 13, color: AppTheme.accentBioGreen),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    _adaptiveProfile.recommendationNotice,
+                    style: GoogleFonts.inter(
+                      fontSize: 10.5,
+                      color: AppTheme.accentBioGreen,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppTheme.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppTheme.surfaceBorder),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.focusCyan.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  _getIconForChallenge(_activeChallenge.type),
+                  color: AppTheme.focusCyan,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _activeChallenge.title,
+                      style: GoogleFonts.orbitron(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      _activeChallenge.cognitiveDomain,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -442,6 +483,10 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return Icons.grid_view_rounded;
       case ChallengeType.digitSequence:
         return Icons.pin_rounded;
+      case ChallengeType.visualMemory:
+        return Icons.style_rounded;
+      case ChallengeType.wordSearch:
+        return Icons.spellcheck_rounded;
     }
   }
 
@@ -451,6 +496,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return StroopReflexGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          timeMultiplier: _adaptiveProfile.timeMultiplier,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );
@@ -463,6 +509,20 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         );
       case ChallengeType.digitSequence:
         return DigitSequenceGame(
+          currentRound: _currentRound,
+          totalRounds: _activeChallenge.totalRounds,
+          onRoundComplete: _onRoundSuccess,
+          onFailed: _onRoundFail,
+        );
+      case ChallengeType.visualMemory:
+        return VisualMemoryMatchGame(
+          currentRound: _currentRound,
+          totalRounds: _activeChallenge.totalRounds,
+          onRoundComplete: _onRoundSuccess,
+          onFailed: _onRoundFail,
+        );
+      case ChallengeType.wordSearch:
+        return WordSearchGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
           onRoundComplete: _onRoundSuccess,
