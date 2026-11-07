@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:memory_overclock/games/color_clash_game.dart';
 import 'package:memory_overclock/games/digit_sequence_game.dart';
 import 'package:memory_overclock/games/stroop_reflex_game.dart';
+import 'package:memory_overclock/games/visual_memory_game.dart';
 import 'package:memory_overclock/games/word_search_game.dart';
 import 'package:memory_overclock/models/adaptive_difficulty.dart';
 import 'package:memory_overclock/models/onboarding_survey.dart';
@@ -97,6 +98,30 @@ void main() {
       final durationEasy = DigitSequenceEngine.getDisplayDurationMs(1, level: 1);
       final durationHard = DigitSequenceEngine.getDisplayDurationMs(1, level: 8);
       expect(durationHard, lessThan(durationEasy));
+    });
+
+    test('VisualMemoryEngine escala fileiras (3, 4, 5) e gera pares com emojis', () {
+      final r1 = VisualMemoryEngine.getRowsForRound(1, level: 1);
+      final r2 = VisualMemoryEngine.getRowsForRound(2, level: 4);
+      final r3 = VisualMemoryEngine.getRowsForRound(3, level: 7);
+
+      expect(r1, 3); // 3 fileiras na primeira
+      expect(r2, 4); // 4 fileiras no próximo desafio
+      expect(r3, 5); // 5 fileiras no seguinte
+
+      final cards1 = VisualMemoryEngine.generateCards(rows: r1, cols: 4, seed: 100);
+      expect(cards1.length, 12); // 3x4 = 12 cartas (6 pares)
+      expect(cards1.every((c) => c.isFaceUp), true); // Preview inicial de 30s começa aberto
+
+      final cards3 = VisualMemoryEngine.generateCards(rows: r3, cols: 4, seed: 200);
+      expect(cards3.length, 20); // 5x4 = 20 cartas (10 pares)
+
+      // Confere se cada emoji tem exatamente um par idêntico
+      final emojiCounts = <String, int>{};
+      for (final c in cards3) {
+        emojiCounts[c.emoji] = (emojiCounts[c.emoji] ?? 0) + 1;
+      }
+      expect(emojiCounts.values.every((cnt) => cnt == 2), true);
     });
   });
 }

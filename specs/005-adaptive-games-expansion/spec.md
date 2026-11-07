@@ -60,15 +60,16 @@ Esta especificação atende às melhorias ergonômicas e à expansão de conteú
 
 ---
 
-### US-04: Jogo da Memória com Imagens / Emojis
+### US-04: Jogo da Memória com Emojis, Flip 3D & Pré-visualização
 - **Como** jogador,
-- **Quero** virar pares de cartas com imagens/ícones neurocognitivos em uma grade,
-- **Para que** eu exercite a memória de curto prazo e reconhecimento visual de padrões.
+- **Quero** virar pares de cartas com emojis do WhatsApp com animação de flip 3D, ver um preview inicial de até 30 segundos com todas as cartas reveladas e ter o número de fileiras escalando de 3 para 4 e 5 fileiras,
+- **Para que** eu exercite a memória de curto prazo e reconhecimento visual com clareza e ritmo personalizável.
 
 **Critérios de Aceite:**
-- [ ] Grade de cartas com ícones temáticos (Cérebro, Relâmpago, Foguete, Diamante, Estrela, Alvo, Fogo, Lâmpada).
-- [ ] Mecânica de virar 2 cartas: se iguais permanecem abertas com brilho neon; se diferentes, desviram suavemente.
-- [ ] Vitória ao encontrar todos os pares.
+- [x] Utilização de **emojis expressivos do WhatsApp** (🧠, ⚡, 🚀, 💎, ⭐, 🎯, 🔥, 💡, 🧩, 🏆, 👑, 🦄, 🪐, 🍕, 🐱, 🥑) com rótulos e bordas neon.
+- [x] **Animação 3D de virada (Flip)**: Ao tocar na carta, rotação suave em torno do eixo Y (`Transform` com perspectiva) com frente e verso distintos.
+- [x] **Pré-visualização Inicial de 30 segundos**: Ao iniciar o desafio, todas as cartas abertas com barra regressiva e botão "COMEÇAR AGORA" para fechar e iniciar as tentativas imediatamente se o jogador já tiver memorizado.
+- [x] **Escala de fileiras**: 3 fileiras no 1º desafio (12 cartas = 6 pares), 4 fileiras no 2º desafio (16 cartas = 8 pares) e 5 fileiras no 3º desafio (20 cartas = 10 pares).
 
 ---
 
