@@ -13,23 +13,31 @@ class DigitSequenceEngine {
     return List.generate(length, (_) => rng.nextInt(10));
   }
 
-  static int getSequenceLengthForRound(int round, int totalRounds) {
-    if (round <= 1) return 3;
-    // Escala de 3 até 7 dígitos
-    final step = min(4, ((round - 1) * 4 / (totalRounds - 1)).round());
-    return 3 + step;
+  static int getSequenceLengthForRound(int round, int totalRounds, {int level = 1}) {
+    final baseLength = (level <= 3) ? 3 : (level <= 6 ? 4 : 5);
+    const maxGrowth = 4;
+    final step = min(maxGrowth, ((round - 1) * maxGrowth / max(1, totalRounds - 1)).round());
+    return baseLength + step;
   }
 
-  static int getDisplayDurationMs(int round) {
-    if (round <= 1) return 1800;
-    if (round <= 3) return 1300;
-    return 1000;
+  static int getDisplayDurationMs(int round, {int level = 1}) {
+    final speedReduction = min(400, (level - 1) * 35);
+    int baseMs;
+    if (round <= 1) {
+      baseMs = 1800;
+    } else if (round <= 3) {
+      baseMs = 1300;
+    } else {
+      baseMs = 1000;
+    }
+    return max(650, baseMs - speedReduction);
   }
 }
 
 class DigitSequenceGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final int phaseLevel;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -37,6 +45,7 @@ class DigitSequenceGame extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.phaseLevel = 1,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -65,6 +74,7 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
     final length = DigitSequenceEngine.getSequenceLengthForRound(
       widget.currentRound,
       widget.totalRounds,
+      level: widget.phaseLevel,
     );
     _targetSequence = DigitSequenceEngine.generateSequence(length: length);
     _enteredDigits.clear();
@@ -76,7 +86,10 @@ class _DigitSequenceGameState extends State<DigitSequenceGame> {
   }
 
   void _runSequenceDisplay() {
-    final intervalMs = DigitSequenceEngine.getDisplayDurationMs(widget.currentRound);
+    final intervalMs = DigitSequenceEngine.getDisplayDurationMs(
+      widget.currentRound,
+      level: widget.phaseLevel,
+    );
 
     _sequenceTimer?.cancel();
     _sequenceTimer = Timer.periodic(Duration(milliseconds: intervalMs), (timer) {

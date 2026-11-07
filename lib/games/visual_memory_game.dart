@@ -24,6 +24,7 @@ class MemoryCardItem {
 class VisualMemoryMatchGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final int phaseLevel;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -31,6 +32,7 @@ class VisualMemoryMatchGame extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.phaseLevel = 1,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -47,9 +49,12 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     {'label': 'Diamante', 'icon': Icons.diamond_rounded, 'color': Color(0xFF2979FF)},
     {'label': 'Estrela', 'icon': Icons.star_rounded, 'color': AppTheme.gold},
     {'label': 'Alvo', 'icon': Icons.crisis_alert_rounded, 'color': Color(0xFFFF334B)},
+    {'label': 'Lâmpada', 'icon': Icons.lightbulb_rounded, 'color': Color(0xFF00E676)},
+    {'label': 'Fogo', 'icon': Icons.local_fire_department_rounded, 'color': Color(0xFFFF5252)},
   ];
 
   late List<MemoryCardItem> _cards;
+  late int _totalPairs;
   int? _firstFlippedIndex;
   bool _isProcessingMatch = false;
   int _pairsFound = 0;
@@ -67,11 +72,17 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     _isProcessingMatch = false;
     _pairsFound = 0;
 
-    // Seleciona 6 pares (12 cartas no grid 4x3)
+    // Escala por nível:
+    // Nível 1 a 3: 4 pares (8 cartas - fácil)
+    // Nível 4 a 6: 6 pares (12 cartas - intermediário)
+    // Nível 7+: 8 pares (16 cartas - avançado)
+    _totalPairs = widget.phaseLevel <= 3 ? 4 : (widget.phaseLevel <= 6 ? 6 : 8);
+    final activePool = _iconPool.take(_totalPairs).toList();
+
     final list = <MemoryCardItem>[];
     int cardId = 0;
 
-    for (final item in _iconPool) {
+    for (final item in activePool) {
       list.add(
         MemoryCardItem(
           id: cardId++,
@@ -106,18 +117,16 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     if (_firstFlippedIndex == null) {
       _firstFlippedIndex = index;
     } else {
-      // Segunda carta virada
       final firstIndex = _firstFlippedIndex!;
       final firstCard = _cards[firstIndex];
 
       if (firstCard.label == card.label) {
-        // Par encontrado!
         firstCard.isMatched = true;
         card.isMatched = true;
         _firstFlippedIndex = null;
         _pairsFound++;
 
-        if (_pairsFound == _iconPool.length) {
+        if (_pairsFound == _totalPairs) {
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
               widget.onRoundComplete();
@@ -125,7 +134,6 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
           });
         }
       } else {
-        // Cartas diferentes: desvira após 600ms
         _isProcessingMatch = true;
         Future.delayed(const Duration(milliseconds: 650), () {
           if (!mounted) return;
@@ -172,7 +180,7 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
           ),
         const SizedBox(height: 8),
         Text(
-          'MEMÓRIA VISUAL: $_pairsFound / ${_iconPool.length} PARES',
+          'MEMÓRIA VISUAL: $_pairsFound / $_totalPairs PARES',
           style: GoogleFonts.orbitron(
             fontSize: 14,
             fontWeight: FontWeight.bold,

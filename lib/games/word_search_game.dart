@@ -6,18 +6,42 @@ import '../theme/app_theme.dart';
 class WordSearchEngine {
   static const int gridSize = 8;
 
-  static const List<List<String>> roundWordSets = [
-    ['FOCO', 'MENTE', 'AGIL'],
-    ['MEMORIA', 'NEURONIO', 'SINAPSE'],
-    ['CLAREZA', 'REFLEXO', 'CALMA'],
-    ['ENERGIA', 'ATENCAO', 'LOGICA'],
-  ];
+  static List<String> getWordListForRound(int round, {int level = 1}) {
+    if (level <= 3) {
+      // Níveis 1 a 3: 2 palavras curtas e diretas
+      const easySets = [
+        ['FOCO', 'MENTE'],
+        ['AGIL', 'CALMA'],
+        ['LUZ', 'PENSAR'],
+        ['ALVO', 'GUIA'],
+      ];
+      return easySets[(round - 1) % easySets.length];
+    } else if (level <= 6) {
+      // Níveis 4 a 6: 3 palavras moderadas
+      const mediumSets = [
+        ['MEMORIA', 'SINAPSE', 'FOCO'],
+        ['CLAREZA', 'REFLEXO', 'CALMA'],
+        ['ENERGIA', 'ATENCAO', 'LOGICA'],
+        ['CEREBRO', 'NEURONIO', 'AGIL'],
+      ];
+      return mediumSets[(round - 1) % mediumSets.length];
+    } else {
+      // Níveis 7+: 4 palavras desafiadoras
+      const hardSets = [
+        ['SINAPSE', 'MEMORIA', 'COGNICAO', 'MENTE'],
+        ['NEURONIO', 'REFLEXO', 'PERCEPCAO', 'AGIL'],
+        ['PLASTICIDADE', 'FOCO', 'LOGICA', 'ATENCAO'],
+        ['CONEXAO', 'ENERGIA', 'DECISAO', 'CLAREZA'],
+      ];
+      return hardSets[(round - 1) % hardSets.length];
+    }
+  }
 
-  static Map<String, dynamic> generateGrid(int round) {
-    final wordList = roundWordSets[(round - 1) % roundWordSets.length];
+  static Map<String, dynamic> generateGrid(int round, {int level = 1}) {
+    final wordList = getWordListForRound(round, level: level);
     final grid = List.generate(gridSize, (_) => List.generate(gridSize, (_) => ''));
     final placedWords = <String>[];
-    final rng = Random(round * 42 + 7);
+    final rng = Random(round * 42 + level * 7 + 13);
 
     // Coloca cada palavra no grid (horizontal ou vertical)
     for (final word in wordList) {
@@ -77,6 +101,7 @@ class WordSearchEngine {
 class WordSearchGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final int phaseLevel;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -84,6 +109,7 @@ class WordSearchGame extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.phaseLevel = 1,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -108,7 +134,10 @@ class _WordSearchGameState extends State<WordSearchGame> {
   }
 
   void _startRound() {
-    final generated = WordSearchEngine.generateGrid(widget.currentRound);
+    final generated = WordSearchEngine.generateGrid(
+      widget.currentRound,
+      level: widget.phaseLevel,
+    );
     _grid = (generated['grid'] as List<List<String>>);
     _targetWords = (generated['words'] as List<String>);
     _foundWords.clear();

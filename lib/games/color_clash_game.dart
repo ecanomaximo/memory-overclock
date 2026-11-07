@@ -28,17 +28,43 @@ class ColorClashGame extends StatefulWidget {
     required this.progressService,
   });
 
+  static List<Map<String, dynamic>> getColorsForLevel(int level) {
+    if (level <= 3) {
+      return const [
+        {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
+        {'name': 'AZUL', 'color': Color(0xFF2979FF)},
+        {'name': 'VERDE', 'color': Color(0xFF00E676)},
+        {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
+      ];
+    } else if (level <= 6) {
+      return const [
+        {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
+        {'name': 'AZUL', 'color': Color(0xFF2979FF)},
+        {'name': 'VERDE', 'color': Color(0xFF00E676)},
+        {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
+        {'name': 'LARANJA', 'color': Color(0xFFFF7A00)},
+        {'name': 'ROXO', 'color': Color(0xFFB026FF)},
+      ];
+    } else {
+      return const [
+        {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
+        {'name': 'AZUL', 'color': Color(0xFF2979FF)},
+        {'name': 'VERDE', 'color': Color(0xFF00E676)},
+        {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
+        {'name': 'LARANJA', 'color': Color(0xFFFF7A00)},
+        {'name': 'ROXO', 'color': Color(0xFFB026FF)},
+        {'name': 'CIANO', 'color': Color(0xFF00D2FF)},
+        {'name': 'MAGENTA', 'color': Color(0xFFFF2A85)},
+      ];
+    }
+  }
+
   @override
   State<ColorClashGame> createState() => _ColorClashGameState();
 }
 
 class _ColorClashGameState extends State<ColorClashGame> {
-  static const List<Map<String, dynamic>> availableColors = [
-    {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
-    {'name': 'AZUL', 'color': Color(0xFF2979FF)},
-    {'name': 'VERDE', 'color': Color(0xFF00E676)},
-    {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
-  ];
+  List<Map<String, dynamic>> get availableColors => ColorClashGame.getColorsForLevel(widget.level);
 
   late int _sequenceLength;
   late int _displaySpeedMs;

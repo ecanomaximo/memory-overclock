@@ -496,6 +496,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return StroopReflexGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          phaseLevel: widget.phaseLevel,
           timeMultiplier: _adaptiveProfile.timeMultiplier,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
@@ -504,6 +505,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return FlashMatrixWaveChallenge(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          phaseLevel: widget.phaseLevel,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );
@@ -511,6 +513,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return DigitSequenceGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          phaseLevel: widget.phaseLevel,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );
@@ -518,6 +521,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return VisualMemoryMatchGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          phaseLevel: widget.phaseLevel,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );
@@ -525,6 +529,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
         return WordSearchGame(
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
+          phaseLevel: widget.phaseLevel,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );

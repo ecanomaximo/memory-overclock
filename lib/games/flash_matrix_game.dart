@@ -448,6 +448,7 @@ class _FlashMatrixGameState extends State<FlashMatrixGame> {
 class FlashMatrixWaveChallenge extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final int phaseLevel;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -455,6 +456,7 @@ class FlashMatrixWaveChallenge extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.phaseLevel = 1,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -483,23 +485,39 @@ class _FlashMatrixWaveChallengeState extends State<FlashMatrixWaveChallenge> {
   }
 
   void _setupRound() {
-    _config = _configForWave(widget.currentRound, widget.totalRounds);
+    _config = _configForWave(
+      widget.currentRound,
+      widget.totalRounds,
+      level: widget.phaseLevel,
+    );
     _startRound();
   }
 
-  FlashMatrixConfig _configForWave(int round, int totalRounds) {
-    if (round <= 1) {
-      return const FlashMatrixConfig(dimension: 3, targetCount: 3, durationMs: 6000);
-    } else if (round == 2) {
-      return const FlashMatrixConfig(dimension: 3, targetCount: 4, durationMs: 5000);
-    } else if (round == 3) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 4500);
-    } else if (round == 4) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 4000);
-    } else if (round == 5) {
-      return const FlashMatrixConfig(dimension: 4, targetCount: 6, durationMs: 3500);
+  FlashMatrixConfig _configForWave(int round, int totalRounds, {int level = 1}) {
+    if (level <= 3) {
+      if (round <= 2) {
+        return const FlashMatrixConfig(dimension: 3, targetCount: 3, durationMs: 6000);
+      } else if (round <= 4) {
+        return const FlashMatrixConfig(dimension: 3, targetCount: 4, durationMs: 5000);
+      } else {
+        return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 4500);
+      }
+    } else if (level <= 6) {
+      if (round <= 2) {
+        return const FlashMatrixConfig(dimension: 4, targetCount: 4, durationMs: 4500);
+      } else if (round <= 4) {
+        return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 4000);
+      } else {
+        return const FlashMatrixConfig(dimension: 4, targetCount: 6, durationMs: 3500);
+      }
     } else {
-      return const FlashMatrixConfig(dimension: 5, targetCount: 7, durationMs: 3000);
+      if (round <= 2) {
+        return const FlashMatrixConfig(dimension: 4, targetCount: 5, durationMs: 4000);
+      } else if (round <= 4) {
+        return const FlashMatrixConfig(dimension: 5, targetCount: 6, durationMs: 3200);
+      } else {
+        return const FlashMatrixConfig(dimension: 5, targetCount: 7, durationMs: 2800);
+      }
     }
   }
 

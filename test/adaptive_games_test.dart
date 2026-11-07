@@ -1,4 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:memory_overclock/games/color_clash_game.dart';
+import 'package:memory_overclock/games/digit_sequence_game.dart';
+import 'package:memory_overclock/games/stroop_reflex_game.dart';
 import 'package:memory_overclock/games/word_search_game.dart';
 import 'package:memory_overclock/models/adaptive_difficulty.dart';
 import 'package:memory_overclock/models/onboarding_survey.dart';
@@ -44,14 +47,56 @@ void main() {
       expect(challenges.any((c) => c.type == ChallengeType.flashMatrix), true);
     });
 
-    test('WordSearchEngine gera grade 8x8 preenchida com palavras alvo', () {
-      final result = WordSearchEngine.generateGrid(1);
+    test('WordSearchEngine escala quantidade de palavras conforme o nível', () {
+      final easyWords = WordSearchEngine.getWordListForRound(1, level: 2);
+      expect(easyWords.length, 2);
+
+      final mediumWords = WordSearchEngine.getWordListForRound(1, level: 5);
+      expect(mediumWords.length, 3);
+
+      final hardWords = WordSearchEngine.getWordListForRound(1, level: 8);
+      expect(hardWords.length, 4);
+
+      final result = WordSearchEngine.generateGrid(1, level: 2);
       final grid = result['grid'] as List<List<String>>;
       final words = result['words'] as List<String>;
 
       expect(grid.length, 8);
       expect(grid[0].length, 8);
-      expect(words.isNotEmpty, true);
+      expect(words.length, 2);
+    });
+
+    test('StroopEngine escala paleta de cores conforme a fase', () {
+      final pEasy = StroopEngine.getPaletteForLevel(2);
+      expect(pEasy.length, 4);
+
+      final pMed = StroopEngine.getPaletteForLevel(5);
+      expect(pMed.length, 6);
+
+      final pHard = StroopEngine.getPaletteForLevel(8);
+      expect(pHard.length, 9);
+    });
+
+    test('ColorClashGame escala paleta de cores conforme o nível', () {
+      final cEasy = ColorClashGame.getColorsForLevel(2);
+      expect(cEasy.length, 4);
+
+      final cMed = ColorClashGame.getColorsForLevel(5);
+      expect(cMed.length, 6);
+
+      final cHard = ColorClashGame.getColorsForLevel(8);
+      expect(cHard.length, 8);
+    });
+
+    test('DigitSequenceEngine escala tamanho da sequência e velocidade por nível', () {
+      final lenEasy = DigitSequenceEngine.getSequenceLengthForRound(1, 5, level: 1);
+      final lenHard = DigitSequenceEngine.getSequenceLengthForRound(1, 5, level: 8);
+      expect(lenEasy, 3);
+      expect(lenHard, 5);
+
+      final durationEasy = DigitSequenceEngine.getDisplayDurationMs(1, level: 1);
+      final durationHard = DigitSequenceEngine.getDisplayDurationMs(1, level: 8);
+      expect(durationHard, lessThan(durationEasy));
     });
   });
 }

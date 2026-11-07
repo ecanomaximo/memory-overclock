@@ -43,14 +43,20 @@ Esta especificação atende às melhorias ergonômicas e à expansão de conteú
 
 ---
 
-### US-03: Cores Primárias Universais no Jogo de Cores
-- **Como** jogador do Desafio de Cores (Stroop),
-- **Quero** palavras e tintas baseadas em cores simples e universais (Vermelho, Azul, Verde, Amarelo),
-- **Para que** o teste avalie controle inibitório sem ambiguidade visual de tons intermediários.
+### US-03: Cores Primárias Universais & Progressão Adaptativa por Fase
+- **Como** jogador do Desafio de Cores (Stroop & Color Clash),
+- **Quero** começar nas primeiras fases com as 4 cores primárias mais fáceis (Vermelho, Azul, Verde, Amarelo) e ver a dificuldade e número de cores aumentarem conforme avanço de fase,
+- **Para que** o início seja acessível e intuitivo, tornando-se progressivamente mais desafiador.
 
 **Critérios de Aceite:**
-- [ ] Cores adotadas: **VERMELHO** (`#FF3333`), **AZUL** (`#2979FF`), **VERDE** (`#00E676`), **AMARELO** (`#FFD600`).
-- [ ] Rótulos e tintas 100% legíveis e contrastantes no tema escuro.
+- [x] Fases 1 a 3 (Iniciante): Quarteto primário básico (**VERMELHO**, **AZUL**, **VERDE**, **AMARELO**).
+- [x] Fases 4 a 6 (Intermediário): Adição de +2 cores (**LARANJA**, **ROXO**).
+- [x] Fases 7+ (Avançado): Adição de +3 cores de tom aproximado (**CIANO**, **MENTA**, **MAGENTA**), demandando máximo esforço inibitório.
+- [x] Demais jogos adaptados proporcionalmente por nível:
+  - `DigitSequenceGame`: 3 dígitos base nos níveis 1-3 até 5+ dígitos nos níveis 7+ com tempo de exibição mais rápido.
+  - `VisualMemoryMatchGame`: 4 pares (8 cartas) nos níveis 1-3; 6 pares (12 cartas) nos níveis 4-6; 8 pares (16 cartas) nos níveis 7+.
+  - `WordSearchGame`: 2 palavras nos níveis 1-3; 3 palavras nos níveis 4-6; 4 palavras nos níveis 7+.
+  - `FlashMatrixWaveChallenge`: 3x3 e 3 alvos nos níveis 1-3; 4x4 e 4-6 alvos nos níveis 4-6; até 5x5 e 7 alvos nos níveis 7+.
 
 ---
 

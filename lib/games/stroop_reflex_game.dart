@@ -26,21 +26,51 @@ class StroopStimulus {
 }
 
 class StroopEngine {
-  static const List<StroopColorItem> colorPalette = [
-    StroopColorItem('VERMELHO', Color(0xFFFF334B)),
-    StroopColorItem('AZUL', Color(0xFF2979FF)),
-    StroopColorItem('VERDE', Color(0xFF00E676)),
-    StroopColorItem('AMARELO', Color(0xFFFFD600)),
-  ];
+  static List<StroopColorItem> getPaletteForLevel(int level) {
+    if (level <= 3) {
+      // Níveis 1 a 3: As 4 cores primárias mais fáceis e universais
+      return const [
+        StroopColorItem('VERMELHO', Color(0xFFFF334B)),
+        StroopColorItem('AZUL', Color(0xFF2979FF)),
+        StroopColorItem('VERDE', Color(0xFF00E676)),
+        StroopColorItem('AMARELO', Color(0xFFFFD600)),
+      ];
+    } else if (level <= 6) {
+      // Níveis 4 a 6: Intermediário (+ Laranja, Roxo)
+      return const [
+        StroopColorItem('VERMELHO', Color(0xFFFF334B)),
+        StroopColorItem('AZUL', Color(0xFF2979FF)),
+        StroopColorItem('VERDE', Color(0xFF00E676)),
+        StroopColorItem('AMARELO', Color(0xFFFFD600)),
+        StroopColorItem('LARANJA', Color(0xFFFF7A00)),
+        StroopColorItem('ROXO', Color(0xFFB026FF)),
+      ];
+    } else {
+      // Níveis 7+: Avançado (+ Ciano, Menta, Magenta para máximo esforço cognitivo)
+      return const [
+        StroopColorItem('VERMELHO', Color(0xFFFF334B)),
+        StroopColorItem('AZUL', Color(0xFF2979FF)),
+        StroopColorItem('VERDE', Color(0xFF00E676)),
+        StroopColorItem('AMARELO', Color(0xFFFFD600)),
+        StroopColorItem('LARANJA', Color(0xFFFF7A00)),
+        StroopColorItem('ROXO', Color(0xFFB026FF)),
+        StroopColorItem('CIANO', Color(0xFF00D2FF)),
+        StroopColorItem('MENTA', Color(0xFF00E599)),
+        StroopColorItem('MAGENTA', Color(0xFFFF2A85)),
+      ];
+    }
+  }
 
   static StroopStimulus generateStimulus({
     required int round,
+    int level = 1,
     Random? random,
   }) {
     final rng = random ?? Random();
     final isMatch = rng.nextBool();
+    final palette = getPaletteForLevel(level);
 
-    final wordItem = colorPalette[rng.nextInt(colorPalette.length)];
+    final wordItem = palette[rng.nextInt(palette.length)];
     if (isMatch) {
       return StroopStimulus(
         word: wordItem.name,
@@ -49,7 +79,7 @@ class StroopEngine {
         isMatch: true,
       );
     } else {
-      final availableColors = colorPalette.where((item) => item.name != wordItem.name).toList();
+      final availableColors = palette.where((item) => item.name != wordItem.name).toList();
       final colorItem = availableColors[rng.nextInt(availableColors.length)];
       return StroopStimulus(
         word: wordItem.name,
@@ -60,10 +90,11 @@ class StroopEngine {
     }
   }
 
-  static int getDurationMsForRound(int round, int totalRounds, {double timeMultiplier = 1.0}) {
+  static int getDurationMsForRound(int round, int totalRounds, {double timeMultiplier = 1.0, int level = 1}) {
+    final levelSpeedAdjustment = min(15000, (level - 1) * 1500);
     final baseMs = (round <= 1)
         ? 90000 // 90 segundos na Rodada 1
-        : (75000 - (((round - 1) / (totalRounds - 1)) * 15000)).round();
+        : max(45000, (75000 - (((round - 1) / (totalRounds - 1)) * 15000) - levelSpeedAdjustment).round());
     return (baseMs * timeMultiplier).round();
   }
 }
@@ -71,6 +102,7 @@ class StroopEngine {
 class StroopReflexGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
+  final int phaseLevel;
   final double timeMultiplier;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
@@ -79,6 +111,7 @@ class StroopReflexGame extends StatefulWidget {
     super.key,
     required this.currentRound,
     required this.totalRounds,
+    this.phaseLevel = 1,
     this.timeMultiplier = 1.0,
     required this.onRoundComplete,
     required this.onFailed,
@@ -114,11 +147,15 @@ class _StroopReflexGameState extends State<StroopReflexGame> {
 
   void _startStimulus() {
     _answered = false;
-    _currentStimulus = StroopEngine.generateStimulus(round: widget.currentRound);
+    _currentStimulus = StroopEngine.generateStimulus(
+      round: widget.currentRound,
+      level: widget.phaseLevel,
+    );
     final durationMs = StroopEngine.getDurationMsForRound(
       widget.currentRound,
       widget.totalRounds,
       timeMultiplier: widget.timeMultiplier,
+      level: widget.phaseLevel,
     );
     _remainingSeconds = (durationMs / 1000).ceil();
 
