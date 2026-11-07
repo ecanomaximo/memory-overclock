@@ -1194,9 +1194,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1794031375.3733468,
-    "seen": 1794031991.5638824,
-    "ast_hash": "f212a9cad055b3987d23df0631edce14",
+    "mtime": 1794032016.2364254,
+    "seen": 1794032543.963506,
+    "ast_hash": "6f10112d0bea67b9231365a9af516744",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1218,9 +1218,9 @@
     "semantic_hash": ""
   },
   "lib/screens/profile_screen.dart": {
-    "mtime": 1793987489.1282701,
-    "seen": 1793989012.8134627,
-    "ast_hash": "28fb6f9b35221d1bbe1071c84866988a",
+    "mtime": 1794032386.4425125,
+    "seen": 1794032543.963506,
+    "ast_hash": "d3e6335422833464e16a87704b3e045b",
     "semantic_hash": ""
   },
   "test/profile_screen_test.dart": {

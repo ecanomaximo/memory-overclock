@@ -1,28 +1,27 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 07/11/2026  
-**Status do Projeto:** Concluído (Caça-Palavras com Mecânica Clássica de Arrasto Implementada & Deployed)
+**Status do Projeto:** Concluído (Remoção da Opção de Refazer Formulário & Deployed)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Mecânica Clássica de Arrasto no [`WordSearchGame`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/games/word_search_game.dart):**
-   - Substituído o clique célula a célula por **seleção contínua por arrasto** (`GestureDetector` com `onPanStart`, `onPanUpdate`, `onPanEnd`).
-   - Algoritmo de vetor de linha com **snap direcional inteligente**: permite circular palavras em horizontal, vertical e diagonal com tolerância para pequenas imprecisões no toque.
-   - Destaque dinâmico em tempo real durante o arrasto (`_activeDragCells` com neon ciano) e exibição do texto sendo formado.
-   - Fixação permanente em neon verde das palavras e células descobertas (`_permanentlyFoundCells`).
-   - Suporte a leitura direta e reversa da palavra selecionada.
+1. **Bloqueio de Reenvio do Formulário de Anamnese:**
+   - Removido o botão *"Ver / Refazer Formulário"* do card de Perfil Neurocognitivo em [`ProfileScreen`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/screens/profile_screen.dart).
+   - Removido o ícone de atalho de formulário da barra de ações (`AppBar`).
+   - O questionário de anamnese agora é respondido estritamente uma única vez durante o primeiro acesso/onboarding do jogador, garantindo consistência no diagnóstico inicial.
+   - O card no perfil continua exibindo o diagnóstico (foco primário, meta diária) e o botão para acessar a extração analítica (`SurveyAnalyticsSheet`).
 2. **Qualidade & Rastreabilidade:**
    - 48 testes automatizados passando 100% (`flutter test`).
    - `dart analyze lib test`: 0 erros / 0 avisos.
-   - Grafo de conhecimento Graphify atualizado (2.033 nós, 2.319 arestas).
-   - Build web compilado e publicado na branch `gh-pages` (commit `68a37f0`).
+   - Grafo de conhecimento Graphify atualizado (2.032 nós, 2.316 arestas).
+   - Build web compilado e publicado na branch `gh-pages` (commit `7498491`).
    - Sincronização da branch `main`.
 
 ---
 
 ## 2. Onde Parou
-- A mecânica de arrasto para o Caça-Palavras está ativa e validada em produção no GitHub Pages.
+- A alteração está em produção no GitHub Pages. Usuários cadastrados não têm mais acesso ao botão de refazer o formulário.
 
 ---
 
@@ -33,4 +32,4 @@
 ---
 
 ## 4. Próximos Passos
-1. Jogar a rodada de Caça-Palavras arrastando o dedo ou mouse sobre as letras para sentir a fluidez da seleção em linha reta.
+1. Acessar a tela de perfil e verificar que o botão de refazer foi removido, restando apenas a consulta analítica e a exibição do perfil traçado.
