@@ -127,7 +127,7 @@ class VisualMemoryMatchGame extends StatefulWidget {
 }
 
 class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
-  static const int _previewTotalSeconds = 30;
+  static const int _previewTotalSeconds = 5;
 
   late int _targetRows;
   late int _totalPairs;

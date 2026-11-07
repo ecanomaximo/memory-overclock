@@ -1,7 +1,7 @@
 # Graph Report - memory  (2026-11-07)
 
 ## Corpus Check
-- 212 files · ~132,263 words
+- 212 files · ~132,232 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 35 file(s) not represented in the graph (top: .xml 7, (none) 6, .plist 4)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d2ab12cf`
+- Built from commit: `ed688272`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -171,8 +171,8 @@
 ## God Nodes (most connected - your core abstractions)
 1. `Win32Window` - 21 edges
 2. `Writing Skills` - 21 edges
-3. `Testing Skills With Subagents` - 16 edges
-4. `ProgressService` - 16 edges
+3. `ProgressService` - 16 edges
+4. `Testing Skills With Subagents` - 16 edges
 5. `handleRequest()` - 14 edges
 6. `Code Review Reception` - 14 edges
 7. `Test-Driven Development (TDD)` - 13 edges
@@ -734,13 +734,13 @@ Nodes (4): Example: TDD Skill Bulletproofing, Initial Test (Failed), Iteration 1
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ProgressService` connect `dashboard_screen.dart` to `color_clash_game.dart`, `reading_recall_game.dart`, `flash_matrix_game.dart`, `main.dart`, `home_screen.dart`, `package:flutter/material.dart`, `login_screen.dart`, `progress_service.dart`, `wave_activity_screen.dart`, `../theme/app_theme.dart`, `profile_screen.dart`, `onboarding_survey_screen.dart`, `survey_analytics_sheet.dart`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **What connects `MemoryEmojiItem`, `MemoryCardItem`, `VisualMemoryEngine` to the rest of the system?**
   _580 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `win32_window.cpp` be split into smaller, more focused modules?**
   _Cohesion score 0.14736842105263157 - nodes in this community are weakly interconnected._
 - **Why does `Win32Window` connect `Win32Window` to `win32_window.cpp`, `utils.cpp`, `.MessageHandler`, `Size`, `Point`, `FlutterWindow`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `color_clash_game.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
 - **Should `reading_recall_game.dart` be split into smaller, more focused modules?**

@@ -68,7 +68,7 @@ Esta especificação atende às melhorias ergonômicas e à expansão de conteú
 **Critérios de Aceite:**
 - [x] Utilização de **emojis expressivos do WhatsApp** (🧠, ⚡, 🚀, 💎, ⭐, 🎯, 🔥, 💡, 🧩, 🏆, 👑, 🦄, 🪐, 🍕, 🐱, 🥑) com rótulos e bordas neon.
 - [x] **Animação 3D de virada (Flip)**: Ao tocar na carta, rotação suave em torno do eixo Y (`Transform` com perspectiva) com frente e verso distintos.
-- [x] **Pré-visualização Inicial de 30 segundos**: Ao iniciar o desafio, todas as cartas abertas com barra regressiva e botão "COMEÇAR AGORA" para fechar e iniciar as tentativas imediatamente se o jogador já tiver memorizado.
+- [x] **Pré-visualização Inicial de 5 segundos**: Ao iniciar o desafio, todas as cartas abertas com barra regressiva de 5s e botão "COMEÇAR AGORA" para fechar e iniciar as tentativas imediatamente se o jogador já tiver memorizado.
 - [x] **Escala de fileiras**: 3 fileiras no 1º desafio (12 cartas = 6 pares), 4 fileiras no 2º desafio (16 cartas = 8 pares) e 5 fileiras no 3º desafio (20 cartas = 10 pares).
 
 ---
