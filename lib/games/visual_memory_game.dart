@@ -50,6 +50,9 @@ class VisualMemoryEngine {
     MemoryEmojiItem('🥑', 'Abacate', Color(0xFF76FF03)),
   ];
 
+  static const int maxAllowedMistakes = 3;
+  static const int defaultFreeReveals = 3;
+
   /// Escalonamento por fileiras:
   /// - 1ª rodada: 3 fileiras (12 cartas = 6 pares)
   /// - 2ª rodada: 4 fileiras (16 cartas = 8 pares)
@@ -128,6 +131,8 @@ class VisualMemoryMatchGame extends StatefulWidget {
   final int totalRounds;
   final int phaseLevel;
   final double timeMultiplier;
+  final bool isVip;
+  final VoidCallback? onOpenPaywall;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -137,6 +142,8 @@ class VisualMemoryMatchGame extends StatefulWidget {
     required this.totalRounds,
     this.phaseLevel = 1,
     this.timeMultiplier = 1.0,
+    this.isVip = false,
+    this.onOpenPaywall,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -162,6 +169,15 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
   int _previewMsLeft = 2500;
   Timer? _previewTimer;
 
+  // Sistema de Revelação de Cartas (3 usos gratuitos na rodada ou ilimitado para VIP)
+  int _revealUsesLeft = VisualMemoryEngine.defaultFreeReveals;
+  bool _isRevealing = false;
+  Timer? _revealTimer;
+
+  // Regra de Derrota: 3 erros encerram a tentativa com derrota
+  int _wrongAttempts = 0;
+  static const int maxWrongAttempts = VisualMemoryEngine.maxAllowedMistakes;
+
   int? _firstFlippedIndex;
   bool _isProcessingMatch = false;
   int _pairsFound = 0;
@@ -177,13 +193,18 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
   @override
   void dispose() {
     _previewTimer?.cancel();
+    _revealTimer?.cancel();
     super.dispose();
   }
 
   void _startRound() {
     _previewTimer?.cancel();
+    _revealTimer?.cancel();
     _firstFlippedIndex = null;
     _isProcessingMatch = false;
+    _isRevealing = false;
+    _wrongAttempts = 0;
+    _revealUsesLeft = widget.isVip ? 999 : VisualMemoryEngine.defaultFreeReveals;
     _pairsFound = 0;
     _isPreviewing = true;
 
@@ -233,8 +254,58 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     });
   }
 
+  void _revealCardsTemporarily() {
+    if (_isPreviewing || _isRevealing || _isProcessingMatch) return;
+
+    if (!widget.isVip && _revealUsesLeft <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Você já usou as 3 revelações gratuitas! Assine o Memory Pro por R\$ 9,90/mês para revelações ilimitadas.',
+            style: GoogleFonts.inter(fontSize: 12, color: Colors.white),
+          ),
+          backgroundColor: AppTheme.alertPink,
+          duration: const Duration(seconds: 3),
+          action: widget.onOpenPaywall != null
+              ? SnackBarAction(
+                  label: 'ASSINAR PRO',
+                  textColor: AppTheme.prestigeGold,
+                  onPressed: widget.onOpenPaywall!,
+                )
+              : null,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      if (!widget.isVip) {
+        _revealUsesLeft--;
+      }
+      _isRevealing = true;
+      for (final card in _cards) {
+        if (!card.isMatched) {
+          card.isFaceUp = true;
+        }
+      }
+    });
+
+    _revealTimer?.cancel();
+    _revealTimer = Timer(const Duration(milliseconds: 1800), () {
+      if (!mounted) return;
+      setState(() {
+        _isRevealing = false;
+        for (final card in _cards) {
+          if (!card.isMatched) {
+            card.isFaceUp = false;
+          }
+        }
+      });
+    });
+  }
+
   void _onCardTap(int index) {
-    if (_isPreviewing || _isProcessingMatch) return;
+    if (_isPreviewing || _isRevealing || _isProcessingMatch) return;
     final card = _cards[index];
     if (card.isFaceUp || card.isMatched) return;
 
@@ -262,16 +333,32 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
           });
         }
       } else {
+        _wrongAttempts++;
         _isProcessingMatch = true;
-        Future.delayed(const Duration(milliseconds: 750), () {
-          if (!mounted) return;
-          setState(() {
-            firstCard.isFaceUp = false;
-            card.isFaceUp = false;
-            _firstFlippedIndex = null;
-            _isProcessingMatch = false;
+
+        if (_wrongAttempts >= maxWrongAttempts) {
+          // Atingiu 3 erros: falha no desafio da rodada
+          Future.delayed(const Duration(milliseconds: 650), () {
+            if (!mounted) return;
+            setState(() {
+              firstCard.isFaceUp = false;
+              card.isFaceUp = false;
+              _firstFlippedIndex = null;
+              _isProcessingMatch = false;
+            });
+            widget.onFailed();
           });
-        });
+        } else {
+          Future.delayed(const Duration(milliseconds: 750), () {
+            if (!mounted) return;
+            setState(() {
+              firstCard.isFaceUp = false;
+              card.isFaceUp = false;
+              _firstFlippedIndex = null;
+              _isProcessingMatch = false;
+            });
+          });
+        }
       }
     }
   }
@@ -285,8 +372,8 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
       children: [
         if (_isTutorial && !_isPreviewing)
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: AppTheme.cardDeepSlate,
               borderRadius: BorderRadius.circular(10),
@@ -294,13 +381,13 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.info_outline, size: 16, color: AppTheme.primaryNeuroCyan),
-                const SizedBox(width: 8),
+                const Icon(Icons.info_outline, size: 14, color: AppTheme.primaryNeuroCyan),
+                const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Toque nas cartas para encontrar os pares de emojis idênticos.',
+                    'Encontre os pares com até 3 tentativas de erro.',
                     style: GoogleFonts.inter(
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.primaryNeuroCyan,
                     ),
@@ -310,71 +397,48 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
             ),
           ),
 
-        // Barra de memorização prévia
+        // Barra de contagem regressiva da prévia (sem botão 'Começar')
         if (_isPreviewing)
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: AppTheme.cardDeepSlate,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppTheme.gold.withValues(alpha: 0.6)),
               boxShadow: [
                 BoxShadow(
                   color: AppTheme.gold.withValues(alpha: 0.15),
-                  blurRadius: 10,
+                  blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.remove_red_eye_rounded, color: AppTheme.gold, size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          'MEMORIZE OS EMOJIS (${secondsDisplay}s)',
-                          style: GoogleFonts.orbitron(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
-                            color: AppTheme.gold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: _endPreview,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryNeuroCyan,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        visualDensity: VisualDensity.compact,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      icon: const Icon(Icons.flash_on_rounded, size: 14),
-                      label: Text(
-                        'COMEÇAR',
-                        style: GoogleFonts.orbitron(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    const Icon(Icons.remove_red_eye_rounded, color: AppTheme.gold, size: 16),
+                    const SizedBox(width: 8),
+                    Text(
+                      'MEMORIZE AS CARTAS (${secondsDisplay}s)',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                        color: AppTheme.gold,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(3),
                   child: LinearProgressIndicator(
                     value: previewProgress,
-                    minHeight: 5,
+                    minHeight: 4,
                     backgroundColor: AppTheme.surfaceElevated,
                     valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.gold),
                   ),
@@ -383,16 +447,94 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
             ),
           )
         else
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              'MEMÓRIA VISUAL: $_pairsFound / $_totalPairs PARES ($_targetRows FILEIRAS)',
-              style: GoogleFonts.orbitron(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.3,
-                color: AppTheme.primaryNeuroCyan,
-              ),
+          // Barra de Ação da Rodada (Pares, Erros 3/3 e Botão Revelar)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppTheme.cardDeepSlate,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.surfaceBorder),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Pares e Erros
+                Row(
+                  children: [
+                    Text(
+                      '$_pairsFound/$_totalPairs',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryNeuroCyan,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: (_wrongAttempts >= 2 ? AppTheme.alertPink : AppTheme.surfaceElevated).withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: _wrongAttempts >= 2 ? AppTheme.alertPink : AppTheme.surfaceBorder,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.heart_broken_rounded,
+                            size: 13,
+                            color: _wrongAttempts > 0 ? AppTheme.alertPink : AppTheme.textMuted,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Erros: $_wrongAttempts/$maxWrongAttempts',
+                            style: GoogleFonts.inter(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                              color: _wrongAttempts >= 2
+                                  ? AppTheme.alertPink
+                                  : (_wrongAttempts > 0 ? AppTheme.habitAmber : AppTheme.textSecondary),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                // Botão de Revelação de Cartas
+                ElevatedButton.icon(
+                  onPressed: _revealCardsTemporarily,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isRevealing
+                        ? AppTheme.gold
+                        : (_revealUsesLeft > 0 || widget.isVip ? AppTheme.primaryNeuroCyan : AppTheme.surfaceElevated),
+                    foregroundColor: _isRevealing || _revealUsesLeft > 0 || widget.isVip
+                        ? Colors.black
+                        : AppTheme.textMuted,
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: Icon(
+                    _isRevealing ? Icons.visibility_rounded : Icons.remove_red_eye_rounded,
+                    size: 13,
+                  ),
+                  label: Text(
+                    _isRevealing
+                        ? 'REVELANDO'
+                        : (widget.isVip ? 'REVELAR (PRO ∞)' : 'REVELAR ($_revealUsesLeft/3)'),
+                    style: GoogleFonts.orbitron(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 

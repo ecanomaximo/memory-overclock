@@ -143,5 +143,10 @@ void main() {
 
       expect(p1.map((c) => c.type).toList(), isNot(equals(p2.map((c) => c.type).toList())));
     });
+
+    test('VisualMemoryEngine define limite de 3 erros e 3 revelações gratuitas', () {
+      expect(VisualMemoryEngine.maxAllowedMistakes, 3);
+      expect(VisualMemoryEngine.defaultFreeReveals, 3);
+    });
   });
 }

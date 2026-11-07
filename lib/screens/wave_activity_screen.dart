@@ -10,6 +10,7 @@ import '../models/wave_models.dart';
 import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
+import 'paywall_screen.dart';
 
 class WaveActivityScreen extends StatefulWidget {
   final int phaseLevel;
@@ -506,6 +507,15 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
           totalRounds: _activeChallenge.totalRounds,
           phaseLevel: widget.phaseLevel,
           timeMultiplier: _adaptiveProfile.timeMultiplier,
+          isVip: widget.progressService.progress.isVip,
+          onOpenPaywall: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PaywallScreen(progressService: widget.progressService),
+              ),
+            );
+          },
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );
