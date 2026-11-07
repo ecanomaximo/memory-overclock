@@ -1,47 +1,58 @@
 # 📍 Checkpoint do Projeto: Memory Overclock
 
 **Data:** 06/11/2026  
-**Status do Projeto:** Concluído (Expansão de Jogos, Calibração Cognitiva Adaptativa e Novo Deploy no Ar)
+**Status do Projeto:** Concluído (Dificuldade Adaptativa e Progressão Dinâmica por Fase Implementada & Deployed)
 
 ---
 
 ## 1. O Que Foi Feito Nesta Sessão
-1. **Calibração Cognitiva Adaptativa (Anamnese ➔ Gameplay):**
-   - Criado [`AdaptiveDifficultyProfile`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/models/adaptive_difficulty.dart) conectando as respostas da Anamnese Neural (`OnboardingSurveyData`) à dinâmica da sessão.
-   - Perfis de alívio de ansiedade e alto estresse recebem +35% de tempo e ritmo calmo com jogos relaxantes. Perfis com esquecimento recebem foco em retenção mnemônica.
-   - Badge explicativo com o tipo de calibração exibido no topo da sessão de treino.
-2. **Piscar / Pulso nos Números Repetidos (`DigitSequenceGame`):**
-   - Implementado efeito de piscar com `AnimatedOpacity` e `AnimatedScale` (160ms) no [`DigitSequenceGame`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/games/digit_sequence_game.dart) a cada transição, permitindo identificar com clareza números consecutivos repetidos (ex: 5 e 5).
-   - Adicionado contador de progresso "Dígito X de Y".
-3. **Cores Primárias Simples no Jogo de Cores:**
-   - Paleta complexa substituída pelo quarteto universal: **Vermelho**, **Azul**, **Verde** e **Amarelo** em [`StroopReflexGame`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/games/stroop_reflex_game.dart) e [`ColorClashGame`](file:///c:/Users/emaxi/OneDrive/Área de Trabalho/claude/memory/lib/games/color_clash_game.dart).
-4. **Dois Novos Jogos Neurocognitivos Adicionados:**
-   - **`VisualMemoryMatchGame` (`lib/games/visual_memory_game.dart`):** Jogo da memória visual com cartas viradas para baixo e ícones neurais (cérebro, raio, foguete, diamante, estrela, alvo).
-   - **`WordSearchGame` (`lib/games/word_search_game.dart`):** Caça-palavras cognitivo em grade 8x8 com palavras-chave de foco, atenção e clareza.
-5. **Qualidade & Rastreabilidade:**
-   - 44 testes automatizados passando 100% (`flutter test`).
+1. **Progressão Dinâmica de Dificuldade por Nível/Fase em Todos os Jogos:**
+   - **Jogos de Cores (`StroopReflexGame` & `ColorClashGame`):**
+     - **Fases 1 a 3 (Iniciante):** 4 cores primárias básicas e intuitivas (Vermelho, Azul, Verde, Amarelo).
+     - **Fases 4 a 6 (Intermediário):** Expande para 6 cores (+ Laranja, Roxo).
+     - **Fases 7+ (Avançado):** Expande para 8 a 9 cores (+ Ciano, Menta, Magenta), exigindo máximo controle inibitório.
+   - **Memória Numérica (`DigitSequenceGame`):**
+     - Fases 1 a 3: 3 dígitos base com tempo pausado (1800ms) e piscar luminoso em dígitos repetidos.
+     - Fases 4 a 6: 4 dígitos base.
+     - Fases 7+: 5 dígitos base (indo até 9 dígitos) com velocidade acelerada.
+   - **Jogo da Memória Visual (`VisualMemoryMatchGame`):**
+     - Fases 1 a 3: 4 pares (8 cartas em grade compacta).
+     - Fases 4 a 6: 6 pares (12 cartas).
+     - Fases 7+: 8 pares (16 cartas).
+   - **Caça-Palavras Cognitivo (`WordSearchGame`):**
+     - Fases 1 a 3: 2 palavras curtas (ex: FOCO, MENTE).
+     - Fases 4 a 6: 3 palavras moderadas (ex: MEMORIA, SINAPSE, FOCO).
+     - Fases 7+: 4 palavras desafiadoras (ex: PLASTICIDADE, REFLEXO, PERCEPCAO).
+   - **Flash Matrix (`FlashMatrixWaveChallenge`):**
+     - Matriz 3x3 e 3 alvos nas fases iniciais, escalando até 5x5 e 7 alvos nas fases avançadas.
+2. **Integração de Sessão (`WaveActivityScreen`):**
+   - Repassado `phaseLevel: widget.phaseLevel` para todas as 5 instâncias de jogos.
+3. **Qualidade & Rastreabilidade:**
+   - 47 testes automatizados passando 100% (`flutter test`).
    - `dart analyze lib test`: 0 erros / 0 avisos.
-   - Grafo de conhecimento Graphify atualizado (1.991 nós, 2.274 arestas).
-   - Build web compilado e publicado na branch `gh-pages`.
+   - Grafo de conhecimento Graphify atualizado (1.999 nós, 2.279 arestas).
+   - Build web compilado e publicado na branch `gh-pages` (commit `9382e2f`).
+   - Repositório sincronizado no `main` (commit `a8067b6`).
 
 ---
 
 ## 2. Onde Parou
-- Todas as melhorias visuais, os dois novos jogos e a calibração adaptativa estão compilados e no ar para teste imediato.
+- A progressão dinâmica por faixas de níveis (1-3, 4-6, 7+) está calibrada, testada e ativa no build público em produção.
 
 ---
 
 ## 3. Contexto Técnico Atual
-- **Jogos Disponíveis (5 tipos):**
-  1. Seleção de Cores (Stroop com cores primárias)
-  2. Jogo da Memória Visual (Cartas com ícones)
-  3. Flash Matrix (Matriz espacial)
-  4. Caça-Palavras Cognitivo (Grid 8x8)
-  5. Memória Numérica (Digit Span com piscar luminoso)
+- **Jogos Disponíveis (5 tipos integrados à trilha):**
+  1. Seleção de Cores / Stroop Reflex (4 ➔ 6 ➔ 9 cores)
+  2. Color Clash (4 ➔ 6 ➔ 8 cores)
+  3. Jogo da Memória Visual (4 ➔ 6 ➔ 8 pares)
+  4. Caça-Palavras Cognitivo (2 ➔ 3 ➔ 4 palavras)
+  5. Memória Numérica (3 ➔ 4 ➔ 5+ dígitos com flash de repetição)
+  6. Flash Matrix (3x3 ➔ 4x4 ➔ 5x5)
 - **URL Pública:** `https://ecanomaximo.github.io/memory-overclock/`
-- **Testes:** 44/44 aprovados.
+- **Testes:** 47/47 aprovados.
 
 ---
 
 ## 4. Próximos Passos
-1. Jogar uma sessão completa na trilha para experimentar a rotação dos 5 jogos e a calibração personalizada.
+1. Jogar as fases 1 a 3 na trilha para sentir a curva suave inicial e avançar para as fases 4+ para experimentar a expansão automática de cores e complexidade.
