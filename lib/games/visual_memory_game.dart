@@ -127,14 +127,14 @@ class VisualMemoryMatchGame extends StatefulWidget {
 }
 
 class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
-  static const int _previewTotalSeconds = 5;
+  static const int _previewTotalMs = 2500;
 
   late int _targetRows;
   late int _totalPairs;
   late List<MemoryCardItem> _cards;
 
   bool _isPreviewing = true;
-  int _previewSecondsLeft = _previewTotalSeconds;
+  int _previewMsLeft = _previewTotalMs;
   Timer? _previewTimer;
 
   int? _firstFlippedIndex;
@@ -161,7 +161,7 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     _isProcessingMatch = false;
     _pairsFound = 0;
     _isPreviewing = true;
-    _previewSecondsLeft = _previewTotalSeconds;
+    _previewMsLeft = _previewTotalMs;
 
     _targetRows = VisualMemoryEngine.getRowsForRound(
       widget.currentRound,
@@ -179,15 +179,16 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
   }
 
   void _startPreviewTimer() {
-    _previewTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _previewTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
       setState(() {
-        if (_previewSecondsLeft > 1) {
-          _previewSecondsLeft--;
+        if (_previewMsLeft > 50) {
+          _previewMsLeft -= 50;
         } else {
+          _previewMsLeft = 0;
           _endPreview();
         }
       });
@@ -252,7 +253,8 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
 
   @override
   Widget build(BuildContext context) {
-    final previewProgress = _previewSecondsLeft / _previewTotalSeconds;
+    final previewProgress = _previewMsLeft / _previewTotalMs;
+    final secondsDisplay = (_previewMsLeft / 1000).toStringAsFixed(1);
 
     return Column(
       children: [
@@ -310,7 +312,7 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
                         const Icon(Icons.remove_red_eye_rounded, color: AppTheme.gold, size: 18),
                         const SizedBox(width: 8),
                         Text(
-                          'MEMORIZE OS EMOJIS (${_previewSecondsLeft}s)',
+                          'MEMORIZE OS EMOJIS (${secondsDisplay}s)',
                           style: GoogleFonts.orbitron(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,

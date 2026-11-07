@@ -1194,9 +1194,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1794028735.7055743,
-    "seen": 1794029095.9568472,
-    "ast_hash": "731f96e5d7b267675be24598362601e6",
+    "mtime": 1794029123.008533,
+    "seen": 1794031351.632104,
+    "ast_hash": "3bb552578051e13f245bcc32ab0aa9ee",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1428,9 +1428,9 @@
     "semantic_hash": ""
   },
   "lib/games/visual_memory_game.dart": {
-    "mtime": 1794028881.476379,
-    "seen": 1794029095.9568472,
-    "ast_hash": "5e0da989c215adcf29a4c53b0af1dbc5",
+    "mtime": 1794031169.6253977,
+    "seen": 1794031351.632104,
+    "ast_hash": "6f2e506003c4ddf15c65e0f8a1ca2454",
     "semantic_hash": ""
   },
   "lib/games/word_search_game.dart": {
@@ -1446,9 +1446,9 @@
     "semantic_hash": ""
   },
   "test/adaptive_games_test.dart": {
-    "mtime": 1794028902.9075413,
-    "seen": 1794029095.9568472,
-    "ast_hash": "e231915c00795ba9e700227835e735e9",
+    "mtime": 1794031190.9314222,
+    "seen": 1794031351.632104,
+    "ast_hash": "c852af84f325ff1f1acdae9ae26f2aa0",
     "semantic_hash": ""
   },
   "specs/005-adaptive-games-expansion/plan.md": {
@@ -1458,9 +1458,9 @@
     "semantic_hash": ""
   },
   "specs/005-adaptive-games-expansion/spec.md": {
-    "mtime": 1794029022.116576,
-    "seen": 1794029095.9568472,
-    "ast_hash": "81d14aabb8cd47791be8316bdae78609",
+    "mtime": 1794031297.6023521,
+    "seen": 1794031351.632104,
+    "ast_hash": "461e0ec728633fa5970eeae1bcbf690c",
     "semantic_hash": ""
   },
   "specs/005-adaptive-games-expansion/tasks.md": {

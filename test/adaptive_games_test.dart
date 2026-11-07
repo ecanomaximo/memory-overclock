@@ -111,7 +111,7 @@ void main() {
 
       final cards1 = VisualMemoryEngine.generateCards(rows: r1, cols: 4, seed: 100);
       expect(cards1.length, 12); // 3x4 = 12 cartas (6 pares)
-      expect(cards1.every((c) => c.isFaceUp), true); // Preview inicial de 5s começa aberto
+      expect(cards1.every((c) => c.isFaceUp), true); // Preview inicial de 2.5s começa aberto
 
       final cards3 = VisualMemoryEngine.generateCards(rows: r3, cols: 4, seed: 200);
       expect(cards3.length, 20); // 5x4 = 20 cartas (10 pares)
