@@ -16,6 +16,8 @@ class SurveyAnalyticsSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      constraints: const BoxConstraints(maxWidth: 620),
       builder: (ctx) => SurveyAnalyticsSheet(progressService: progressService),
     );
   }
@@ -33,22 +35,28 @@ class SurveyAnalyticsSheet extends StatelessWidget {
 
     final report = SurveyAnalyticsService.generateReport(dataset);
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.88,
-        maxWidth: 600,
-      ),
-      margin: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width > 640 ? (MediaQuery.of(context).size.width - 600) / 2 : 0,
-        right: MediaQuery.of(context).size.width > 640 ? (MediaQuery.of(context).size.width - 600) / 2 : 0,
-      ),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: AppTheme.focusCyan.withValues(alpha: 0.6), width: 1.5),
-      ),
-      child: Column(
-        children: [
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.88,
+          maxWidth: 600,
+        ),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppTheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border.all(color: AppTheme.focusCyan.withValues(alpha: 0.6), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 20,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
           // Barra de arrasto
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -186,8 +194,10 @@ class SurveyAnalyticsSheet extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
   Widget _buildSectionCard({
     required String title,

@@ -109,9 +109,14 @@ void main() {
       expect(r2, 4); // 4 fileiras no próximo desafio
       expect(r3, 5); // 5 fileiras no seguinte
 
+      final previewEasy = VisualMemoryEngine.getPreviewDurationMs(level: 1, round: 1);
+      final previewHard = VisualMemoryEngine.getPreviewDurationMs(level: 8, round: 3);
+      expect(previewEasy, 2500); // 2.5s no início
+      expect(previewHard, lessThan(previewEasy)); // Reduz para maior desafio
+
       final cards1 = VisualMemoryEngine.generateCards(rows: r1, cols: 4, seed: 100);
       expect(cards1.length, 12); // 3x4 = 12 cartas (6 pares)
-      expect(cards1.every((c) => c.isFaceUp), true); // Preview inicial de 2.5s começa aberto
+      expect(cards1.every((c) => c.isFaceUp), true); // Preview inicial começa aberto
 
       final cards3 = VisualMemoryEngine.generateCards(rows: r3, cols: 4, seed: 200);
       expect(cards3.length, 20); // 5x4 = 20 cartas (10 pares)

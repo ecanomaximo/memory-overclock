@@ -60,6 +60,18 @@ class VisualMemoryEngine {
     return 5;
   }
 
+  /// Tempo de pré-visualização adaptativo por fase:
+  /// - Fase 1: 2500ms (2.5 segundos) para aprender com tranquilidade
+  /// - Fases 2 a 3: 2200ms
+  /// - Fases 4 a 6: 1800ms
+  /// - Fases 7+: 1500ms
+  static int getPreviewDurationMs({int level = 1, int round = 1}) {
+    if (level <= 1) return 2500;
+    if (level <= 3) return 2200;
+    if (level <= 6) return 1800;
+    return 1500;
+  }
+
   static int getTotalPairsForRows(int rows, {int cols = 4}) {
     return (rows * cols) ~/ 2;
   }
@@ -127,14 +139,17 @@ class VisualMemoryMatchGame extends StatefulWidget {
 }
 
 class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
-  static const int _previewTotalMs = 2500;
+  int get _previewTotalMs => VisualMemoryEngine.getPreviewDurationMs(
+        level: widget.phaseLevel,
+        round: widget.currentRound,
+      );
 
   late int _targetRows;
   late int _totalPairs;
   late List<MemoryCardItem> _cards;
 
   bool _isPreviewing = true;
-  int _previewMsLeft = _previewTotalMs;
+  int _previewMsLeft = 2500;
   Timer? _previewTimer;
 
   int? _firstFlippedIndex;

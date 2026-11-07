@@ -29,14 +29,25 @@ class ColorClashGame extends StatefulWidget {
   });
 
   static List<Map<String, dynamic>> getColorsForLevel(int level) {
-    if (level <= 3) {
+    if (level <= 2) {
+      // Níveis 1 e 2: As 4 cores universais primárias mais fáceis e puras
       return const [
         {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
         {'name': 'AZUL', 'color': Color(0xFF2979FF)},
         {'name': 'VERDE', 'color': Color(0xFF00E676)},
         {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
       ];
+    } else if (level <= 4) {
+      // Níveis 3 e 4: + Laranja (5 cores)
+      return const [
+        {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
+        {'name': 'AZUL', 'color': Color(0xFF2979FF)},
+        {'name': 'VERDE', 'color': Color(0xFF00E676)},
+        {'name': 'AMARELO', 'color': Color(0xFFFFD600)},
+        {'name': 'LARANJA', 'color': Color(0xFFFF7A00)},
+      ];
     } else if (level <= 6) {
+      // Níveis 5 e 6: + Roxo (6 cores)
       return const [
         {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
         {'name': 'AZUL', 'color': Color(0xFF2979FF)},
@@ -46,6 +57,7 @@ class ColorClashGame extends StatefulWidget {
         {'name': 'ROXO', 'color': Color(0xFFB026FF)},
       ];
     } else {
+      // Níveis 7+: Avançado (+ Ciano e Magenta = 8 cores)
       return const [
         {'name': 'VERMELHO', 'color': Color(0xFFFF334B)},
         {'name': 'AZUL', 'color': Color(0xFF2979FF)},

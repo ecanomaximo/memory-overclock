@@ -44,6 +44,10 @@ class WordSearchEngine {
     final rng = Random(round * 42 + level * 7 + 13);
 
     // Coloca cada palavra no grid (horizontal, vertical ou diagonal)
+    // No nível 1: apenas horizontal e vertical para começar simples e acessível
+    // A partir do nível 2: introduz diagonal progressivamente
+    final allowedDirections = (level <= 1) ? 2 : 3;
+
     for (final word in wordList) {
       bool placed = false;
       int attempts = 0;
@@ -51,7 +55,7 @@ class WordSearchEngine {
       while (!placed && attempts < 150) {
         attempts++;
         // 0: horizontal, 1: vertical, 2: diagonal
-        final direction = rng.nextInt(3);
+        final direction = rng.nextInt(allowedDirections);
 
         int maxRow = gridSize;
         int maxCol = gridSize;

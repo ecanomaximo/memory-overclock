@@ -26,17 +26,31 @@ class StroopStimulus {
 }
 
 class StroopEngine {
-  static List<StroopColorItem> getPaletteForLevel(int level) {
-    if (level <= 3) {
-      // Níveis 1 a 3: As 4 cores primárias mais fáceis e universais
+  static List<StroopColorItem> getPaletteForLevel(int level, {int round = 1}) {
+    // Escala progressiva:
+    // Começa na fase 1 com as 4 cores puras e universais mais fáceis.
+    // Conforme o jogador avança de fase ou passa de rodada, novas cores entram na paleta.
+    final effectiveDifficulty = level + (round > 1 ? (round - 1) : 0);
+
+    if (effectiveDifficulty <= 3) {
+      // Níveis iniciais: As 4 cores primárias mais fáceis e universais
       return const [
         StroopColorItem('VERMELHO', Color(0xFFFF334B)),
         StroopColorItem('AZUL', Color(0xFF2979FF)),
         StroopColorItem('VERDE', Color(0xFF00E676)),
         StroopColorItem('AMARELO', Color(0xFFFFD600)),
       ];
-    } else if (level <= 6) {
-      // Níveis 4 a 6: Intermediário (+ Laranja, Roxo)
+    } else if (effectiveDifficulty <= 4) {
+      // Transição: + Laranja (5 cores)
+      return const [
+        StroopColorItem('VERMELHO', Color(0xFFFF334B)),
+        StroopColorItem('AZUL', Color(0xFF2979FF)),
+        StroopColorItem('VERDE', Color(0xFF00E676)),
+        StroopColorItem('AMARELO', Color(0xFFFFD600)),
+        StroopColorItem('LARANJA', Color(0xFFFF7A00)),
+      ];
+    } else if (effectiveDifficulty <= 6) {
+      // Intermediário: + Roxo (6 cores)
       return const [
         StroopColorItem('VERMELHO', Color(0xFFFF334B)),
         StroopColorItem('AZUL', Color(0xFF2979FF)),
@@ -46,7 +60,7 @@ class StroopEngine {
         StroopColorItem('ROXO', Color(0xFFB026FF)),
       ];
     } else {
-      // Níveis 7+: Avançado (+ Ciano, Menta, Magenta para máximo esforço cognitivo)
+      // Avançado (7+): + Ciano, Menta, Magenta (9 cores para máximo esforço inibitório)
       return const [
         StroopColorItem('VERMELHO', Color(0xFFFF334B)),
         StroopColorItem('AZUL', Color(0xFF2979FF)),
@@ -68,7 +82,7 @@ class StroopEngine {
   }) {
     final rng = random ?? Random();
     final isMatch = rng.nextBool();
-    final palette = getPaletteForLevel(level);
+    final palette = getPaletteForLevel(level, round: round);
 
     final wordItem = palette[rng.nextInt(palette.length)];
     if (isMatch) {
