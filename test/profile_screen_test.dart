@@ -34,7 +34,8 @@ void main() {
 
     expect(find.text('Testador Cognitivo'), findsOneWidget);
     expect(find.text('Fase 3 • Neuroplasticidade Ativa'), findsOneWidget);
-    expect(find.text('2 / 5 slots'), findsOneWidget);
+    expect(find.text('2/5'), findsOneWidget);
+    expect(find.byIcon(Icons.bolt_rounded), findsWidgets);
     expect(find.text('5 dias'), findsOneWidget);
     expect(find.text('150'), findsOneWidget);
 

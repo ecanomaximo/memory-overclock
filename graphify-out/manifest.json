@@ -1194,9 +1194,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1794032016.2364254,
-    "seen": 1794032543.963506,
-    "ast_hash": "6f10112d0bea67b9231365a9af516744",
+    "mtime": 1794032568.110116,
+    "seen": 1794064752.6627793,
+    "ast_hash": "30ed9e35c16b396a70ae81c3bcedfa5b",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1218,15 +1218,15 @@
     "semantic_hash": ""
   },
   "lib/screens/profile_screen.dart": {
-    "mtime": 1794032386.4425125,
-    "seen": 1794032543.963506,
-    "ast_hash": "d3e6335422833464e16a87704b3e045b",
+    "mtime": 1794064506.684941,
+    "seen": 1794064752.6627793,
+    "ast_hash": "e280ed6edd27b58db6b0c7186512c619",
     "semantic_hash": ""
   },
   "test/profile_screen_test.dart": {
-    "mtime": 1793894833.009972,
-    "seen": 1793894951.2025115,
-    "ast_hash": "39c72bb8241b1604e3fbfc7aae89f1e8",
+    "mtime": 1794064068.6885548,
+    "seen": 1794064752.6627793,
+    "ast_hash": "8e04b47d47da0549f67d8686dc0754c9",
     "semantic_hash": ""
   },
   "lib/games/digit_sequence_game.dart": {
@@ -1314,9 +1314,9 @@
     "semantic_hash": ""
   },
   "lib/services/auth_service.dart": {
-    "mtime": 1793984569.422219,
-    "seen": 1793989012.8134627,
-    "ast_hash": "67fb96bc09a187667835300e8e46d496",
+    "mtime": 1794063758.1504726,
+    "seen": 1794064752.6627793,
+    "ast_hash": "dfe3c547a2cde420b2063d8051302ba5",
     "semantic_hash": ""
   },
   "test/auth_service_test.dart": {
@@ -1458,9 +1458,9 @@
     "semantic_hash": ""
   },
   "specs/005-adaptive-games-expansion/spec.md": {
-    "mtime": 1794031918.1351278,
-    "seen": 1794031991.5638824,
-    "ast_hash": "ae50857c6fbce0ecfc89b4b5ca7c4f8f",
+    "mtime": 1794064677.7973182,
+    "seen": 1794064752.6627793,
+    "ast_hash": "46309840fbc0c19d8c55c1d2e6667f43",
     "semantic_hash": ""
   },
   "specs/005-adaptive-games-expansion/tasks.md": {

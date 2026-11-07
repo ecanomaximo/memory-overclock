@@ -4,7 +4,6 @@ import '../services/cadence_service.dart';
 import '../services/progress_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/survey_analytics_sheet.dart';
-import 'paywall_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProgressService progressService;
@@ -42,6 +41,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   actions: [
+                    _buildEnergyBadge(context, progress),
                     IconButton(
                       tooltip: 'Extração Analítica de Formulários',
                       icon: const Icon(Icons.analytics_outlined, size: 20, color: AppTheme.focusCyan),
@@ -71,8 +71,6 @@ class ProfileScreen extends StatelessWidget {
                       _buildCognitiveDiagnosisCard(context, progress),
                       const SizedBox(height: 18),
                       _buildPlayActionCard(context),
-                      const SizedBox(height: 18),
-                      _buildDailyBattery(context, progress),
                       const SizedBox(height: 18),
                       _buildCognitiveMetrics(progress),
                       const SizedBox(height: 18),
@@ -224,138 +222,91 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDailyBattery(BuildContext context, dynamic progress) {
+  Widget _buildEnergyBadge(BuildContext context, dynamic progress) {
     final int left = progress.dailyChallengesLeft;
     final int max = progress.maxChallenges;
-    final double percent = progress.isDevUnlimited ? 1.0 : (left / max).clamp(0.0, 1.0);
+    final bool isUnlimited = progress.isDevUnlimited || progress.isVip;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.surfaceBorder),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    const Icon(Icons.battery_charging_full_rounded, color: AppTheme.focusCyan, size: 20),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        'Bateria de Foco (5 Atividades)',
-                        style: GoogleFonts.inter(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          if (cadenceService != null && !isUnlimited) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  left >= max
+                      ? 'Energia máxima disponível ($max/$max raios)!'
+                      : 'Próxima recarga em: ${cadenceService!.formatTimeRemaining()}',
                 ),
+                backgroundColor: AppTheme.cardDeepSlate,
+                duration: const Duration(seconds: 2),
               ),
-              const SizedBox(width: 8),
-              Text(
-                progress.isDevUnlimited ? 'ILIMITADO' : '$left / $max slots',
-                style: GoogleFonts.orbitron(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: left > 0 ? AppTheme.focusCyan : AppTheme.alertPink,
-                ),
+            );
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: AppTheme.surfaceElevated,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppTheme.gold.withValues(alpha: 0.6),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.gold.withValues(alpha: 0.18),
+                blurRadius: 8,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: percent,
-              backgroundColor: AppTheme.surfaceElevated,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                left > 0 ? AppTheme.rewardGreen : AppTheme.alertPink,
-              ),
-              minHeight: 8,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Text(
-                  'Recarrega 5 atividades a cada 5 horas',
-                  style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMuted),
-                  overflow: TextOverflow.ellipsis,
+              if (isUnlimited) ...[
+                const Icon(Icons.bolt_rounded, color: AppTheme.gold, size: 18),
+                const SizedBox(width: 4),
+                Text(
+                  '∞ INF',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.gold,
+                  ),
                 ),
-              ),
-              if (!progress.isVip) ...[
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PaywallScreen(progressService: progressService),
+              ] else ...[
+                // Raiozinhos de energia individuais
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(max, (index) {
+                    final bool isCharged = index < left;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 0.8),
+                      child: Icon(
+                        Icons.bolt_rounded,
+                        size: 16,
+                        color: isCharged
+                            ? AppTheme.gold
+                            : AppTheme.textMuted.withValues(alpha: 0.3),
                       ),
                     );
-                  },
-                  child: Text(
-                    'Obter 10/dia (VIP) →',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.prestigeGold,
-                    ),
+                  }),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  '$left/$max',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.gold,
                   ),
                 ),
               ],
             ],
           ),
-          if (cadenceService != null) ...[
-            const Divider(color: AppTheme.surfaceBorder, height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.flash_on_rounded, color: AppTheme.focusCyan, size: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Ciclo de 5 Horas:',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  cadenceService!.isVip
-                      ? 'Ilimitadas'
-                      : '${cadenceService!.availableActivities} / ${cadenceService!.maxActivities} Atividades',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.focusCyan,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Recarga de 5 atividades em: ${cadenceService!.formatTimeRemaining()}',
-              style: GoogleFonts.inter(fontSize: 11, color: AppTheme.habitAmber),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

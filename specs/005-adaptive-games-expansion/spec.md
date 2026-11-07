@@ -84,3 +84,24 @@ Esta especificação atende às melhorias ergonômicas e à expansão de conteú
 - [x] Visualização em tempo real das letras sendo selecionadas (`_activeDragCells` com brilho neon cyan).
 - [x] Fixação permanente em neon verde das palavras encontradas (`_permanentlyFoundCells`).
 - [x] Suporte a leitura direta e invertida da palavra selecionada.
+
+---
+
+### US-06: Autenticação Resiliente Apple / iCloud
+- **Como** jogador acessando pelo Safari ou navegador web,
+- **Quero** que o login com Apple / iCloud funcione de forma resiliente mesmo que as chaves pagas da Apple Developer não estejam configuradas no console do Firebase,
+- **Para que** eu nunca seja bloqueado de jogar por erros de provedor ou bloqueio de pop-up.
+
+**Critérios de Aceite:**
+- [x] Fallback automático para sessão segura de usuário iCloud em caso de `operation-not-allowed`, `configuration-not-found` ou bloqueio de pop-up.
+
+---
+
+### US-07: Raiozinhos de Energia no Topo do Perfil & Remoção da Bateria Grande
+- **Como** jogador visualizando o Painel Cognitivo,
+- **Quero** ver meus raiozinhos de energia diretamente no topo superior direito da tela, sem o card volumoso de bateria de foco ocupando espaço no meio,
+- **Para que** a interface fique mais limpa, bonita e moderna.
+
+**Critérios de Aceite:**
+- [x] Remoção do card `_buildDailyBattery` do corpo da tela de perfil.
+- [x] Adição do componente de raiozinhos de energia (`_buildEnergyBadge`) no canto superior direito (`AppBar.actions`), exibindo os raios individuais preenchidos/apagados e o contador `left/max`.
