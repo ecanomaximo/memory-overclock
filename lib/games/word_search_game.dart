@@ -8,7 +8,7 @@ class WordSearchEngine {
 
   static List<String> getWordListForRound(int round, {int level = 1}) {
     if (level <= 3) {
-      // Níveis 1 a 3: 2 palavras curtas e diretas
+      // Níveis 1 a 3: 2 palavras curtas (3 a 6 letras)
       const easySets = [
         ['FOCO', 'MENTE'],
         ['AGIL', 'CALMA'],
@@ -17,7 +17,7 @@ class WordSearchEngine {
       ];
       return easySets[(round - 1) % easySets.length];
     } else if (level <= 6) {
-      // Níveis 4 a 6: 3 palavras moderadas
+      // Níveis 4 a 6: 3 palavras moderadas (4 a 7 letras)
       const mediumSets = [
         ['MEMORIA', 'SINAPSE', 'FOCO'],
         ['CLAREZA', 'REFLEXO', 'CALMA'],
@@ -26,11 +26,11 @@ class WordSearchEngine {
       ];
       return mediumSets[(round - 1) % mediumSets.length];
     } else {
-      // Níveis 7+: 4 palavras desafiadoras
+      // Níveis 7+: 4 palavras desafiadoras (4 a 8 letras)
       const hardSets = [
         ['SINAPSE', 'MEMORIA', 'COGNICAO', 'MENTE'],
-        ['NEURONIO', 'REFLEXO', 'PERCEPCAO', 'AGIL'],
-        ['PLASTICIDADE', 'FOCO', 'LOGICA', 'ATENCAO'],
+        ['NEURONIO', 'REFLEXO', 'CEREBRO', 'AGIL'],
+        ['ESTIMULO', 'FOCO', 'LOGICA', 'ATENCAO'],
         ['CONEXAO', 'ENERGIA', 'DECISAO', 'CLAREZA'],
       ];
       return hardSets[(round - 1) % hardSets.length];
@@ -43,16 +43,26 @@ class WordSearchEngine {
     final placedWords = <String>[];
     final rng = Random(round * 42 + level * 7 + 13);
 
-    // Coloca cada palavra no grid (horizontal ou vertical)
+    // Coloca cada palavra no grid (horizontal, vertical ou diagonal)
     for (final word in wordList) {
       bool placed = false;
       int attempts = 0;
 
-      while (!placed && attempts < 100) {
+      while (!placed && attempts < 150) {
         attempts++;
-        final isHorizontal = rng.nextBool();
-        final maxRow = isHorizontal ? gridSize : gridSize - word.length;
-        final maxCol = isHorizontal ? gridSize - word.length : gridSize;
+        // 0: horizontal, 1: vertical, 2: diagonal
+        final direction = rng.nextInt(3);
+
+        int maxRow = gridSize;
+        int maxCol = gridSize;
+        if (direction == 0) {
+          maxCol = gridSize - word.length + 1;
+        } else if (direction == 1) {
+          maxRow = gridSize - word.length + 1;
+        } else {
+          maxRow = gridSize - word.length + 1;
+          maxCol = gridSize - word.length + 1;
+        }
 
         if (maxRow <= 0 || maxCol <= 0) continue;
 
@@ -61,8 +71,8 @@ class WordSearchEngine {
 
         bool canPlace = true;
         for (int i = 0; i < word.length; i++) {
-          final r = isHorizontal ? row : row + i;
-          final c = isHorizontal ? col + i : col;
+          final r = direction == 0 ? row : row + i;
+          final c = direction == 1 ? col : col + i;
           if (grid[r][c] != '' && grid[r][c] != word[i]) {
             canPlace = false;
             break;
@@ -71,8 +81,8 @@ class WordSearchEngine {
 
         if (canPlace) {
           for (int i = 0; i < word.length; i++) {
-            final r = isHorizontal ? row : row + i;
-            final c = isHorizontal ? col + i : col;
+            final r = direction == 0 ? row : row + i;
+            final c = direction == 1 ? col : col + i;
             grid[r][c] = word[i];
           }
           placed = true;
@@ -122,7 +132,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
   late List<List<String>> _grid;
   late List<String> _targetWords;
   final Set<String> _foundWords = {};
-  final List<Point<int>> _selectedCells = [];
+  final Set<Point<int>> _permanentlyFoundCells = {};
+  final List<Point<int>> _activeDragCells = [];
+  Point<int>? _dragStartPoint;
   String _currentSelectedWord = '';
 
   bool get _isTutorial => widget.currentRound == 1;
@@ -141,32 +153,112 @@ class _WordSearchGameState extends State<WordSearchGame> {
     _grid = (generated['grid'] as List<List<String>>);
     _targetWords = (generated['words'] as List<String>);
     _foundWords.clear();
-    _selectedCells.clear();
+    _permanentlyFoundCells.clear();
+    _activeDragCells.clear();
+    _dragStartPoint = null;
     _currentSelectedWord = '';
   }
 
-  void _onCellTap(int row, int col) {
-    final point = Point(row, col);
+  Point<int> _clampedPointFromOffset(Offset localPos, double cellSize) {
+    final col = (localPos.dx / cellSize).floor().clamp(0, WordSearchEngine.gridSize - 1);
+    final row = (localPos.dy / cellSize).floor().clamp(0, WordSearchEngine.gridSize - 1);
+    return Point(row, col);
+  }
+
+  List<Point<int>> _calculateLine(Point<int> start, Point<int> current) {
+    final dr = current.x - start.x;
+    final dc = current.y - start.y;
+
+    if (dr == 0 && dc == 0) {
+      return [start];
+    }
+
+    final absR = dr.abs();
+    final absC = dc.abs();
+
+    int stepR = 0;
+    int stepC = 0;
+    int count = 0;
+
+    // Se é puramente horizontal
+    if (absR == 0) {
+      stepC = dc > 0 ? 1 : -1;
+      count = absC;
+    }
+    // Se é puramente vertical
+    else if (absC == 0) {
+      stepR = dr > 0 ? 1 : -1;
+      count = absR;
+    }
+    // Se é diagonal perfeita
+    else if (absR == absC) {
+      stepR = dr > 0 ? 1 : -1;
+      stepC = dc > 0 ? 1 : -1;
+      count = absR;
+    }
+    // Snap inteligente para a direção dominante
+    else if (absC > 2 * absR) {
+      stepC = dc > 0 ? 1 : -1;
+      count = absC;
+    } else if (absR > 2 * absC) {
+      stepR = dr > 0 ? 1 : -1;
+      count = absR;
+    } else {
+      stepR = dr > 0 ? 1 : -1;
+      stepC = dc > 0 ? 1 : -1;
+      count = min(absR, absC);
+    }
+
+    final line = <Point<int>>[];
+    for (int i = 0; i <= count; i++) {
+      final r = start.x + i * stepR;
+      final c = start.y + i * stepC;
+      if (r >= 0 && r < WordSearchEngine.gridSize && c >= 0 && c < WordSearchEngine.gridSize) {
+        line.add(Point(r, c));
+      }
+    }
+    return line.isNotEmpty ? line : [start];
+  }
+
+  void _onDragStart(Offset localPos, double cellSize) {
+    final point = _clampedPointFromOffset(localPos, cellSize);
+    setState(() {
+      _dragStartPoint = point;
+      _activeDragCells.clear();
+      _activeDragCells.add(point);
+      _currentSelectedWord = _grid[point.x][point.y];
+    });
+  }
+
+  void _onDragUpdate(Offset localPos, double cellSize) {
+    if (_dragStartPoint == null) return;
+    final current = _clampedPointFromOffset(localPos, cellSize);
+    final line = _calculateLine(_dragStartPoint!, current);
 
     setState(() {
-      if (_selectedCells.contains(point)) {
-        // Se tocou na última célula, remove ela
-        if (_selectedCells.isNotEmpty && _selectedCells.last == point) {
-          _selectedCells.removeLast();
-        } else {
-          _selectedCells.clear();
-        }
-      } else {
-        _selectedCells.add(point);
-      }
+      _activeDragCells.clear();
+      _activeDragCells.addAll(line);
+      _currentSelectedWord = _activeDragCells.map((p) => _grid[p.x][p.y]).join();
+    });
+  }
 
-      _currentSelectedWord = _selectedCells.map((p) => _grid[p.x][p.y]).join();
+  void _onDragEnd() {
+    if (_activeDragCells.isEmpty) return;
 
-      // Checa se formou alguma das palavras alvo
-      if (_targetWords.contains(_currentSelectedWord) && !_foundWords.contains(_currentSelectedWord)) {
-        _foundWords.add(_currentSelectedWord);
-        _selectedCells.clear();
-        _currentSelectedWord = '';
+    final word = _currentSelectedWord;
+    final reversed = word.split('').reversed.join();
+
+    String? matchedWord;
+    if (_targetWords.contains(word) && !_foundWords.contains(word)) {
+      matchedWord = word;
+    } else if (_targetWords.contains(reversed) && !_foundWords.contains(reversed)) {
+      matchedWord = reversed;
+    }
+
+    setState(() {
+      if (matchedWord != null) {
+        _foundWords.add(matchedWord);
+        _permanentlyFoundCells.addAll(_activeDragCells);
 
         if (_foundWords.length == _targetWords.length) {
           Future.delayed(const Duration(milliseconds: 500), () {
@@ -176,13 +268,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
           });
         }
       }
-    });
-  }
-
-  void _clearSelection() {
-    setState(() {
-      _selectedCells.clear();
+      _activeDragCells.clear();
       _currentSelectedWord = '';
+      _dragStartPoint = null;
     });
   }
 
@@ -192,7 +280,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
       children: [
         if (_isTutorial)
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: AppTheme.cardDeepSlate,
@@ -201,11 +289,11 @@ class _WordSearchGameState extends State<WordSearchGame> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.info_outline, size: 16, color: AppTheme.primaryNeuroCyan),
+                const Icon(Icons.touch_app_rounded, size: 16, color: AppTheme.primaryNeuroCyan),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'RODADA 1 (TUTORIAL): Toque nas letras em sequência para encontrar as palavras cognitivas.',
+                    'RODADA 1 (TUTORIAL): Arraste o dedo ou mouse sobre as letras para circular as palavras.',
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -216,6 +304,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
               ],
             ),
           ),
+
         const SizedBox(height: 6),
 
         // Palavras a encontrar
@@ -262,94 +351,133 @@ class _WordSearchGameState extends State<WordSearchGame> {
           }).toList(),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
 
-        // Palavra sendo formada
+        // Feedback de arrasto ao vivo
         if (_currentSelectedWord.isNotEmpty)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'SELEÇÃO: $_currentSelectedWord',
-                style: GoogleFonts.orbitron(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                  color: AppTheme.primaryNeuroCyan,
-                ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.5)),
+            ),
+            child: Text(
+              'SELEÇÃO: $_currentSelectedWord',
+              style: GoogleFonts.orbitron(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+                color: AppTheme.primaryNeuroCyan,
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                tooltip: 'Limpar Seleção',
-                icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.alertPink),
-                onPressed: _clearSelection,
-              ),
-            ],
+            ),
           )
         else
           Text(
-            'Encontre: ${_targetWords.length - _foundWords.length} restante(s)',
+            'Arraste em linha reta para selecionar (${_targetWords.length - _foundWords.length} restantes)',
             style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary),
           ),
 
         const SizedBox(height: 8),
 
-        // Grid 8x8 de Letras
+        // Grid 8x8 com detecção de arrasto clássica
         Expanded(
           child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 380, maxHeight: 380),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableSize = min(constraints.maxWidth, constraints.maxHeight);
+                final size = min(380.0, availableSize > 200 ? availableSize : 340.0);
+                const padding = 6.0;
+                final innerSize = size - (padding * 2);
+                final cellSize = innerSize / WordSearchEngine.gridSize;
+
+                return Container(
+                  width: size,
+                  height: size,
+                  padding: const EdgeInsets.all(padding),
                   decoration: BoxDecoration(
                     color: AppTheme.cardDeepSlate,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppTheme.surfaceBorder),
                   ),
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: WordSearchEngine.gridSize,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
-                    ),
-                    itemCount: WordSearchEngine.gridSize * WordSearchEngine.gridSize,
-                    itemBuilder: (context, index) {
-                      final r = index ~/ WordSearchEngine.gridSize;
-                      final c = index % WordSearchEngine.gridSize;
-                      final isSelected = _selectedCells.contains(Point(r, c));
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onPanStart: (details) => _onDragStart(details.localPosition, cellSize),
+                    onPanUpdate: (details) => _onDragUpdate(details.localPosition, cellSize),
+                    onPanEnd: (_) => _onDragEnd(),
+                    onPanCancel: () => _onDragEnd(),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: WordSearchEngine.gridSize * WordSearchEngine.gridSize,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: WordSearchEngine.gridSize,
+                        mainAxisSpacing: 3,
+                        crossAxisSpacing: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        final r = index ~/ WordSearchEngine.gridSize;
+                        final c = index % WordSearchEngine.gridSize;
+                        final point = Point(r, c);
 
-                      return GestureDetector(
-                        onTap: () => _onCellTap(r, c),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
+                        final isFound = _permanentlyFoundCells.contains(point);
+                        final isDragging = _activeDragCells.contains(point);
+
+                        Color bgColor;
+                        Color borderColor;
+                        Color textColor;
+                        double borderWidth = 1.0;
+
+                        if (isFound) {
+                          bgColor = AppTheme.accentBioGreen.withValues(alpha: 0.35);
+                          borderColor = AppTheme.accentBioGreen;
+                          textColor = AppTheme.accentBioGreen;
+                          borderWidth = 1.8;
+                        } else if (isDragging) {
+                          bgColor = AppTheme.primaryNeuroCyan.withValues(alpha: 0.45);
+                          borderColor = AppTheme.primaryNeuroCyan;
+                          textColor = AppTheme.primaryNeuroCyan;
+                          borderWidth = 2.0;
+                        } else {
+                          bgColor = AppTheme.surfaceElevated;
+                          borderColor = Colors.transparent;
+                          textColor = Colors.white;
+                        }
+
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 100),
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppTheme.primaryNeuroCyan.withValues(alpha: 0.3)
-                                : AppTheme.surfaceElevated,
+                            color: bgColor,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: isSelected ? AppTheme.primaryNeuroCyan : Colors.transparent,
-                              width: 1.5,
-                            ),
+                            border: Border.all(color: borderColor, width: borderWidth),
+                            boxShadow: (isFound || isDragging)
+                                ? [
+                                    BoxShadow(
+                                      color: (isFound
+                                              ? AppTheme.accentBioGreen
+                                              : AppTheme.primaryNeuroCyan)
+                                          .withValues(alpha: 0.35),
+                                      blurRadius: 6,
+                                    ),
+                                  ]
+                                : null,
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             _grid[r][c],
                             style: GoogleFonts.orbitron(
                               fontSize: 15,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                              color: isSelected ? AppTheme.primaryNeuroCyan : Colors.white,
+                              fontWeight: (isFound || isDragging)
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                              color: textColor,
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ),

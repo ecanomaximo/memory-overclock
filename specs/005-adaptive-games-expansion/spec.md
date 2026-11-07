@@ -73,11 +73,14 @@ Esta especificação atende às melhorias ergonômicas e à expansão de conteú
 
 ---
 
-### US-05: Caça-Palavras Cognitivo (Word Search)
+### US-05: Caça-Palavras Cognitivo com Seleção por Arrasto (Drag to Select)
 - **Como** jogador,
-- **Quero** localizar palavras escondidas em uma grade de letras,
-- **Para que** eu treine atenção sustentada e escaneamento visual.
+- **Quero** arrastar o dedo ou mouse em linha contínua (horizontal, vertical ou diagonal) sobre as letras,
+- **Para que** a experiência seja idêntica a um caça-palavras tradicional sem a necessidade de clicar letra por letra.
 
 **Critérios de Aceite:**
-- [ ] Grade de letras com palavras cognitivas (FOCO, MENTE, MEMORIA, AGIL, TREINO).
-- [ ] Feedback visual com seleção de letras e marcação de palavras concluídas.
+- [x] Detecção fluida de arrasto via gestos pan (`onPanStart`, `onPanUpdate`, `onPanEnd`).
+- [x] Suporte a alinhamentos em linha reta: horizontal, vertical e diagonal com snap inteligente à direção predominante.
+- [x] Visualização em tempo real das letras sendo selecionadas (`_activeDragCells` com brilho neon cyan).
+- [x] Fixação permanente em neon verde das palavras encontradas (`_permanentlyFoundCells`).
+- [x] Suporte a leitura direta e invertida da palavra selecionada.
