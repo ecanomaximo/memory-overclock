@@ -244,15 +244,15 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 580),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Column(
                 children: [
                   _buildLiveStatsHeader(),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 6),
                   _buildGameBatteryProgression(),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 6),
                   _buildChallengeBanner(),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 6),
                   Expanded(
                     child: KeyedSubtree(
                       key: ValueKey('g_${_currentChallengeIndex}_r_${_currentRound}_a_$_attemptCounter'),
@@ -398,8 +398,8 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
       children: [
         if (_adaptiveProfile.bonusSeconds > 0 || _adaptiveProfile.primaryGoal == 'anxiety_relief')
           Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             decoration: BoxDecoration(
               color: AppTheme.accentBioGreen.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
@@ -408,13 +408,13 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.tune_rounded, size: 13, color: AppTheme.accentBioGreen),
+                const Icon(Icons.tune_rounded, size: 12, color: AppTheme.accentBioGreen),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
                     _adaptiveProfile.recommendationNotice,
                     style: GoogleFonts.inter(
-                      fontSize: 10.5,
+                      fontSize: 10,
                       color: AppTheme.accentBioGreen,
                       fontWeight: FontWeight.w600,
                     ),
@@ -425,47 +425,30 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
             ),
           ),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: AppTheme.surface,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppTheme.surfaceBorder),
           ),
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppTheme.focusCyan.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  _getIconForChallenge(_activeChallenge.type),
-                  color: AppTheme.focusCyan,
-                  size: 20,
-                ),
+              Icon(
+                _getIconForChallenge(_activeChallenge.type),
+                color: AppTheme.focusCyan,
+                size: 16,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _activeChallenge.title,
-                      style: GoogleFonts.orbitron(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      _activeChallenge.cognitiveDomain,
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        color: AppTheme.textSecondary,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  '${_activeChallenge.title} • ${_activeChallenge.cognitiveDomain}',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -522,6 +505,7 @@ class _WaveActivityScreenState extends State<WaveActivityScreen> {
           currentRound: _currentRound,
           totalRounds: _activeChallenge.totalRounds,
           phaseLevel: widget.phaseLevel,
+          timeMultiplier: _adaptiveProfile.timeMultiplier,
           onRoundComplete: _onRoundSuccess,
           onFailed: _onRoundFail,
         );

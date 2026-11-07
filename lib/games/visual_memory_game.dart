@@ -60,16 +60,21 @@ class VisualMemoryEngine {
     return 5;
   }
 
-  /// Tempo de pré-visualização adaptativo por fase:
-  /// - Fase 1: 2500ms (2.5 segundos) para aprender com tranquilidade
-  /// - Fases 2 a 3: 2200ms
-  /// - Fases 4 a 6: 1800ms
-  /// - Fases 7+: 1500ms
-  static int getPreviewDurationMs({int level = 1, int round = 1}) {
-    if (level <= 1) return 2500;
-    if (level <= 3) return 2200;
-    if (level <= 6) return 1800;
-    return 1500;
+  /// Tempo de pré-visualização proporcional ao número de cartas:
+  /// - 12 cartas (3 fileiras = 6 pares): 3.6s
+  /// - 16 cartas (4 fileiras = 8 pares): 4.8s
+  /// - 20 cartas (5 fileiras = 10 pares): 6.0s
+  /// Concede tempo proporcional à quantidade de cartas para assimilar os pares.
+  static int getPreviewDurationMs({
+    int rows = 3,
+    int cols = 4,
+    int level = 1,
+    int? round,
+    double timeMultiplier = 1.0,
+  }) {
+    final totalCards = rows * cols;
+    final baseDuration = (totalCards * 300).clamp(3500, 7500);
+    return (baseDuration * timeMultiplier).round();
   }
 
   static int getTotalPairsForRows(int rows, {int cols = 4}) {
@@ -122,6 +127,7 @@ class VisualMemoryMatchGame extends StatefulWidget {
   final int currentRound;
   final int totalRounds;
   final int phaseLevel;
+  final double timeMultiplier;
   final VoidCallback onRoundComplete;
   final VoidCallback onFailed;
 
@@ -130,6 +136,7 @@ class VisualMemoryMatchGame extends StatefulWidget {
     required this.currentRound,
     required this.totalRounds,
     this.phaseLevel = 1,
+    this.timeMultiplier = 1.0,
     required this.onRoundComplete,
     required this.onFailed,
   });
@@ -140,11 +147,14 @@ class VisualMemoryMatchGame extends StatefulWidget {
 
 class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
   int get _previewTotalMs => VisualMemoryEngine.getPreviewDurationMs(
+        rows: _targetRows,
+        cols: 4,
         level: widget.phaseLevel,
         round: widget.currentRound,
+        timeMultiplier: widget.timeMultiplier,
       );
 
-  late int _targetRows;
+  int _targetRows = 3;
   late int _totalPairs;
   late List<MemoryCardItem> _cards;
 
@@ -176,13 +186,13 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
     _isProcessingMatch = false;
     _pairsFound = 0;
     _isPreviewing = true;
-    _previewMsLeft = _previewTotalMs;
 
     _targetRows = VisualMemoryEngine.getRowsForRound(
       widget.currentRound,
       level: widget.phaseLevel,
     );
     _totalPairs = VisualMemoryEngine.getTotalPairsForRows(_targetRows, cols: 4);
+    _previewMsLeft = _previewTotalMs;
 
     _cards = VisualMemoryEngine.generateCards(
       rows: _targetRows,
@@ -389,88 +399,115 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
         const SizedBox(height: 6),
 
         Expanded(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: _targetRows == 3 ? 0.95 : (_targetRows == 4 ? 0.92 : 0.88),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxW = min(constraints.maxWidth, 420.0);
+              final maxH = constraints.maxHeight;
+
+              final spacing = _targetRows >= 5 ? 5.0 : 7.0;
+              const padH = 6.0;
+              final padV = _targetRows >= 5 ? 2.0 : 4.0;
+
+              final netW = maxW - (padH * 2);
+              final netH = maxH - (padV * 2);
+
+              final cellW = (netW - (3 * spacing)) / 4;
+              final cellH = (netH - ((_targetRows - 1) * spacing)) / _targetRows;
+
+              final calculatedAspectRatio = (cellW / max(1.0, cellH)).clamp(0.72, 1.35);
+
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxW, maxHeight: maxH),
+                  child: GridView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      mainAxisSpacing: spacing,
+                      crossAxisSpacing: spacing,
+                      childAspectRatio: calculatedAspectRatio,
+                    ),
+                    itemCount: _cards.length,
+                    itemBuilder: (context, index) {
+                      final card = _cards[index];
+                      return _FlipCardWidget(
+                        key: ValueKey('card_${card.id}'),
+                        isFaceUp: card.isFaceUp || card.isMatched,
+                        onTap: () => _onCardTap(index),
+                        front: _buildCardFront(card, cellHeight: cellH),
+                        back: _buildCardBack(cellHeight: cellH),
+                      );
+                    },
+                  ),
                 ),
-                itemCount: _cards.length,
-                itemBuilder: (context, index) {
-                  final card = _cards[index];
-                  return _FlipCardWidget(
-                    key: ValueKey('card_${card.id}'),
-                    isFaceUp: card.isFaceUp || card.isMatched,
-                    onTap: () => _onCardTap(index),
-                    front: _buildCardFront(card),
-                    back: _buildCardBack(),
-                  );
-                },
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildCardFront(MemoryCardItem card) {
+  Widget _buildCardFront(MemoryCardItem card, {double cellHeight = 80.0}) {
+    final isCompact = cellHeight < 76.0;
     return Container(
       decoration: BoxDecoration(
         color: card.isMatched
             ? card.accentColor.withValues(alpha: 0.22)
             : AppTheme.cardDeepSlate,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(isCompact ? 10 : 14),
         border: Border.all(
           color: card.accentColor,
-          width: 2.0,
+          width: isCompact ? 1.5 : 2.0,
         ),
         boxShadow: [
           BoxShadow(
             color: card.accentColor.withValues(alpha: 0.35),
-            blurRadius: 10,
+            blurRadius: isCompact ? 6 : 10,
             spreadRadius: 1,
           ),
         ],
       ),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              card.emoji,
-              style: const TextStyle(fontSize: 32),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              card.label.toUpperCase(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
-                color: card.isMatched ? card.accentColor : AppTheme.textMuted,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                card.emoji,
+                style: TextStyle(fontSize: isCompact ? 24 : 32),
               ),
-            ),
-          ],
+              if (!isCompact || cellHeight > 62.0) ...[
+                const SizedBox(height: 2),
+                Text(
+                  card.label.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    fontSize: isCompact ? 7.5 : 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                    color: card.isMatched ? card.accentColor : AppTheme.textMuted,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCardBack() {
+  Widget _buildCardBack({double cellHeight = 80.0}) {
+    final isCompact = cellHeight < 76.0;
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.surfaceElevated,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(isCompact ? 10 : 14),
         border: Border.all(
           color: AppTheme.surfaceBorder,
           width: 1.4,
@@ -478,29 +515,32 @@ class _VisualMemoryMatchGameState extends State<VisualMemoryMatchGame> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+            blurRadius: isCompact ? 4 : 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.psychology_alt_rounded,
-              size: 26,
+              size: isCompact ? 20 : 26,
               color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.5),
             ),
-            const SizedBox(height: 4),
-            Container(
-              width: 18,
-              height: 2,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(2),
+            if (!isCompact || cellHeight > 62.0) ...[
+              const SizedBox(height: 3),
+              Container(
+                width: isCompact ? 14 : 18,
+                height: 2,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryNeuroCyan.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

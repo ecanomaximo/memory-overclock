@@ -109,10 +109,9 @@ void main() {
       expect(r2, 4); // 4 fileiras no próximo desafio
       expect(r3, 5); // 5 fileiras no seguinte
 
-      final previewEasy = VisualMemoryEngine.getPreviewDurationMs(level: 1, round: 1);
-      final previewHard = VisualMemoryEngine.getPreviewDurationMs(level: 8, round: 3);
-      expect(previewEasy, 2500); // 2.5s no início
-      expect(previewHard, lessThan(previewEasy)); // Reduz para maior desafio
+      final preview3Rows = VisualMemoryEngine.getPreviewDurationMs(rows: 3);
+      final preview5Rows = VisualMemoryEngine.getPreviewDurationMs(rows: 5);
+      expect(preview5Rows, greaterThan(preview3Rows)); // Mais tempo para memorizar mais cartas
 
       final cards1 = VisualMemoryEngine.generateCards(rows: r1, cols: 4, seed: 100);
       expect(cards1.length, 12); // 3x4 = 12 cartas (6 pares)
@@ -127,6 +126,22 @@ void main() {
         emojiCounts[c.emoji] = (emojiCounts[c.emoji] ?? 0) + 1;
       }
       expect(emojiCounts.values.every((cnt) => cnt == 2), true);
+    });
+
+    test('Sessão com ansiedade rotaciona jogos entre as fases para evitar repetição', () {
+      final survey = OnboardingSurveyData(
+        primaryGoal: 'anxiety_relief',
+        dominantSymptom: 'racing_thoughts',
+        stressFrequency: 'daily',
+        dailyCommitmentMinutes: 10,
+        completedAt: DateTime.now(),
+      );
+
+      final profile = AdaptiveDifficultyProfile.fromSurvey(survey);
+      final p1 = WaveChallenge.createPhaseSession(level: 1, adaptiveProfile: profile);
+      final p2 = WaveChallenge.createPhaseSession(level: 2, adaptiveProfile: profile);
+
+      expect(p1.map((c) => c.type).toList(), isNot(equals(p2.map((c) => c.type).toList())));
     });
   });
 }

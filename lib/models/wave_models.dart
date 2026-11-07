@@ -87,29 +87,35 @@ class WaveChallenge {
       ),
     ];
 
-    // Se o jogador relatou esquecimento, prioriza jogos mnemônicos
+    // Pool adaptativo balanceado por perfil cognitivo, com rotação dinâmica por fase
+    final List<WaveChallenge> pool;
     if (adaptiveProfile?.dominantSymptom == 'forgetfulness') {
-      return [
+      // Prioriza desafios mnemônicos e sequenciais, rotacionando por fase para nunca estagnar
+      pool = [
         allChallenges[1], // visualMemory
         allChallenges[2], // flashMatrix
         allChallenges[4], // digitSequence
-      ];
-    }
-
-    // Se o jogador relatou ansiedade ou estresse alto, adota ritmo calmo com Caça-Palavras e Memória
-    if (adaptiveProfile?.primaryGoal == 'anxiety_relief' || adaptiveProfile?.stressFrequency == 'daily') {
-      return [
-        allChallenges[1], // visualMemory
         allChallenges[3], // wordSearch
         allChallenges[0], // stroopReflex
       ];
+    } else if (adaptiveProfile?.primaryGoal == 'anxiety_relief' || adaptiveProfile?.stressFrequency == 'daily') {
+      // Prioriza ritmo focado e despressurizado, com rotação contínua para evitar repetição excessiva
+      pool = [
+        allChallenges[1], // visualMemory
+        allChallenges[3], // wordSearch
+        allChallenges[2], // flashMatrix
+        allChallenges[4], // digitSequence
+        allChallenges[0], // stroopReflex
+      ];
+    } else {
+      pool = allChallenges;
     }
 
-    // Por fase, rotaciona os 5 jogos para máxima diversidade
-    final phaseOffset = (level - 1) % allChallenges.length;
+    // Por fase, rotaciona os jogos da trilha garantindo 3 desafios distintos e variedade entre fases
+    final phaseOffset = (level - 1) % pool.length;
     final selected = <WaveChallenge>[];
     for (int i = 0; i < 3; i++) {
-      selected.add(allChallenges[(phaseOffset + i) % allChallenges.length]);
+      selected.add(pool[(phaseOffset + i) % pool.length]);
     }
     return selected;
   }
