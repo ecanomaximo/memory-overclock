@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/progress_service.dart';
@@ -15,6 +16,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String _activeProvider = '';
+
+  bool get _isApplePlatform =>
+      defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.macOS;
 
   Future<void> _handleGoogleLogin() async {
     if (_isLoading) return;
@@ -42,8 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
-
   Future<void> _handleAppleLogin() async {
     if (_isLoading) return;
     setState(() {
@@ -52,32 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     final result = await widget.progressService.loginWithApple();
-
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-        _activeProvider = '';
-      });
-
-      if (!result.success && result.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.errorMessage!),
-            backgroundColor: AppTheme.alertPink,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleGithubLogin() async {
-    if (_isLoading) return;
-    setState(() {
-      _isLoading = true;
-      _activeProvider = 'GitHub';
-    });
-
-    final result = await widget.progressService.loginWithGithub();
 
     if (mounted) {
       setState(() {
@@ -206,52 +183,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: _isLoading ? null : _handleGoogleLogin,
                   ),
                 ),
-                const SizedBox(height: 12),
-
-                // Botão 2: Entrar com Apple / iCloud
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.surfaceElevated,
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: AppTheme.surfaceBorder),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                // Botão 2: Entrar com Apple / iCloud (exibido apenas em dispositivos Apple: iOS / macOS / iPhone)
+                if (_isApplePlatform) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.surfaceElevated,
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: AppTheme.surfaceBorder),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                    ),
-                    icon: const Icon(Icons.apple, size: 26),
-                    label: Text(
-                      'Continuar com Apple / iCloud',
-                      style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _isLoading ? null : _handleAppleLogin,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Botão 3: Entrar com GitHub
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF24292E),
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: AppTheme.surfaceBorder),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      icon: const Icon(Icons.apple, size: 26),
+                      label: Text(
+                        'Continuar com Apple / iCloud',
+                        style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
+                      onPressed: _isLoading ? null : _handleAppleLogin,
                     ),
-                    icon: const Icon(Icons.code_rounded, size: 24, color: AppTheme.focusCyan),
-                    label: Text(
-                      'Continuar com GitHub',
-                      style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _isLoading ? null : _handleGithubLogin,
                   ),
-                ),
+                ],
                 const SizedBox(height: 14),
 
                 // Botão Convidado (modo teste rápido)
