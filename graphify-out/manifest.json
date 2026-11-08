@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "lib/screens/login_screen.dart": {
-    "mtime": 1793985957.0708158,
-    "seen": 1793989012.8134627,
-    "ast_hash": "9ee20033250050e65aa957044801253e",
+    "mtime": 1794099265.9176261,
+    "seen": 1794099610.5230353,
+    "ast_hash": "f1467ff8f24ad26c6fea520e9e3d9169",
     "semantic_hash": ""
   },
   "lib/screens/paywall_screen.dart": {
@@ -1194,9 +1194,9 @@
     "semantic_hash": ""
   },
   "checkpoint.md": {
-    "mtime": 1794091108.8690996,
-    "seen": 1794091234.5274205,
-    "ast_hash": "9fab7c07f90564817ce260116ff768ac",
+    "mtime": 1794099534.0224123,
+    "seen": 1794099610.5230353,
+    "ast_hash": "b6541b085710403f945864731c238d0b",
     "semantic_hash": ""
   },
   "specs/001-memory-overclock-core/plan.md": {
@@ -1314,9 +1314,9 @@
     "semantic_hash": ""
   },
   "lib/services/auth_service.dart": {
-    "mtime": 1794063758.1504726,
-    "seen": 1794064752.6627793,
-    "ast_hash": "dfe3c547a2cde420b2063d8051302ba5",
+    "mtime": 1794099057.4000392,
+    "seen": 1794099610.5230353,
+    "ast_hash": "55813439dc34cd4221bdad239af6644c",
     "semantic_hash": ""
   },
   "test/auth_service_test.dart": {
